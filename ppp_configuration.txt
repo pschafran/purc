@@ -1,0 +1,47 @@
+[PPP_Configuration]
+Mode					= 0		# 0: Construct blast database for barcodes and reference sequences, and then "full run"
+								# 1: Full run, assuming blast database exists
+								# 2: Just split. PPP will take the (already annotated) Input_sequence_file and split it up by split_type
+								# 3: Just clustering, etc. PPP will take the file(s) in Output_folder and run clustering and chimera-killing on them		
+									#NOTE: for mode 3, ppp must be called from the folder that has Output_folder already in it (and the files need to already be in Output_folder)
+									
+Align					= 1		# 0: No aligning attempted. 1: Final consensus sequences will be aligned with MUSCLE	
+
+[for Mode 0]
+in_Barcode_seq_file		= barcode_seq_plate1_2_Dep_longDeps.txt		# Fasta file containing barcode names and sequences; the input for making blast database
+in_RefSeq_seq_file		= refseqs_wPolyNothetc.fa					# Fasta file containing reference names and sequences; the input for making blast database
+
+[Executables]
+Usearch 				= usearch7.0.1090		# The name of (or path to) Usearch executable
+Cutadapt				= cutadapt				# The name of (or path to) Cutadapt executable
+Muscle 					= muscle				# The name of (or path to) Muscle executable
+
+[File Names]
+Input_sequence_file		= PBR6_maxee10.fa
+Output_prefix			= PBR6_20140702
+Output_folder			= Results_20140702_fixedDEPbarcodes
+Barcode_blastDB			= barcode_blastdb		# The name of the barcode blast database [either to be created if Mode =0, or pre-existing]
+RefSeq_blastDB			= refseq_blastdb		# The name of the reference sequence blast database [either to be created if Mode =0, or pre-existing]
+
+[Loci]
+Locus_name				= ApP, GAP, IBR, PGI, CRY, NOTH, POLY, DEP	# The order must be identical to that in Locus-barcode-taxon_map
+Locus-barcode-taxon_map	= PBR6_APPmap.txt, PBR6_GAPmap.txt, PBR6_IBRmap.txt, PBR6_PGImap.txt, PBR6_CRYmap.txt, PBR6_NOTHmap.txt, PBR6_POLYmap.txt, PBR6_DEPmap.txt
+
+[Primers]
+Forward_primer			= GGACCTGGSCTYGCTGARGAGTG, TCTGCMCATGCMATTGAAAGAGAG, GAGYGTTTGGAATGTYTCWTTCCTYGG, CYACMAACTGCCTTGCRCCTCTTGCC, RTCRAAGCCACAGGAGCMAC, caatctctgctaactttaac, GGTGCTGCTAAGGTACAAC, ATYCCAAGYTCAACTGGTGCTGC	# 5'-3'
+Reverse_primer			= GGAAGVACCTTYCCTACTGCCTG, TAGCTGCTCRAATTCCATKSAT, CTGATTAAMACATDTGMAGCATCACAAAC, GCTTTCCATACTAAGCTGCAGAC, CGAATTCACAATGATCCCTGC, gatgctcggatcactctcac, GTATCCCCAYTCRTTGTCRTACC		# 5'-3'
+
+[Clustering Parameters]
+clustID 				= 0.997 	# The similarity criterion for the initial USEARCH clustering
+clustID2 				= 0.995 	# The similarity criterion for the second clustering
+clustID3 				= 0.990 	# The similarity criterion for the third clustering
+sizeThreshold 			= 1 		# The min. number of sequences/cluster necessary for that cluster to be retained (set to 2 to remove singletons, 3 to remove singletons and doubles, etc)
+sizeThreshold2 			= 4			# The min. number of sequences/cluster necessary for that cluster to be retained (set to 2 to remove singletons, 3 to remove singletons and doubles, etc)
+
+[Miscellaneous]
+split_type				= group		# The category used to split the annotated sequences (either "locus", "barcode", "group", "taxon", "taxon-locus", or "locus-taxon". Do not include the quotation marks).
+									# This is only useful for mode 2 (modes 0 & 1 split by locus and then by barcode)
+seq_name_toErase		= m140603_173232_42153_c100642282550000001823129210151413_s1_p0		# Remove this from sequence names
+verbose_level 			= 1			# 0: quiet, 1: noticeable (only uchime+cutadapt output), 2: annoying (all usearch+cutadapt+muscle output)
+
+
