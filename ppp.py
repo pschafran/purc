@@ -91,12 +91,13 @@ def BlastSeq(inputfile, outputfile, databasefile, evalue=0.0000001, max_target=1
 def DeBarcoder(inputfile_raw_sequences, outputfile_bc_blast, outputfile_bc_trimmed, databasefile, SeqDict):
 	"""Blasts the raw sequences against the barcode blast database, identifies the barcode, adds the barcode ID to the 
 	sequence name, removes the barcode from sequence; returns a list of barcode names"""
-	BlastSeq(inputfile_raw_sequences, outputfile_bc_blast, databasefile, evalue=1, outfmt='6 qacc sacc length pident bitscore qstart qend')
+	BlastSeq(inputfile_raw_sequences, outputfile_bc_blast, databasefile, evalue=1, max_target=1, outfmt='6 qacc sacc length pident bitscore qstart qend')
 	
 	bc_blast = open(outputfile_bc_blast, 'rU') # Read the blast result
 	bc_trimmed = open(outputfile_bc_trimmed, 'w') # For writing the de-barcoded sequences
 	barcode_name_list = []
 	
+	previous_seq_name = ''
 	#go through the blast output file #FWL - what happens to sequences that don't blast to any of the barcodes? We should send those into their own file
 	for each_rec in bc_blast:
 		each_rec = each_rec.strip('\n')
@@ -116,8 +117,13 @@ def DeBarcoder(inputfile_raw_sequences, outputfile_bc_blast, outputfile_bc_trimm
 			new_seq_trimmed = str(SeqDict[seq_name].seq[barcode_end_posi:])
 			new_seq_name = new_seq_name + "ERRmidBC"
 		
-		bc_trimmed.write('>' + new_seq_name + '\n' + new_seq_trimmed + '\n')
-
+		#bc_trimmed.write('>' + new_seq_name + '\n' + new_seq_trimmed + '\n')
+		
+		### A quick fix for the multiple-barcode-per-seq problem ###
+		if seq_name != previous_seq_name:
+			bc_trimmed.write('>' + new_seq_name + '\n' + new_seq_trimmed + '\n')
+		previous_seq_name = seq_name
+		
 	bc_blast.close()
 	bc_trimmed.close() #this is the file that now has all the sequences, labelled with the barcode, and the barcodes themselves removed
 	
