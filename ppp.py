@@ -477,7 +477,7 @@ def annotateIt(filetoannotate, outFile, failsFile, verbose_level=0):	# dont need
 # TODO might want to change these functions so that they get passed the outfile name rather than making it themselves
 def sortIt_length(file, verbose_level=0):
 	"""Sorts clusters by seq length"""
-	outFile = re.sub(r"(.*)\..*", r"\1_Sl\.fa", file) # Make the outfile name by cutting off the extension of the infile name, and adding "_S1.fa"
+	outFile = re.sub(r"(.*)\..*", r"\1_Sl.fa", file) # Make the outfile name by cutting off the extension of the infile name, and adding "_S1.fa"
 	usearch_cline = "%s -sortbylength %s -output %s" %(Usearch, file, outFile)
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
 	(out, err) = process.communicate() #the stdout and stderr
@@ -489,7 +489,7 @@ def sortIt_length(file, verbose_level=0):
 
 def clusterIt(file, clustID, round, verbose_level=0):
 	"""The clustering step, using the clustID value"""
-	outFile = re.sub(r"(.*)\.fa", r"\1C%s_%s\.fa" %(round, clustID), file) # The rs indicate "raw" and thus python's escaping gets turned off
+	outFile = re.sub(r"(.*)\.fa", r"\1C%s_%s.fa" %(round, clustID), file) # The rs indicate "raw" and thus python's escaping gets turned off
 	outClustFile = re.sub(r"(.*)\.fa", r"\1clusts%s\.uc" %(round), file)	
 	if round == 1:
 		usearch_cline = "%s -cluster_smallmem %s -id %f -gapopen 3I/1E -usersort -consout %s -uc %s -sizeout" % (Usearch, file, clustID, outFile, outClustFile) 
@@ -506,7 +506,7 @@ def clusterIt(file, clustID, round, verbose_level=0):
 	
 def deChimeIt(file, round, verbose_level=0):
 	"""Chimera remover. The abskew parameter is hardcoded currently (UCHIME default for it is 2.0)"""
-	outFile = re.sub(r"(.*)\.fa", r"\1dCh%s\.fa" %(round), file) # The rs indicate "raw" and thus python's escaping gets turned off
+	outFile = re.sub(r"(.*)\.fa", r"\1dCh%s.fa" %(round), file) # The rs indicate "raw" and thus python's escaping gets turned off
 	usearch_cline = "%s -uchime_denovo %s -abskew 1.9 -nonchimeras %s" % (Usearch, file, outFile)
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
 	(out, err) = process.communicate() #the stdout and stderr
@@ -523,7 +523,7 @@ def sortIt_size(file, thresh, round, verbose_level=0):
 	"""Sorts clusters by size, and removes those that are smaller than a particular size
 	(sent as thresh -- ie, sizeThreshold or sizeThreshold2). 
     "round" is used to annotate the outfile name with S1, S2, etc. depending on which sort this is"""
-	outFile = re.sub(r"(.*)\.fa", r"\1Ss%s\.fa" %(round), file)	
+	outFile = re.sub(r"(.*)\.fa", r"\1Ss%s.fa" %(round), file)
 	usearch_cline = "%s -sortbysize %s -output %s -minsize %f" %(Usearch, file, outFile, thresh)
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
 	(out, err) = process.communicate() #the stdout and stderr
@@ -683,31 +683,30 @@ if mode in [0,1]: # Run the full annotating, clustering, etc.
 				print "\tFirst clustering"
 				print "\nAttempting to sort: ", bcode_folder + ".fa"
 
-				sortIt_length(file = bcode_folder + ".fa", verbose_level = verbose_level)
-				# clusterIt(file = glob.glob('_' + str(each_locus) + '_Sl.fa')[0], clustID, 1, verbose_level = verbose_level)
-				clusterIt(file = glob.glob(str(bcode_folder) + '_Sl.fa')[0], clustID = clustID, round = 1, verbose_level = verbose_level)
+				sorted_length = sortIt_length(file = bcode_folder + ".fa", verbose_level = verbose_level)
+				clustered1 = clusterIt(file = sorted_length, clustID = clustID, round = 1, verbose_level = verbose_level)
 
 				print "\tFirst chimera slaying expedition"
-				deChimeIt(file = glob.glob(str(bcode_folder) + '*C1_*')[0], round = 1, verbose_level = verbose_level)
+				deChimered1 = deChimeIt(file = clustered1, round = 1, verbose_level = verbose_level)
 				
 				print "\tSecond clustering"
-				sortIt_size(file = glob.glob(str(bcode_folder) + '*dCh1.fa')[0], thresh = sizeThreshold, round = 1, verbose_level = verbose_level)
-				clusterIt(file = glob.glob(str(bcode_folder) + '*Ss1.fa')[0], clustID = clustID2, round = 2, verbose_level = verbose_level)
+				sorted_size1 = sortIt_size(file = deChimered1, thresh = sizeThreshold, round = 1, verbose_level = verbose_level)
+				clustered2 = clusterIt(file = sorted_size1, clustID = clustID2, round = 2, verbose_level = verbose_level)
 				
 				print "\tSecond chimera slaying expedition"
-				deChimeIt(file = glob.glob(str(bcode_folder) + '*C2_*.fa')[0], round = 2, verbose_level = verbose_level) 
+				deChimered2 = deChimeIt(file = clustered2, round = 2, verbose_level = verbose_level)
 				
 				print "\tThird clustering"
-				sortIt_size(file = glob.glob(str(bcode_folder) + '*dCh2.fa')[0], thresh = sizeThreshold, round = 2, verbose_level = verbose_level)
-				clusterIt(file = glob.glob(str(bcode_folder) + '*Ss2.fa')[0], clustID = clustID3, round = 3, verbose_level = verbose_level)
+				sorted_size2 = sortIt_size(file = deChimered2, thresh = sizeThreshold, round = 2, verbose_level = verbose_level)
+				clustered3 = clusterIt(file = sorted_size2, clustID = clustID3, round = 3, verbose_level = verbose_level)
 				
 				print "\tThird chimera slaying expedition\n"
-				deChimeIt(file = glob.glob(str(bcode_folder) + '*C3_*.fa')[0], round = 3, verbose_level = verbose_level) 
+				deChimered3 = deChimeIt(file = clustered3, round = 3, verbose_level = verbose_level)
 
 				# Why are we sorting again? I guess this gives us the chance to remove clusters smaller than sizeThreshold2
-				sortIt_size(file = glob.glob(str(bcode_folder) + '*dCh3.fa')[0], thresh = sizeThreshold2, round = 3, verbose_level = verbose_level)
+				sorted_size3 = sortIt_size(file = deChimered3, thresh = sizeThreshold2, round = 3, verbose_level = verbose_level)
 
-				clustered_seq_file = parse_fasta(glob.glob(str(bcode_folder) + '*Ss3.fa')[0])
+				clustered_seq_file = parse_fasta(sorted_size3)
 				for each_seq in clustered_seq_file:
 					taxon_name = str(each_seq.id).split('|')[0].split('=')[-1] # for example, get C_dia_5316 from centroid=centroid=C_dia_5316|ApP|C|BC02|_p0/158510/ccs;ee=1.9;;seqs=6;seqs=18;size=27;
 					
