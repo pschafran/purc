@@ -97,10 +97,13 @@ def DeBarcoder(inputfile_raw_sequences, outputfile_bc_blast, outputfile_bc_trimm
 	
 	bc_blast = open(outputfile_bc_blast, 'rU') # Read the blast result
 	bc_trimmed = open(outputfile_bc_trimmed, 'w') # For writing the de-barcoded sequences
+	bc_leftover = open('seq_without_barcode.fasta', 'w') # For saving those without barcodes
 	barcode_name_list = []
+	seq_withbc_list = [] # A list containing all the seq names that have barcodes
+	seq_withoutbc_list = [] # A list containing all the seq names that do not have barcode identified by BLAST
 	
 	previous_seq_name = ''
-	#go through the blast output file #FWL - what happens to sequences that don't blast to any of the barcodes? We should send those into their own file
+	#go through the blast output file
 	for each_rec in bc_blast:
 		each_rec = each_rec.strip('\n')
 		seq_name = each_rec.split('\t')[0]
@@ -124,12 +127,21 @@ def DeBarcoder(inputfile_raw_sequences, outputfile_bc_blast, outputfile_bc_trimm
 		### A quick fix for the multiple-barcode-per-seq problem ###
 		if seq_name != previous_seq_name:
 			bc_trimmed.write('>' + new_seq_name + '\n' + new_seq_trimmed + '\n')
-		previous_seq_name = seq_name
-		
+			seq_withbc_list.append(seq_name)
+        previous_seq_name = seq_name
+
+        #save the sequences without identified barcode to bc_leftover
+        seq_withoutbc_list = list(set(list(SeqDict.keys())) - set(seq_withbc_list))
+        for seq_withoutbc in seq_withoutbc_list:
+            bc_leftover.write('>' + str(seq_withoutbc) + '\n' + str(SeqDict[seq_name].seq) + '\n')
+        
+        
 	bc_blast.close()
+	bc_leftover.close()
 	bc_trimmed.close() #this is the file that now has all the sequences, labelled with the barcode, and the barcodes themselves removed
 	
 	return set(barcode_name_list) #e.g., [BC01, BC02, BC03, ...] #FWL - why set()?
+                                                                #Re: Remove dups. Turn [BC01, BC01, BC02] to [BC01, BC02]
 
 def DePrimer(inputfile_raw_sequences, outputfile_pr_blast, outputfile_pr_trimmed, databasefile, SeqDict):
 	"""Blasts the raw sequences against the primer database, identifies the primer, removes the primers from sequence"""
