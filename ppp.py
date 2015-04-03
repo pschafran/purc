@@ -119,11 +119,10 @@ def DeBarcoder(inputfile_raw_sequences, outputfile_bc_blast, outputfile_bc_trimm
 		if seq_name not in barcode_info_dict.keys():
 			barcode_info_dict[seq_name] = [barcode_name, barcode_start_posi, barcode_end_posi]
 			seq_withbc_list.append(seq_name)
-		else:
+		else: # means that this seq has more than one barcode, then take out this seq record from seq_withbc_list, but append it to seq_withbc_morethanone_list
 			del barcode_info_dict[seq_name]
 			seq_withbc_list.remove(seq_name)
 			seq_withbc_morethanone_list.append(seq_name)
-			print seq_withbc_morethanone_list
 
 	# De-barcode and write sequences
 	for each_seq in seq_withbc_list:
