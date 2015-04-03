@@ -270,7 +270,7 @@ def Split_by_Barcode(inputfile_seq, barcode_name_list, Output_folder):
 	os.chdir('..')	
 	return barcode_count_dic #as {'BC01': 150, 'BC02': 156} for example
 
-def SplitBy( annotd_seqs_file, split_by = "locus-taxon" ): #I can get rid of Output_folder? Output_folder,
+def SplitBy(annotd_seqs_file, split_by = "locus-taxon"): #I can get rid of Output_folder? Output_folder,
 	"""Uses the annotated sequences to split sequences into different files based on splits_list 
 	(could be by barcode or by locus, etc); returns a dictionary of seq counts for each subgroup"""
 	
@@ -457,7 +457,8 @@ def annotateIt(filetoannotate, outFile, failsFile, verbose_level=0):	# dont need
 		except:
 			print "The barcode-group combo", key, "wasn't found in", locus_name
 			print "(currently trying to find a match for", seq_name, ")\n"
-			no_matches.write('>' + seq_name.replace(seq_name_toErase, '') + '\n' + str(SeqDict[seq_name].seq) + '\n')
+			new_seq_name = locus_name + '|' + group_name + '|' + seq_name.replace(seq_name_toErase, '')
+			no_matches.write('>' + new_seq_name + '\n' + str(SeqDict[seq_name].seq) + '\n')
 			# TODO; FWL; need to figure out what these are/where they're coming from
 			# TODO -- need to save these to a file 
 			continue
