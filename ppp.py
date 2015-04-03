@@ -97,13 +97,17 @@ def DeBarcoder(inputfile_raw_sequences, outputfile_bc_blast, outputfile_bc_trimm
 	
 	bc_blast = open(outputfile_bc_blast, 'rU') # Read the blast result
 	bc_trimmed = open(outputfile_bc_trimmed, 'w') # For writing the de-barcoded sequences
-	bc_leftover = open('seq_without_barcode.fasta', 'w') # For saving those without barcodes
+	bc_leftover = open('_trashBin_seq_without_barcode.fasta', 'w') # For saving those without barcodes
+	bc_toomany = open('_trashBin_seq_withtoomany_barcode.fasta', 'w') # For saving those more than one barcode
+
 	barcode_name_list = []
 	seq_withbc_list = [] # A list containing all the seq names that have barcodes
+	seq_withbc_morethanone_list = [] # A list containing all the seq names that have more than one barcode
 	seq_withoutbc_list = [] # A list containing all the seq names that do not have barcode identified by BLAST
+
+	barcode_info_dict = {} # {seq_name1: [BC01, 0, 12], seq_name2: [BC08, 0, 12]}; barcode_info_dict[seq_name] = [barcode_name, barcode_start_posi, barcode_end_posi]
 	
-	previous_seq_name = ''
-	#go through the blast output file
+	# Go through the blast output file, and complete the barcode_info_dict, seq_withbc_list, and seq_withbc_morethanone_list
 	for each_rec in bc_blast:
 		each_rec = each_rec.strip('\n')
 		seq_name = each_rec.split('\t')[0]
@@ -111,32 +115,42 @@ def DeBarcoder(inputfile_raw_sequences, outputfile_bc_blast, outputfile_bc_trimm
 		barcode_start_posi = int(each_rec.split('\t')[5])
 		barcode_end_posi = int(each_rec.split('\t')[6])		
 		barcode_name_list.append(barcode_name)
-		new_seq_name = barcode_name + '|' + seq_name #add the barcode ID to the sequence name
+		
+		if seq_name not in barcode_info_dict.keys():
+			barcode_info_dict[seq_name] = [barcode_name, barcode_start_posi, barcode_end_posi]
+			seq_withbc_list.append(seq_name)
+		else:
+			del barcode_info_dict[seq_name]
+			seq_withbc_list.remove(seq_name)
+			seq_withbc_morethanone_list.append(seq_name)
+			print seq_withbc_morethanone_list
+
+	# De-barcode and write sequences
+	for each_seq in seq_withbc_list:
+		new_seq_name = str(barcode_info_dict[each_seq][0]) + '|' + str(each_seq) # Add the barcode ID to the sequence name: BC01|sequence_name
 
 		#check the orientation of the sequence; if the barcode is in the 3' end, reverse complement the seq
-		if barcode_start_posi < 5: # The start position _should_ be 1, but this allows for some slop
-			new_seq_trimmed = str(SeqDict[seq_name].seq[barcode_end_posi:])
-		elif barcode_start_posi > len(str(SeqDict[seq_name].seq))-30: # Those barcodes that are at the end of the sequences, so need to be reversecomplemented
-			new_seq_trimmed = ReverseComplement(str(SeqDict[seq_name].seq[:barcode_start_posi-1]))
+		if barcode_info_dict[each_seq][1] < 5: # The start position _should_ be 1, but this allows for some slop
+			new_seq_trimmed = str(SeqDict[each_seq].seq[barcode_info_dict[each_seq][2]:]) # "barcode_end_posi" to the end of the sequence
+		elif barcode_info_dict[each_seq][1] > len(str(SeqDict[each_seq].seq))-30: # Those barcodes that are at the end of the sequences, so need to be reversecomplemented
+			new_seq_trimmed = ReverseComplement(str(SeqDict[each_seq].seq[:barcode_info_dict[each_seq][1]-1])) # the beginning of the sequence to "barcode_start_posi" - 1
 		else: # Those barcodes that are at the middle of the sequences
-			new_seq_trimmed = str(SeqDict[seq_name].seq[barcode_end_posi:])
+			new_seq_trimmed = str(SeqDict[each_seq].seq[barcode_info_dict[each_seq][2]:])
 			new_seq_name = new_seq_name + "ERRmidBC"
-		
-		#bc_trimmed.write('>' + new_seq_name + '\n' + new_seq_trimmed + '\n')
-		
-		### A quick fix for the multiple-barcode-per-seq problem ###
-		if seq_name != previous_seq_name:
-			bc_trimmed.write('>' + new_seq_name + '\n' + new_seq_trimmed + '\n')
-			seq_withbc_list.append(seq_name)
-        previous_seq_name = seq_name
+		bc_trimmed.write('>' + new_seq_name + '\n' + new_seq_trimmed + '\n')
+	
+	# Write the sequences with multiple barcodes
+	for each_seq in seq_withbc_morethanone_list:
+		bc_toomany.write('>' + str(each_seq) + '\n' + str(SeqDict[each_seq].seq) + '\n')
 
-        #save the sequences without identified barcode to bc_leftover
-        seq_withoutbc_list = list(set(list(SeqDict.keys())) - set(seq_withbc_list))
-        for seq_withoutbc in seq_withoutbc_list:
-            bc_leftover.write('>' + str(seq_withoutbc) + '\n' + str(SeqDict[seq_name].seq) + '\n')
+	# Write the sequences without identified barcode to bc_leftover
+	seq_withoutbc_list = list(set(list(SeqDict.keys())) - set(seq_withbc_list) - set(seq_withbc_morethanone_list))
+	for seq_withoutbc in seq_withoutbc_list:
+		bc_leftover.write('>' + str(seq_withoutbc) + '\n' + str(SeqDict[seq_withoutbc].seq) + '\n')
         
         
 	bc_blast.close()
+	bc_toomany.close()
 	bc_leftover.close()
 	bc_trimmed.close() #this is the file that now has all the sequences, labelled with the barcode, and the barcodes themselves removed
 	
