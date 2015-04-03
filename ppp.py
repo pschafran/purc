@@ -82,6 +82,7 @@ def makeBlastDB(inFileName, outDBname): #FWL do we need to include instructions 
 	makeblastdb_cmd = 'makeblastdb -in %s -dbtype nucl -parse_seqids -out %s' % (inFileName, outDBname)
 	process = subprocess.Popen(makeblastdb_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 	(out, err) = process.communicate()
+	print out, err
 	return
 
 def BlastSeq(inputfile, outputfile, databasefile, evalue=0.0000001, max_target=1, outfmt='6 qacc sacc nident mismatch length pident bitscore'):	
@@ -97,8 +98,8 @@ def DeBarcoder(inputfile_raw_sequences, outputfile_bc_blast, outputfile_bc_trimm
 	
 	bc_blast = open(outputfile_bc_blast, 'rU') # Read the blast result
 	bc_trimmed = open(outputfile_bc_trimmed, 'w') # For writing the de-barcoded sequences
-	bc_leftover = open('_trashBin_seq_without_barcode.fasta', 'w') # For saving those without barcodes
-	bc_toomany = open('_trashBin_seq_withtoomany_barcode.fasta', 'w') # For saving those more than one barcode
+	bc_leftover = open(Output_prefix + '_1_trashBin_no_bc.fa', 'w') # For saving those without barcodes
+	bc_toomany = open(Output_prefix + '_1_trashBin_tooMany_bc.fa', 'w') # For saving those more than one barcode
 
 	barcode_name_list = []
 	seq_withbc_list = [] # A list containing all the seq names that have barcodes
@@ -367,7 +368,7 @@ def annotateIt_old(inputfile_seq, refseq_blast_result, outputfile_annotated, Seq
 	return LocusTaxonCountDict, File_is_empty   #as {('C_mem_6732', 'PGI'): 2, ('C_mem_6732', 'IBR'): 4} for example
 
 def makeMapDict(mapping_file, locus): #danger? Locus used somewhere else?
-	map = open('../' + mapping_file, 'rU') #open the correct mapping file
+	map = open(mapping_file, 'rU') #open the correct mapping file
 	# map = open('../../' + mapping_file, 'rU') #open the correct mapping file
 	outputfile_name = '_' + str(locus) + '.txt'
 
@@ -397,7 +398,7 @@ def annotateIt(filetoannotate, outFile, failsFile, verbose_level=0):	# dont need
 	"""Uses the blast results (against the reference sequence database) to assign locus and taxon, and write sequences 
 	for a particular locus as specified by map_locus; returns a dictionary containing taxon-locus seq counts"""		
 	# BlastSeq(filetoannotate, 'blast_refseq_out.txt', '../../'+refseq_databasefile)
-	BlastSeq(filetoannotate, 'blast_refseq_out.txt', '../' + refseq_databasefile) 
+	BlastSeq(filetoannotate, 'blast_refseq_out.txt', 'BLAST_DBs/' + refseq_databasefile)
 	# Blasts each sequence in the file (e.g., BC01.fa) against the reference sequences
 	
 	SeqDict = SeqIO.index(filetoannotate, 'fasta') # Reads the sequences as a dict
@@ -417,9 +418,10 @@ def annotateIt(filetoannotate, outFile, failsFile, verbose_level=0):	# dont need
 	no_matches = open(failsFile, "w")
 
 	if verbose_level in [1,2]:
-		sys.stderr.write( "Annotating " + str(len(SeqDict)) + " records.\n" )
+		sys.stderr.write("Annotating " + str(len(SeqDict)) + " records.\n")
 
 	count = 0
+	previous_seq_name = ''
 	for each_rec in refseq_blast:
 		count += 1
 		
@@ -449,11 +451,13 @@ def annotateIt(filetoannotate, outFile, failsFile, verbose_level=0):	# dont need
 			taxon_name = dictOfMapDicts[locus_name][key] 
 			#getting to the dict corresponding to this locus, and then finding that taxon that matches the barcode+group (the key)
 			new_seq_name = taxon_name + '|' + locus_name + '|' + group_name + '|' + seq_name.replace(seq_name_toErase, '')
-			annotated_seqs.write('>' + new_seq_name + '\n' + str(SeqDict[seq_name].seq) + '\n')
-			try:
-				LocusTaxonCountDict[taxon_name, locus_name] += 1 #as {('C_mem_6732', 'PGI'): 2, ('C_mem_6732', 'IBR'): 4} for example
-			except:
-				LocusTaxonCountDict[taxon_name, locus_name] = 1 #initiate the key and give count = 1
+			if new_seq_name != previous_seq_name:
+				annotated_seqs.write('>' + new_seq_name + '\n' + str(SeqDict[seq_name].seq) + '\n')
+				try:
+					LocusTaxonCountDict[taxon_name, locus_name] += 1 #as {('C_mem_6732', 'PGI'): 2, ('C_mem_6732', 'IBR'): 4} for example
+				except:
+					LocusTaxonCountDict[taxon_name, locus_name] = 1 #initiate the key and give count = 1
+			previous_seq_name = new_seq_name
 		except:
 			print "The barcode-group combo", key, "wasn't found in", locus_name
 			print "(currently trying to find a match for", seq_name, ")\n"
@@ -617,37 +621,45 @@ else:
 
 #### Run ####
 if mode == 0: # Make blast databases
-	makeBlastDB(barcode_seq_filename, barcode_databasefile) # one of the barcodes
-	makeBlastDB(refseq_filename, refseq_databasefile) # and one of the reference sequences
+	if os.path.exists('BLAST_DBs'): # overwrite existing folder
+		shutil.rmtree('BLAST_DBs')
+	os.makedirs('BLAST_DBs')
+	os.chdir('BLAST_DBs')
+	makeBlastDB('../' + barcode_seq_filename, barcode_databasefile) # one of the barcodes
+	makeBlastDB('../' + refseq_filename, refseq_databasefile) # and one of the reference sequences
+	os.chdir('..')
 
 if mode in [0,1]: # Run the full annotating, clustering, etc.
 	## Read sequences ##
 	sys.stderr.write('Reading sequences...\n')
+	#with open(raw_sequences, 'r') as infile
 	SeqDict = SeqIO.index(raw_sequences, 'fasta') # Read in the raw sequences as dictionary, using biopython's function
 
 	## Remove barcodes ##
 	sys.stderr.write('Removing barcodes...\n')
-	barcode_trimmed_file = Output_prefix + '_bc_trimmed.fa'
-	barcode_name_list = DeBarcoder(raw_sequences, 'blast_barcode_out.txt', barcode_trimmed_file, barcode_databasefile, SeqDict) 
+	barcode_trimmed_file = Output_prefix + '_1_bc_trimmed.fa'
+	barcode_name_list = DeBarcoder(raw_sequences, 'blast_barcode_out.txt', barcode_trimmed_file, 'BLAST_DBs/' + barcode_databasefile, SeqDict)
 
 	## Remove primers ##
 	sys.stderr.write('Removing primers...\n')
-	primer_trimmed_file = Output_prefix + '_pr_trimmed.fa'
+	primer_trimmed_file = Output_prefix + '_2_pr_trimmed.fa'
 	doCutAdapt( Fprims = Forward_primer, Rprims = Reverse_primer, InFile = barcode_trimmed_file, OutFile = primer_trimmed_file )
-
-	## Move into the designated output folder ##
-	os.makedirs(Output_folder)
-	os.chdir(Output_folder)
 
 	## Annotate the sequences with the taxon and locus names, based on the reference sequences ##
 	sys.stderr.write('Annotating seqs...\n')
-	toAnnotate = "../" + primer_trimmed_file 
-	annoFileName = Output_prefix + "_annotated.txt"
-	LocusTaxonCountDict_unclustd = annotateIt(filetoannotate = toAnnotate, outFile = annoFileName, failsFile = "noAnnosFound.txt", verbose_level = verbose_level)
+	toAnnotate = primer_trimmed_file
+	annoFileName = Output_prefix + '_3_annotated.fa'
+	LocusTaxonCountDict_unclustd = annotateIt(filetoannotate = toAnnotate, outFile = annoFileName, failsFile = Output_prefix + '_3_unclassifiable.fa', verbose_level = verbose_level)
+
+	## Move into the designated output folder ##
+	if os.path.exists(Output_folder): # overwrite existing folder
+		shutil.rmtree(Output_folder)
+	os.makedirs(Output_folder)
+	os.chdir(Output_folder)
 
 	## Split sequences into separate files/folders for each locus ##
 	sys.stderr.write('Splitting sequences into a folder/file for each locus...\n')
-	locusCounts = SplitBy(annotd_seqs_file = annoFileName, split_by = "locus") #Output_folder = "TestSplitterFolder",
+	locusCounts = SplitBy(annotd_seqs_file = "../" + annoFileName, split_by = "locus") #Output_folder = "TestSplitterFolder",
 
 	## Split the locus files by barcode, and cluster each of the resulting single locus/barcode files
 	sys.stderr.write('Clustering/dechimera-izing seqs...\n')
