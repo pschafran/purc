@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 # TODO: make the additions to the documentation and the feedback based on the Phlox attempt
-# see if this works with version control
-# Commit Push! FW!
+# Very nice! I pulled, and saw the Commit! Push! And if you're seeing this, you must have
+# refreshed and then pulled...
 
 print
 print """
