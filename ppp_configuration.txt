@@ -4,7 +4,10 @@ Mode					= 0		# 0: Construct blast database for barcodes and reference sequences
 								# 2: Just split. PPP will take the (already annotated) Input_sequence_file and split it up by split_type
 								# 3: Just clustering, etc. PPP will take the file(s) in Output_folder and run clustering and chimera-killing on them		
 									#NOTE: for mode 3, ppp must be called from the folder that has Output_folder already in it (and the files need to already be in Output_folder)
-									
+
+Multiplex_per_barcode	= 1		# 0: Each barcode contains only one sample
+								# 1: Each barcode contains multiple samples
+																		
 Align					= 1		# 0: No aligning attempted. 1: Final consensus sequences will be aligned with MUSCLE	
 
 [for Mode 0]

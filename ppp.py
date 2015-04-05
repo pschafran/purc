@@ -269,31 +269,32 @@ def Split_by_Barcode(inputfile_seq, barcode_name_list, Output_folder):
 	os.chdir('..')	
 	return barcode_count_dic #as {'BC01': 150, 'BC02': 156} for example
 
-def SplitBy(annotd_seqs_file, split_by = "locus-taxon"): #I can get rid of Output_folder? Output_folder,
+def SplitBy(annotd_seqs_file, split_by = "locus-taxon", Multiplex_perBC=True): #I can get rid of Output_folder? Output_folder,
 	"""Uses the annotated sequences to split sequences into different files based on splits_list 
 	(could be by barcode or by locus, etc); returns a dictionary of seq counts for each subgroup"""
 	
 	#TODO - strip spaces from the ref seq names at some point so that SplitsBy doesn't break on them?
 
-	annotd_seqs = open(annotd_seqs_file, 'rU')
-	unsplit_seq = parse_fasta(annotd_seqs)	
+	#annotd_seqs = open(annotd_seqs_file, 'rU')
+	unsplit_seq = parse_fasta(annotd_seqs_file)	
 	splits_file_dic = {}
 	splits_count_dic = {}
 	splits_list = []
 
 	for each_seq in unsplit_seq:
-		if split_by == "barcode":
-			split = str(each_seq.id).split('|')[3] #finding the identifing annotation for the split of interest.
-			# e.g., BC01, BC02, ... or gapCp, PGIC, ...
+		#finding the identifing annotation for the split of interest.
+		# e.g., BC01, BC02, ... or gapCp, PGIC, ...
+		if split_by == "barcode" and Multiplex_perBC:
+			split = str(each_seq.id).split('|')[3]
+		elif split_by == "group" and Multiplex_perBC: # where group is the let set to identify the taxonomic groups, e.g, A, B, C, ...
+			split = str(each_seq.id).split('|')[2]			
+		elif split_by == "barcode" and not Multiplex_perBC:
+			split = str(each_seq.id).split('|')[2]
 		elif split_by == "taxon":
 			split = str(each_seq.id).split('|')[0]
-		elif split_by == "locus":
-			
-			print "Trying to split", each_seq.id
-
+		elif split_by == "locus":			
+			#print "Trying to split", each_seq.id
 			split = str(each_seq.id).split('|')[1]
-		elif split_by == "group": # where group is the let set to identify the taxonomic groups, e.g, A, B, C, ...
-			split = str(each_seq.id).split('|')[2]
 		elif split_by == "taxon-locus":
 			split = str(each_seq.id).split('|')[0] + "_" + str(each_seq.id).split('|')[1]
 		elif split_by == "locus-taxon": # same as above, but folders/files labeled with locus name before taxon name
@@ -324,63 +325,29 @@ def SplitBy(annotd_seqs_file, split_by = "locus-taxon"): #I can get rid of Outpu
 	# FWL - do we not have to close each of the files we've been writing to?
 	return splits_count_dic #as {'BC01': 150, 'BC02': 156} for example
 
-def annotateIt_old(inputfile_seq, refseq_blast_result, outputfile_annotated, SeqDict, MapDict, map_locus, LocusTaxonCountDict):	
-	"""Deprecated -- this is the old version"""		
-	refseq_blast = open(refseq_blast_result, 'rU') #read the blast result
-	annotated_seq = open(outputfile_annotated, 'w') #for writing the annotated seq
-	groupsList = []
-	locusList = []
-
-	File_is_empty = True 
-	#go through the reference sequence blast output file
-	for each_rec in refseq_blast:
-		each_rec = each_rec.strip('\n')	
-		seq_name = each_rec.split('\t')[0]
-		refseq_name = each_rec.split('\t')[1]
-		locus_name = refseq_name.split('_')[0] # The names are in the format ">ApP_grA__otherstuff". I.e., >Locus_group_otherstuff
-		group_name = refseq_name.split('_')[1][-1:] # Trying to grab the last letter of the second "word", i.e., the "A" in "grA"
-		
-		if not group_name in groupsList: #keeping track of which groups are found, as a way of potentially diagnosing errors
-			groupsList.append(group_name)
-		if not locus_name in locusList: #keeping track of which loci are found, as a way of potentially diagnosing errors
-			locusList.append(locus_name)	
-
-		if locus_name == map_locus: #to see which locus is going to be separated this time; map_locus as ApP, GAP, PGI, or...
-			File_is_empty = False
-			key = seq_name.split('|')[0] + '_' + group_name 
-			#get the unique identifier that can link to a specific sample; i.e. BC01_A, BC01_B, BC01_C...
-			try: #use try/except to avoid the error when the key is not present in MapDict				
-				taxon_name = MapDict[key] #use that identifier to get the sample name; MapDict is constructed from the mapping file
-				new_seq_name = taxon_name + '|' + locus_name + '|' + group_name + '|' + seq_name.replace(seq_name_toErase, '')
-				annotated_seq.write('>' + new_seq_name + '\n' + str(SeqDict[seq_name].seq) + '\n')
-				try:
-					LocusTaxonCountDict[taxon_name, map_locus] += 1 #as {('C_mem_6732', 'PGI'): 2, ('C_mem_6732', 'IBR'): 4} for example
-				except:
-					LocusTaxonCountDict[taxon_name, map_locus] = 1 #initiate the key and give count = 1
-			except:
-				File_is_empty = True
-				continue
-	refseq_blast.close()
-	annotated_seq.close()
-	print "The groups found are ", groupsList, "\nAnd the loci found are ", locusList, "\n"
-	return LocusTaxonCountDict, File_is_empty   #as {('C_mem_6732', 'PGI'): 2, ('C_mem_6732', 'IBR'): 4} for example
-
-def makeMapDict(mapping_file, locus): #danger? Locus used somewhere else?
+def makeMapDict(mapping_file, locus, Multiplex_perBC=True): #danger? Locus used somewhere else?
 	map = open(mapping_file, 'rU') #open the correct mapping file
-	# map = open('../../' + mapping_file, 'rU') #open the correct mapping file
 	outputfile_name = '_' + str(locus) + '.txt'
 
 	#constructing a dict that maps each barcode/locus combination to a specific accession
-	MapDict = {} 
-	for each_rec in map:
-		each_rec = each_rec.strip('\n')
-		map_barcode_name = each_rec.split('\t')[0] 
-		map_group_name = each_rec.split('\t')[1] 
-		map_taxon_name = each_rec.split('\t')[2]
-		# taxon_list.append(map_taxon_name) # This isn't doing anything currently.
-		key = map_barcode_name + '_' + map_group_name #BC01_A, BC01_B, BC010_C...
-		MapDict[key] = map_taxon_name
-
+	if Multiplex_perBC: # when there are multiple individuals sharing the same barcodes
+		MapDict = {}
+		for each_rec in map:
+			each_rec = each_rec.strip('\n')
+			map_barcode_name = each_rec.split('\t')[0]
+			map_group_name = each_rec.split('\t')[1]
+			map_taxon_name = each_rec.split('\t')[2]
+			key = map_barcode_name + '_' + map_group_name #BC01_A, BC01_B, BC010_C...
+			MapDict[key] = map_taxon_name
+	else: # when a barcode points to one individual; no multiplex per barcode; ignore "group" info and reads a different mapping file format
+		MapDict = {}
+		for each_rec in map:
+			each_rec = each_rec.strip('\n')
+			map_barcode_name = each_rec.split('\t')[0]
+			map_taxon_name = each_rec.split('\t')[1]
+			key = map_barcode_name #BC01_A, BC01_B, BC010_C...
+			MapDict[key] = map_taxon_name
+	
 	map.close() #think this belongs in here now
 	return MapDict
 
@@ -391,13 +358,12 @@ def makeOutFileNames(): #need to change/erase this? it only makes outfiles by lo
 		outFileNames[each_locus] = '_' + str(each_locus) + '.txt'
 	return outFileNames
 
-def annotateIt(filetoannotate, outFile, failsFile, verbose_level=0):	# dont need SeqDict here, because we create it below?
-	# also don't need LocusTaxonCountDict because I'll initialize it within the function?
+def annotateIt(filetoannotate, outFile, failsFile, Multiplex_perBC=True, verbose_level=0):	
 	"""Uses the blast results (against the reference sequence database) to assign locus and taxon, and write sequences 
 	for a particular locus as specified by map_locus; returns a dictionary containing taxon-locus seq counts"""		
-	# BlastSeq(filetoannotate, 'blast_refseq_out.txt', '../../'+refseq_databasefile)
-	BlastSeq(filetoannotate, 'blast_refseq_out.txt', 'BLAST_DBs/' + refseq_databasefile)
+	
 	# Blasts each sequence in the file (e.g., BC01.fa) against the reference sequences
+	BlastSeq(filetoannotate, 'blast_refseq_out.txt', 'BLAST_DBs/' + refseq_databasefile)
 	
 	SeqDict = SeqIO.index(filetoannotate, 'fasta') # Reads the sequences as a dict
 
@@ -410,45 +376,53 @@ def annotateIt(filetoannotate, outFile, failsFile, verbose_level=0):	# dont need
 	# each seq to a particular locus and taxon
 	dictOfMapDicts = {} # A dictionary to store all of the map dictionaries
 	for each_file, each_locus in zip(mapping_file_list, locus_list): 
-		dictOfMapDicts[each_locus] = makeMapDict(each_file, each_locus) 
+		dictOfMapDicts[each_locus] = makeMapDict(each_file, each_locus, Multiplex_perBC) # Note the Multiplex_perBC flag (as True/False)
 
 	annotated_seqs = open(outFile, "w")
 	no_matches = open(failsFile, "w")
 
-	if verbose_level in [1,2]:
-		sys.stderr.write("Annotating " + str(len(SeqDict)) + " records.\n")
+	#if verbose_level in [1,2]:
+	#	sys.stderr.write("Annotating " + str(len(SeqDict)) + " records.\n")
 
 	count = 0
 	previous_seq_name = ''
 	for each_rec in refseq_blast:
 		count += 1
 		
-		if verbose_level in [1,2]:
-			if count == int(len(SeqDict)/4):
-				sys.stderr.write( "One quarter done\n" ) # FWL; TODO; how to get this to print as the function proceeds, rather than just all at the end?
-			elif count == int(len(SeqDict)/2):
-				sys.stderr.write( "Half done\n" )
-			elif count == int(len(SeqDict)*.75):
-				sys.stderr.write( "Three quarters done\n" )
+		#if verbose_level in [1,2]:
+		#	if count == int(len(SeqDict)/4):
+		#		sys.stderr.write( "One quarter done\n" ) # FWL; TODO; how to get this to print as the function proceeds, rather than just all at the end?
+		#	elif count == int(len(SeqDict)/2):
+		#		sys.stderr.write( "Half done\n" )
+		#	elif count == int(len(SeqDict)*.75):
+		#		sys.stderr.write( "Three quarters done\n" )
 
 		each_rec = each_rec.strip('\n')	
 		seq_name = each_rec.split('\t')[0] # The un-annotated sequence name, e.g., "BC02|m131213_174801_42153_c100618932550000001823119607181400_s1_p0/282/ccs;ee=7.2;"
 		refseq_name = each_rec.split('\t')[1] # The best-hit reference sequence name, e.g., "PGI_grC__C_diapA_BC17"
 		locus_name = refseq_name.split('_')[0] # The names are in the format ">ApP_grA__otherstuff". I.e., >Locus_group_otherstuff
-		group_name = refseq_name.split('_')[1][-1:] # Trying to grab the last letter of the second "word", i.e., the "A" in "grA"
-		
-		key = seq_name.split('|')[0] + '_' + group_name # Grabbing the barcode from the source seq, and the group from the matching ref seq.
-		#i.e., gets the unique identifier that can link to a specific sample; i.e. BC01_A, BC01_B, BC01_C...
-
-		if not group_name in groupsList: #keeping track of which groups are found, as a way of potentially diagnosing errors
-			groupsList.append(group_name)
 		if not locus_name in locusList: #keeping track of which loci are found, as a way of potentially diagnosing errors
 			locusList.append(locus_name)	
-
+		
+		if Multiplex_perBC:
+			group_name = refseq_name.split('_')[1][-1:] # Trying to grab the last letter of the second "word", i.e., the "A" in "grA"		
+			key = seq_name.split('|')[0] + '_' + group_name # Grabbing the barcode from the source seq, and the group from the matching ref seq.
+			#i.e., gets the unique identifier that can link to a specific sample; i.e. BC01_A, BC01_B, BC01_C...
+			if not group_name in groupsList: #keeping track of which groups are found, as a way of potentially diagnosing errors
+				groupsList.append(group_name)
+		else:
+			key = seq_name.split('|')[0] # Grabbing the barcode from the source seq
+			#i.e., gets the unique barcode that can link to a specific sample; i.e. BC01, BC02, BC03...		
+		
 		try: #use try/except to avoid the error when the key is not present in MapDict				
 			taxon_name = dictOfMapDicts[locus_name][key] 
 			#getting to the dict corresponding to this locus, and then finding that taxon that matches the barcode+group (the key)
-			new_seq_name = taxon_name + '|' + locus_name + '|' + group_name + '|' + seq_name.replace(seq_name_toErase, '')
+			
+			if Multiplex_perBC:
+				new_seq_name = taxon_name + '|' + locus_name + '|' + group_name + '|' + seq_name.replace(seq_name_toErase, '')
+			else:
+				new_seq_name = taxon_name + '|' + locus_name + '|' + seq_name.replace(seq_name_toErase, '')
+				
 			if new_seq_name != previous_seq_name:
 				annotated_seqs.write('>' + new_seq_name + '\n' + str(SeqDict[seq_name].seq) + '\n')
 				try:
@@ -459,12 +433,15 @@ def annotateIt(filetoannotate, outFile, failsFile, verbose_level=0):	# dont need
 		except:
 			print "The barcode-group combo", key, "wasn't found in", locus_name
 			print "(currently trying to find a match for", seq_name, ")\n"
-			new_seq_name = locus_name + '|' + group_name + '|' + seq_name.replace(seq_name_toErase, '')
+			if Multiplex_perBC:
+				new_seq_name = locus_name + '|' + group_name + '|' + seq_name.replace(seq_name_toErase, '')
+			else:
+				new_seq_name = locus_name + '|' + seq_name.replace(seq_name_toErase, '')
 			no_matches.write('>' + new_seq_name + '\n' + str(SeqDict[seq_name].seq) + '\n')
 			# TODO; FWL; need to figure out what these are/where they're coming from
 			# TODO -- need to save these to a file 
 			continue
-
+		
 	refseq_blast.close()
 	annotated_seqs.close()
 	no_matches.close()
@@ -474,7 +451,6 @@ def annotateIt(filetoannotate, outFile, failsFile, verbose_level=0):	# dont need
 	
 	return LocusTaxonCountDict #as {('C_mem_6732', 'PGI'): 2, ('C_mem_6732', 'IBR'): 4} for example
 
-# TODO might want to change these functions so that they get passed the outfile name rather than making it themselves
 def sortIt_length(file, verbose_level=0):
 	"""Sorts clusters by seq length"""
 	outFile = re.sub(r"(.*)\..*", r"\1_Sl.fa", file) # Make the outfile name by cutting off the extension of the infile name, and adding "_S1.fa"
@@ -614,7 +590,13 @@ else:
 				barcode_seq_filename = setting_argument		
 			elif setting_name == 'in_RefSeq_seq_file':	
 				refseq_filename = setting_argument			
-
+			elif setting_name == 'Multiplex_per_barcode':	
+				if setting_argument == '0':
+					Multiplex_per_barcode = False
+				elif setting_argument == '1':
+					Multiplex_per_barcode = True
+				else:
+					sys.exit('Error: incorrect setting of Multiplex_per_barcode')	
 				
 
 #### Run ####
@@ -647,7 +629,7 @@ if mode in [0,1]: # Run the full annotating, clustering, etc.
 	sys.stderr.write('Annotating seqs...\n')
 	toAnnotate = primer_trimmed_file
 	annoFileName = Output_prefix + '_3_annotated.fa'
-	LocusTaxonCountDict_unclustd = annotateIt(filetoannotate = toAnnotate, outFile = annoFileName, failsFile = Output_prefix + '_3_unclassifiable.fa', verbose_level = verbose_level)
+	LocusTaxonCountDict_unclustd = annotateIt(filetoannotate = toAnnotate, outFile = annoFileName, Multiplex_perBC = Multiplex_per_barcode, failsFile = Output_prefix + '_3_unclassifiable.fa', verbose_level = verbose_level)
 
 	## Move into the designated output folder ##
 	if os.path.exists(Output_folder): # overwrite existing folder
@@ -657,7 +639,7 @@ if mode in [0,1]: # Run the full annotating, clustering, etc.
 
 	## Split sequences into separate files/folders for each locus ##
 	sys.stderr.write('Splitting sequences into a folder/file for each locus...\n')
-	locusCounts = SplitBy(annotd_seqs_file = "../" + annoFileName, split_by = "locus") #Output_folder = "TestSplitterFolder",
+	locusCounts = SplitBy(annotd_seqs_file = "../" + annoFileName, split_by = "locus", Multiplex_perBC = Multiplex_per_barcode) #Output_folder = "TestSplitterFolder",
 
 	## Split the locus files by barcode, and cluster each of the resulting single locus/barcode files
 	sys.stderr.write('Clustering/dechimera-izing seqs...\n')
@@ -673,7 +655,7 @@ if mode in [0,1]: # Run the full annotating, clustering, etc.
 		# with the addition of ".fa". This is set as the file handle in SplitsBy, and if changed there, needs to be changed here too
 		AnnodDict = SeqIO.index(each_folder + ".fa", 'fasta') 
 		if len(AnnodDict) > 0: # ie, the file is not empty
-			bcodeCounts = SplitBy(annotd_seqs_file = each_folder + ".fa", split_by = "barcode")
+			bcodeCounts = SplitBy(annotd_seqs_file = each_folder + ".fa", split_by = "barcode", Multiplex_perBC = Multiplex_per_barcode)
 			all_folders_bcodes = bcodeCounts.keys()
 
 			for bcode_folder in all_folders_bcodes:
