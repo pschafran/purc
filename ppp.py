@@ -89,7 +89,7 @@ def BlastSeq(inputfile, outputfile, databasefile, evalue=0.0000001, max_target=1
 	os.popen(blastn_cLine)	
 	return
 	
-def DeBarcoder(inputfile_raw_sequences, outputfile_bc_blast, outputfile_bc_trimmed, databasefile, SeqDict, SecondBarcode = False):
+def DeBarcoder(inputfile_raw_sequences, outputfile_bc_blast, outputfile_bc_trimmed, databasefile, SeqDict):
 	"""Blasts the raw sequences against the barcode blast database, identifies the barcode, adds the barcode ID to the 
 	sequence name, removes the barcode from sequence; returns a list of barcode names"""
 	BlastSeq(inputfile_raw_sequences, outputfile_bc_blast, databasefile, evalue=1, max_target=1, outfmt='6 qacc sacc length pident bitscore qstart qend')
@@ -125,30 +125,21 @@ def DeBarcoder(inputfile_raw_sequences, outputfile_bc_blast, outputfile_bc_trimm
 
 	# De-barcode and write sequences
 	for each_seq in seq_withbc_list:
-		if SecondBarcode:
-			try:
-				seq_name = each_seq.split('|')[1]
-			except:
-				seq_name = each_seq
-			new_seq_name = str(barcode_info_dict[each_seq][0]) + '|' + str(each_seq)	
-		else:
-			seq_name = each_seq
-			new_seq_name = str(barcode_info_dict[each_seq][0]) + '|' + str(each_seq) # Add the barcode ID to the sequence name: BC01|sequence_name
+		new_seq_name = str(barcode_info_dict[each_seq][0]) + '|' + str(each_seq) # Add the barcode ID to the sequence name: BC01|sequence_name
 
-		seq_name = seq_name.replace('ERRmidBC', '')
 		#check the orientation of the sequence; if the barcode is in the 3' end, reverse complement the seq
 		if barcode_info_dict[each_seq][1] < 5: # The start position _should_ be 1, but this allows for some slop
-			new_seq_trimmed = str(SeqDict[seq_name].seq[barcode_info_dict[each_seq][2]:]) # "barcode_end_posi" to the end of the sequence
-		elif barcode_info_dict[each_seq][1] > len(str(SeqDict[seq_name].seq))-30: # Those barcodes that are at the end of the sequences, so need to be reversecomplemented
-			new_seq_trimmed = ReverseComplement(str(SeqDict[seq_name].seq[:barcode_info_dict[each_seq][1]-1])) # the beginning of the sequence to "barcode_start_posi" - 1
+			new_seq_trimmed = str(SeqDict[each_seq].seq[barcode_info_dict[each_seq][2]:]) # "barcode_end_posi" to the end of the sequence
+		elif barcode_info_dict[each_seq][1] > len(str(SeqDict[each_seq].seq))-30: # Those barcodes that are at the end of the sequences, so need to be reversecomplemented
+			new_seq_trimmed = ReverseComplement(str(SeqDict[each_seq].seq[:barcode_info_dict[each_seq][1]-1])) # the beginning of the sequence to "barcode_start_posi" - 1
 		else: # Those barcodes that are at the middle of the sequences
-			new_seq_trimmed = str(SeqDict[seq_name].seq[barcode_info_dict[each_seq][2]:])
+			new_seq_trimmed = str(SeqDict[each_seq].seq[barcode_info_dict[each_seq][2]:])
 			new_seq_name = new_seq_name + "ERRmidBC"
 		bc_trimmed.write('>' + new_seq_name + '\n' + new_seq_trimmed + '\n')
 	
 	# Write the sequences with multiple barcodes
 	for each_seq in seq_withbc_morethanone_list:
-		bc_toomany.write('>' + str(each_seq) + '\n' + str(SeqDict[seq_name].seq) + '\n')
+		bc_toomany.write('>' + str(each_seq) + '\n' + str(SeqDict[each_seq].seq) + '\n')
 
 	# Write the sequences without identified barcode to bc_leftover
 	seq_withoutbc_list = list(set(list(SeqDict.keys())) - set(seq_withbc_list) - set(seq_withbc_morethanone_list))
@@ -163,57 +154,93 @@ def DeBarcoder(inputfile_raw_sequences, outputfile_bc_blast, outputfile_bc_trimm
 	
 	return set(barcode_name_list) #e.g., [BC01, BC02, BC03, ...] #FWL - why set()?
                                                                 #Re: Remove dups. Turn [BC01, BC01, BC02] to [BC01, BC02]
-
-def DePrimer(inputfile_raw_sequences, outputfile_pr_blast, outputfile_pr_trimmed, databasefile, SeqDict):
-	"""Blasts the raw sequences against the primer database, identifies the primer, removes the primers from sequence"""
-	'''This is deprecated -- the primer removal is being done by Cutadapt '''
-	BlastSeq(inputfile_raw_sequences, outputfile_pr_blast, databasefile, evalue=0.01, max_target=4, outfmt='6 qacc sacc length pident bitscore qstart qend')
+def DeBarcoder_dual(inputfile_raw_sequences, outputfile_bc_blast, outputfile_bc_trimmed, databasefile, SeqDict):
+	"""Blasts the raw sequences against the barcode blast database, identifies the barcode, adds the barcode ID to the 
+	sequence name, removes the barcode from sequence; deal with barcodes at both primers"""
+	BlastSeq(inputfile_raw_sequences, outputfile_bc_blast, databasefile, evalue=1, max_target=2, outfmt='6 qacc sacc length pident bitscore qstart qend')
 	
-	pr_blast = open(outputfile_pr_blast, 'rU') # Read the blast result
-	pr_trimmed = open(outputfile_pr_trimmed, 'w') # For writing the de-barcoded sequences
-	previous_seq_name = 'empty'
+	bc_blast = open(outputfile_bc_blast, 'rU') # Read the blast result
+	bc_trimmed = open(outputfile_bc_trimmed, 'w') # For writing the de-barcoded sequences
+	bc_leftover = open(Output_prefix + '_1_trashBin_no_bc.fa', 'w') # For saving those without barcodes
+	bc_onlyF = open(Output_prefix + '_1_trashBin_onlyF_bc.fa', 'w')
+	bc_onlyR = open(Output_prefix + '_1_trashBin_onlyR_bc.fa', 'w')
+	bc_toomany = open(Output_prefix + '_1_trashBin_tooMany_bc.fa', 'w') # For saving those more than one barcode
+	bc_invalid = open(Output_prefix + '_1_trashBin_invalid_bc.fa', 'w') # For saving those having FF or RR barcodes
+
+	seq_withbc_list = [] # A list containing all the seq names that have barcodes
+	seq_withoutbc_list = [] # A list containing all the seq names that do not have barcode identified by BLAST
+	seq_onlyF_list = []
+	seq_onlyR_list = []
+	barcode_info_dict = {} # {seq_name1: [(BCF01, 0, 12), (BCR02, 459, 511)], seq_name2: [(BC08, 0, 12)]}; barcode_info_dict[seq_name] = [(barcodeF_name, barcode_start_posi, barcode_end_posi), (barcodeR_name, barcode_start_posi, barcode_end_posi)]
+							# each seq has a list of tuples, each tuple contains the (barcode name, start, end)
+	# Go through the blast output file, and complete the barcode_info_dict, and seq_withbc_list
+	for each_rec in bc_blast:
+		each_rec = each_rec.strip('\n')
+		seq_name = each_rec.split('\t')[0]
+		barcode_name = each_rec.split('\t')[1] # E.g. BC01, BC24...
+		barcode_start_posi = int(each_rec.split('\t')[5])
+		barcode_end_posi = int(each_rec.split('\t')[6])		
+		seq_withbc_list.append(seq_name)
+		# {seq_name1: [(BCF01, 0, 12), (BCR02, 459, 511)], seq_name2: [(BC08, 0, 12)]}
+		try:
+			barcode_info_dict[seq_name].append((barcode_name, barcode_start_posi, barcode_end_posi))
+		except:
+			barcode_info_dict[seq_name] = [(barcode_name, barcode_start_posi, barcode_end_posi)]
 	
-	F_primer_number = 0
-	R_primer_number = 0
-	seq_with_hit_list = []
+	# De-barcode and write sequences
+	for each_seq in set(seq_withbc_list):
+		# When more than three barcodes are present in seq
+		if len(barcode_info_dict[each_seq]) >= 3:
+			bc_toomany.write('>' + str(each_seq) + '\n' + str(SeqDict[each_seq].seq) + '\n')
+			continue
+		# When only one barcode is present in seq
+		elif len(barcode_info_dict[each_seq]) == 1:	
+			new_seq_name = str(barcode_info_dict[each_seq][0][0]) + '|' + str(each_seq) # Add the barcode ID to the sequence name: BC01|sequence_name
+			# Check the orientation of the sequence; if the barcode is in the 3' end, reverse complement the seq		
+			if barcode_info_dict[each_seq][0][1] < 5: # The start position _should_ be 1, but this allows for some slop
+				new_seq_trimmed = str(SeqDict[each_seq].seq[barcode_info_dict[each_seq][0][2]:]) # "barcode_end_posi" to the end of the sequence
+			elif barcode_info_dict[each_seq][0][1] > len(str(SeqDict[each_seq].seq))-30: # Those barcodes that are at the end of the sequences, so need to be reversecomplemented
+				new_seq_trimmed = ReverseComplement(str(SeqDict[each_seq].seq[:barcode_info_dict[each_seq][0][1]-1])) # the beginning of the sequence to "barcode_start_posi" - 1
+			else: # Those barcodes that are at the middle of the sequences
+				new_seq_trimmed = str(SeqDict[each_seq].seq[barcode_info_dict[each_seq][0][2]:])
+				new_seq_name = new_seq_name + "ERRmidBC"
+			# Check where barcode is located, on F or R primer
+			if barcode_info_dict[each_seq][0][0][2] == 'F':
+				bc_onlyF.write('>' + new_seq_name + '\n' + new_seq_trimmed + '\n')
+			elif barcode_info_dict[each_seq][0][0][2] == 'R':
+				bc_onlyR.write('>' + new_seq_name + '\n' + new_seq_trimmed + '\n')			
+		# When both barcodes are present in seq
+		elif len(barcode_info_dict[each_seq]) == 2:		
+			# Check if barcodes are in the same category (F, R); don't want these 
+			if barcode_info_dict[each_seq][0][0][2] == barcode_info_dict[each_seq][1][0][2]:
+				#print 'Error: Invalid Dual-barcodes for', each_seq
+				new_seq_name = str(barcode_info_dict[each_seq][0][0]) + '|' + str(barcode_info_dict[each_seq][1][0]) + '|' + str(each_seq) # Add the barcode ID to the sequence name: BC01|sequence_name
+				bc_invalid.write('>' + new_seq_name + '\n' + str(SeqDict[each_seq].seq) + '\n')
+				continue 
 
-	#go through the blast output file
-	for each_rec in pr_blast:
-		seq_name = str(each_rec.split('\t')[0])
-		primer_start_posi = int(each_rec.split('\t')[5])
-		primer_end_posi = int(each_rec.split('\t')[6])
+			# Re-order the list, so that the F barcode tuple is at the first position in the list
+			if barcode_info_dict[each_seq][0][0][2] == 'R':
+				barcode_info_dict[each_seq] = barcode_info_dict[each_seq][::-1]
+			
+			new_seq_name = str(barcode_info_dict[each_seq][0][0]) + '|' + str(barcode_info_dict[each_seq][1][0]) + '|' + str(each_seq) # Add the barcode ID to the sequence name: BCF01|BCR02|sequence_name
 
-		#check the orientation of the sequence
-		if primer_start_posi < 15:
-			F_primer = True
-			F_primer_number = F_primer_number + 1
-			new_start = primer_end_posi				
-		elif primer_start_posi > len(str(SeqDict[seq_name].seq))-30: # Those primers that are at the end of the sequences (so need to be reversecomplemented)
-			R_primer = True
-			R_primer_number = R_primer_number + 1
-			new_end = primer_start_posi
-		else: # Those primers that are at the middle of the sequences
-			Mid_primer = True
-
-		if previous_seq_name == seq_name:			
-			if F_primer and R_primer:
-				new_seq_trimmed = str(SeqDict[seq_name].seq[new_start:new_end-1])	
-				pr_trimmed.write('>' + seq_name + '\n' + new_seq_trimmed + '\n')
-				seq_with_hit_list.append(seq_name)	
-				F_primer = False
-				R_primer = False
-				Mid_primer = False
-								
-		previous_seq_name = seq_name
-		
-	for each_seq in SeqDict:
-		if each_seq not in seq_with_hit_list:
-			 pr_trimmed.write('>' + str(SeqDict[each_seq].id) + '\n' + str(SeqDict[each_seq].seq) + '\n')
-		
-	pr_blast.close()
-	pr_trimmed.close()
-	
-	return F_primer_number, R_primer_number, len(seq_with_hit_list)
+			# Trim the barcodes 
+			# BCF - F primer - Seq - R primer - BCR
+			if barcode_info_dict[each_seq][0][1] < 5: 
+				new_seq_trimmed = str(SeqDict[each_seq].seq[barcode_info_dict[each_seq][0][2]:barcode_info_dict[each_seq][1][1]-1]) 
+				bc_trimmed.write('>' + new_seq_name + '\n' + new_seq_trimmed + '\n')
+			# BCR - R primer - Seq - F primer - BCF
+			elif barcode_info_dict[each_seq][0][1] > len(str(SeqDict[each_seq].seq))-30: # When the seq is reverse complemented
+				new_seq_trimmed = str(SeqDict[each_seq].seq[barcode_info_dict[each_seq][1][2]:barcode_info_dict[each_seq][0][1]-1]) 
+				new_seq_trimmed = ReverseComplement(new_seq_trimmed)		
+				bc_trimmed.write('>' + new_seq_name + '\n' + new_seq_trimmed + '\n')
+			else:
+				new_seq_name = new_seq_name + "ERRmidBC"
+				# Do something here #
+	# Save those without barcode
+	seq_withoutbc_list = list(set(list(SeqDict.keys())) - set(seq_withbc_list))	
+	for seq_withoutbc in seq_withoutbc_list:
+		bc_leftover.write('>' + str(seq_withoutbc) + '\n' + str(SeqDict[seq_withoutbc].seq) + '\n')
 
 def doCutAdapt (Fprims, Rprims, InFile, OutFile): 
 	'''This function removes the primers using the Cutadapt program. Replaces the DePrimer function'''
@@ -236,7 +263,7 @@ def doCutAdapt (Fprims, Rprims, InFile, OutFile):
 		R_cutadapt_cline = R_cutadapt_cline + '-a ' + ReverseComplement(each_primer) + ' '
 
 	# Build the complete cutadapt command line
-	cutadapt_cline = '%s -O 15 -e 0.2 -n 2 %s %s %s > %s' % (Cutadapt, F_cutadapt_cline, R_cutadapt_cline, InFile, OutFile)
+	cutadapt_cline = '%s -O 15 -e 0.25 -n 2 %s %s %s > %s' % (Cutadapt, F_cutadapt_cline, R_cutadapt_cline, InFile, OutFile)
 	# -O: Minimum overlap length. If the overlap between the read and the primer is shorter than -O, the read is not modified.
 	# -e: Maximum allowed error rate (no. of errors divided by the length of the matching region)
 	# -n: Try to remove primers at most -n times.
@@ -629,8 +656,8 @@ if mode == 0: # Make blast databases
 	os.chdir(BLAST_DBs_folder)
 	makeBlastDB('../' + refseq_filename, refseq_databasefile) # and one of the reference sequences
 	makeBlastDB('../' + barcode_seq_filename, barcode_databasefile) # one of the barcodes
-	if Dual_barcode:
-		makeBlastDB('../' + barcode_seq_filename2, barcode_databasefile + '2')
+	#if Dual_barcode:
+		#makeBlastDB('../' + barcode_seq_filename2, barcode_databasefile + '2')
 	os.chdir('..')
 
 if mode in [0,1]: # Run the full annotating, clustering, etc.
@@ -640,22 +667,23 @@ if mode in [0,1]: # Run the full annotating, clustering, etc.
 	SeqDict = SeqIO.index(raw_sequences, 'fasta') # Read in the raw sequences as dictionary, using biopython's function
 
 	## Remove barcodes ##
-	sys.stderr.write('Removing barcodes...\n')
-	barcode_trimmed_file = Output_prefix + '_1_bc_trimmed.fa'
-	barcode_name_list = DeBarcoder(raw_sequences, 'blast_barcode_out.txt', barcode_trimmed_file, BLAST_DBs_folder + '/' + barcode_databasefile, SeqDict)
-
-	## Remove the second barcodes, if Dual_barcode = True ##
 	if Dual_barcode:
-		sys.stderr.write('Removing second barcodes...\n')
-		barcode2_trimmed_file = Output_prefix + '_1_bc2_trimmed.fa'
-		barcode2_name_list = DeBarcoder(barcode_trimmed_file, 'blast_barcode2_out.txt', barcode2_trimmed_file, BLAST_DBs_folder + '/' + barcode_databasefile + '2', SeqDict, SecondBarcode = True)
+		sys.stderr.write('Removing dual barcodes...\n')
+		barcode_trimmed_file = Output_prefix + '_1_bc_trimmed.fa'
+		barcode_name_list = DeBarcoder_dual(raw_sequences, 'blast_barcode_out.txt', barcode_trimmed_file, BLAST_DBs_folder + '/' + barcode_databasefile, SeqDict)
+	else:
+		sys.stderr.write('Removing barcodes...\n')
+		barcode_trimmed_file = Output_prefix + '_1_bc_trimmed.fa'
+		barcode_name_list = DeBarcoder(raw_sequences, 'blast_barcode_out.txt', barcode_trimmed_file, BLAST_DBs_folder + '/' + barcode_databasefile, SeqDict)
 
-	sys.exit('done')	
+	#sys.exit('done')	
 
 	## Remove primers ##
 	sys.stderr.write('Removing primers...\n')
 	primer_trimmed_file = Output_prefix + '_2_pr_trimmed.fa'
 	doCutAdapt(Fprims = Forward_primer, Rprims = Reverse_primer, InFile = barcode_trimmed_file, OutFile = primer_trimmed_file)
+
+	sys.exit('done')
 
 	## Annotate the sequences with the taxon and locus names, based on the reference sequences ##
 	sys.stderr.write('Annotating seqs...\n')
