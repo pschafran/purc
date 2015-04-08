@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-# TODO: make the additions to the documentation and the feedback based on the Phlox attempt
-
 print
 print """
 -------------------------------------------------------------
@@ -63,8 +61,7 @@ from Bio import SeqIO
 def parse_fasta(infile):
 	"""Reads in a fasta, returns a list of biopython seq objects"""
 	AllSeq = SeqIO.parse(infile, 'fasta')
-	return [i for i in AllSeq] #FWL - why the "i for i"?
-	# FWL - does this have any advantages over just "SeqIO.parse()"?
+	return [i for i in AllSeq] 
 
 def ReverseComplement(seq):
 	"""Returns reverse complement sequence, ignores gaps"""
@@ -112,7 +109,6 @@ def DeBarcoder(inputfile_raw_sequences, outputfile_bc_blast, outputfile_bc_trimm
 		barcode_name = each_rec.split('\t')[1] # E.g. BC01, BC24...
 		barcode_start_posi = int(each_rec.split('\t')[5])
 		barcode_end_posi = int(each_rec.split('\t')[6])		
-		barcode_name_list.append(barcode_name)
 		
 		if seq_name not in barcode_info_dict.keys():
 			barcode_info_dict[seq_name] = [barcode_name, barcode_start_posi, barcode_end_posi]
@@ -236,10 +232,20 @@ def DeBarcoder_dual(inputfile_raw_sequences, outputfile_bc_blast, outputfile_bc_
 			else:
 				new_seq_name = new_seq_name + "ERRmidBC"
 				# Do something here #
+	
 	# Save those without barcode
 	seq_withoutbc_list = list(set(list(SeqDict.keys())) - set(seq_withbc_list))	
 	for seq_withoutbc in seq_withoutbc_list:
 		bc_leftover.write('>' + str(seq_withoutbc) + '\n' + str(SeqDict[seq_withoutbc].seq) + '\n')
+
+	bc_blast.close()
+	bc_trimmed.close()
+	bc_leftover.close()
+	bc_onlyF.close()
+	bc_onlyR.close()
+	bc_toomany.close()
+	bc_invalid.close()
+
 
 def doCutAdapt (Fprims, Rprims, InFile, OutFile): 
 	'''This function removes the primers using the Cutadapt program. Replaces the DePrimer function'''
@@ -277,8 +283,6 @@ def SplitBy(annotd_seqs_file, split_by = "locus-taxon", Multiplex_perBC_flag=Tru
 	"""Uses the annotated sequences to split sequences into different files based on splits_list 
 	(could be by barcode or by locus, etc); returns a dictionary of seq counts for each subgroup"""
 	
-	#TODO - strip spaces from the ref seq names at some point so that SplitsBy doesn't break on them?
-
 	#annotd_seqs = open(annotd_seqs_file, 'rU')
 	unsplit_seq = parse_fasta(annotd_seqs_file)	
 	splits_file_dic = {}
@@ -405,7 +409,7 @@ def annotateIt(filetoannotate, outFile, failsFile, Multiplex_perBC_flag=True, Du
 
 		each_rec = each_rec.strip('\n')	
 		seq_name = each_rec.split('\t')[0] # The un-annotated sequence name, e.g., "BC02|m131213_174801_42153_c100618932550000001823119607181400_s1_p0/282/ccs;ee=7.2;"
-		refseq_name = each_rec.split('\t')[1] # The best-hit reference sequence name, e.g., "PGI_grC__C_diapA_BC17"
+		refseq_name = each_rec.split('\t')[1].replace(' ','') # The best-hit reference sequence name, e.g., "PGI_grC__C_diapA_BC17"
 		locus_name = refseq_name.split('_')[0] # The names are in the format ">ApP_grA__otherstuff". I.e., >Locus_group_otherstuff
 		if not locus_name in locusList: #keeping track of which loci are found, as a way of potentially diagnosing errors
 			locusList.append(locus_name)	
@@ -446,7 +450,6 @@ def annotateIt(filetoannotate, outFile, failsFile, Multiplex_perBC_flag=True, Du
 				new_seq_name = locus_name + '|' + seq_name.replace(seq_name_toErase, '')
 			no_matches.write('>' + new_seq_name + '\n' + str(SeqDict[seq_name].seq) + '\n')
 			# TODO; FWL; need to figure out what these are/where they're coming from
-			# TODO -- need to save these to a file 
 			continue
 		
 	refseq_blast.close()
@@ -660,7 +663,7 @@ if mode in [0,1]: # Run the full annotating, clustering, etc.
 
 	## Split sequences into separate files/folders for each locus ##
 	sys.stderr.write('Splitting sequences into a folder/file for each locus...\n')
-	locusCounts = SplitBy(annotd_seqs_file = "../" + annoFileName, split_by = "locus", Multiplex_perBC_flag = Multiplex_per_barcode) #Output_folder = "TestSplitterFolder",
+	locusCounts = SplitBy(annotd_seqs_file = "../" + annoFileName, split_by = "locus", Multiplex_perBC_flag = Multiplex_per_barcode) 
 
 	## Split the locus files by barcode, and cluster each of the resulting single locus/barcode files
 	sys.stderr.write('Clustering/dechimera-izing seqs...\n')
@@ -729,7 +732,7 @@ if mode in [0,1]: # Run the full annotating, clustering, etc.
 	## Put all the sequences together ##
 	sys.stderr.write('Putting all the sequences together......\n\n')
 	for each_folder in all_folders_loci: # Looping through each of the locus folders
-		outputfile_name = '_' + str(each_folder) + '.txt' # "each_folder" is also the name of the locus
+		outputfile_name = '_' + str(each_folder) + '_clustered.txt' # "each_folder" is also the name of the locus
 		outputfile = open(outputfile_name, 'w')
 		os.chdir(each_folder)
 		bcodesForThisLocus = glob.glob("*")
@@ -751,58 +754,72 @@ if mode in [0,1]: # Run the full annotating, clustering, etc.
 	fastas = glob.glob("_*.txt")
 	for file in fastas:
 		print "Cleaning up the sequence names in " + file + "\n"
-		fasta_cleaned = open(str(file).replace("txt", "fa"), 'w') # Make a new file with .fa instead of .txt
+		fasta_cleaned = open(str(file).replace(".txt", "_renamed.fa"), 'w') # Make a new file with .fa instead of .txt
 		parsed = parse_fasta(file)
 		for seq in parsed:
 			seq.id = re.sub(r"seqs=\d*", r"", seq.id)
-			seq.id = re.sub(r"ccs;ee=[\d\.]*", r"", seq.id)
-			seq.id = seq.id.replace("centroid=", "").replace(";", "")
+			seq.id = re.sub(r"ccs.ee=[\d\.]*", r"", seq.id)
+			seq.id = seq.id.replace("centroid=", "").replace(";", "").replace("/","_")
 			fasta_cleaned.write(str('>' + seq.id + "\n" + seq.seq + "\n"))
 		fasta_cleaned.close()
 
 	#### Producing a summary #### 
+	count_output = open('counts.xls', 'w')
 	print "\n**Raw reads per accession per locus**"
+	count_output.write('**Raw reads per accession per locus**\n')
 	taxon_list =[]
 	# getting a list of all the taxa with sequences, from the count dictionary
 	# Using the counts of unclustered sequences so as to not miss any taxa
-
-	# TODO get this to produce a csv file as well as the screen output
-
 	for i in range(0,len(LocusTaxonCountDict_unclustd)): 
 		# The keys for this dictionary is a list of two-part lists, e.g., [('C_mem_6732', 'IBR'), ('C_mem_6732', 'PGI'), ('C_dou_111', 'IBR')]
 		if not LocusTaxonCountDict_unclustd.keys()[i][0] in taxon_list:
 			taxon_list.append(LocusTaxonCountDict_unclustd.keys()[i][0])
 
 	print '\t', '\t'.join(locus_list)
-	for each_taxon in set(taxon_list): # FWL why set()?
+	count_output.write('\t' + '\t'.join(locus_list) + '\n')
+	for each_taxon in set(taxon_list): 
 		print each_taxon, '\t',
+		count_output.write(each_taxon + '\t')
 		for each_locus in locus_list:
 			try:
 				print LocusTaxonCountDict_unclustd[each_taxon, each_locus], '\t', 
+				count_output.write(str(LocusTaxonCountDict_unclustd[each_taxon, each_locus]) + '\t')
 			except:
 				print '0', '\t', 
+				count_output.write('0\t')
 		print 
+		count_output.write('\n')
 	print 
 	print "\n**Final clustered sequences per accession per locus**"
+	count_output.write('\n**Final clustered sequences per accession per locus**\n')
 	print '\t', '\t'.join(locus_list)
+	count_output.write('\t' + '\t'.join(locus_list) + '\n')	
 	for each_taxon in set(taxon_list):
 		print each_taxon, '\t',
+		count_output.write(each_taxon + '\t')		
 		for each_locus in locus_list:
 			try:
-				print LocusTaxonCountDict_clustd[each_taxon, each_locus], '\t', 
+				print LocusTaxonCountDict_clustd[each_taxon, each_locus], '\t',
+				count_output.write(str(LocusTaxonCountDict_clustd[each_taxon, each_locus]) + '\t')
 			except:
-				print '0', '\t', 
-		print 
+				print '0', '\t',
+				count_output.write('0\t') 
+		print
+		count_output.write('\n')		
 	print 
 
 	print '\n**Allele/copy/cluster/whatever count by locus**'
+	count_output.write('\n**Allele/copy/cluster/whatever count by locus**\n')	
 	# I think this was breaking if a locus had no sequences, and thus that file is not created. Going to try "try"
 	for each_locus in locus_list:
 		file_name = '_' + str(each_locus) + '.txt'
 		try: #I'm hoping that this will stop the program from crashing if a locus has no sequences
-			print '\t', each_locus, ':', len(parse_fasta(file_name)) 
+			seq_no = len(parse_fasta(file_name))
+			print '\t', each_locus, ':', seq_no
+			count_output.write(str(each_locus) + '\t' + str(seq_no) + '\n')
 		except:
 			print '\t', each_locus, ':', 0
+			count_output.write(str(each_locus) + '\t0\n')			
 	print
 
 	## Aligning the sequences ##
@@ -816,17 +833,16 @@ if mode in [0,1]: # Run the full annotating, clustering, etc.
 			muscleIt(file, verbose_level)
 
 if mode == 2: # Just split the seqs
-# TODO - should there be some counts/summaries available here too? Would be easy to print out splits_counts
 	print "The file to be split is ", raw_sequences, "\n"
 	print "And it should be split by ", split_type
 	os.mkdir(Output_folder)
 	os.chdir(Output_folder)
-	# The somewhat annoying "../" in the annot_seqs path is because we want the SplitBy output to be 
-	# in Output_folder, but the annotated sequences are one folder further back
-	splits_counts = SplitBy( annotd_seqs_file = "../"+raw_sequences, split_by = split_type)
+	splits_count_dict = SplitBy(annotd_seqs_file = "../"+raw_sequences, split_by = split_type, Multiplex_perBC_flag = Multiplex_per_barcode)
 	os.chdir("..")
 	if verbose_level == 3:
-		print splits_counts # TODO Currently in an ugly not very useful format
+		print "Counts: "
+		for each_split in splits_count_dict:
+			print each_split, '\t', splits_count_dict[each_split]
 
 if mode == 3: # Just do some clustering
 	os.chdir(Output_folder)
@@ -837,11 +853,6 @@ if mode == 3: # Just do some clustering
 		print "\tFirst clustering"
 		print "\nAttempting to sort sequences in: ", thisfile
 		
-		# TODO - I changed all these to the file = outfile system, instead of those confusing glob.globs where you had
-		# to remember what the output format from the preceding function was. Should do this for the main section too
-		# FWL - The outFiles have a weird format if printed -- e.g., "outFile is A_jap_8703_PGI_Sl\C1_0.997\.fa" but it seems to
-		# work, except in parse_fasta at the end
-
 		outFile = sortIt_length(file = thisfile, verbose_level = verbose_level)
 		outFile = clusterIt(file = outFile, clustID = clustID, round = 1, verbose_level = 0)
 		
