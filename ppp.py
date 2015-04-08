@@ -214,7 +214,7 @@ def DeBarcoder_dual(inputfile_raw_sequences, outputfile_bc_blast, outputfile_bc_
 			# Check if barcodes are in the same category (F, R); don't want these 
 			if barcode_info_dict[each_seq][0][0][2] == barcode_info_dict[each_seq][1][0][2]:
 				#print 'Error: Invalid Dual-barcodes for', each_seq
-				new_seq_name = str(barcode_info_dict[each_seq][0][0]) + '|' + str(barcode_info_dict[each_seq][1][0]) + '|' + str(each_seq) # Add the barcode ID to the sequence name: BC01|sequence_name
+				new_seq_name = str(barcode_info_dict[each_seq][0][0]) + '^' + str(barcode_info_dict[each_seq][1][0]) + '|' + str(each_seq) # Add the barcode ID to the sequence name: BC01|sequence_name
 				bc_invalid.write('>' + new_seq_name + '\n' + str(SeqDict[each_seq].seq) + '\n')
 				continue 
 
@@ -222,7 +222,7 @@ def DeBarcoder_dual(inputfile_raw_sequences, outputfile_bc_blast, outputfile_bc_
 			if barcode_info_dict[each_seq][0][0][2] == 'R':
 				barcode_info_dict[each_seq] = barcode_info_dict[each_seq][::-1]
 			
-			new_seq_name = str(barcode_info_dict[each_seq][0][0]) + '|' + str(barcode_info_dict[each_seq][1][0]) + '|' + str(each_seq) # Add the barcode ID to the sequence name: BCF01|BCR02|sequence_name
+			new_seq_name = str(barcode_info_dict[each_seq][0][0]) + '^' + str(barcode_info_dict[each_seq][1][0]) + '|' + str(each_seq) # Add the barcode ID to the sequence name: BCF01|BCR02|sequence_name
 
 			# Trim the barcodes 
 			# BCF - F primer - Seq - R primer - BCR
@@ -274,38 +274,7 @@ def doCutAdapt (Fprims, Rprims, InFile, OutFile):
 		print '**Primer-trimming results**\n'
 		print err
 
-def Split_by_Barcode(inputfile_seq, barcode_name_list, Output_folder):
-	"""Use the output from DeBarcoder to split sequences into different files based on the barcodes; 
-	return a dictionary of seq counts for each barcode"""
-	''' This function is deprecated -- use SplitBy instead'''
-	unsplit_seq = parse_fasta(inputfile_seq)	
-	barcode_file_dic = {}
-	barcode_count_dic = {}
-	total_seq_number_barcode = 0	
-	
-	# Make folder for each barcode
-	for barcode in barcode_name_list:
-		os.makedirs(barcode)
-		os.chdir(barcode)				
-		seq_file = barcode + '.fa'
-		file_handle = open(seq_file, 'w')
-		barcode_file_dic[barcode] = file_handle #{BC01:BC01.fa, BC02:BC02.fa, ...}
-		os.chdir('..')
-	# Go to each barcode folder and write
-	for each_seq in unsplit_seq:
-		barcode = str(each_seq.id).split('|')[0] #get the barcode for this sequence; barcode as BC01, BC02, ...
-		os.chdir(barcode)		
-		file_handle = barcode_file_dic[barcode] #use that barcode as the key to find the corresponding output file
-		file_handle.write('>' + str(each_seq.id) + '\n' + str(each_seq.seq) + '\n') #write the seq
-		try:
-			barcode_count_dic[barcode] += 1
-		except:
-			barcode_count_dic[barcode] = 1		
-		os.chdir('..')	
-	os.chdir('..')	
-	return barcode_count_dic #as {'BC01': 150, 'BC02': 156} for example
-
-def SplitBy(annotd_seqs_file, split_by = "locus-taxon", Multiplex_perBC=True): #I can get rid of Output_folder? Output_folder,
+def SplitBy(annotd_seqs_file, split_by = "locus-taxon", Multiplex_perBC_flag=True): #I can get rid of Output_folder? Output_folder,
 	"""Uses the annotated sequences to split sequences into different files based on splits_list 
 	(could be by barcode or by locus, etc); returns a dictionary of seq counts for each subgroup"""
 	
@@ -320,21 +289,21 @@ def SplitBy(annotd_seqs_file, split_by = "locus-taxon", Multiplex_perBC=True): #
 	for each_seq in unsplit_seq:
 		#finding the identifing annotation for the split of interest.
 		# e.g., BC01, BC02, ... or gapCp, PGIC, ...
-		if split_by == "barcode" and Multiplex_perBC:
-			split = str(each_seq.id).split('|')[3]
-		elif split_by == "group" and Multiplex_perBC: # where group is the let set to identify the taxonomic groups, e.g, A, B, C, ...
-			split = str(each_seq.id).split('|')[2]			
-		elif split_by == "barcode" and not Multiplex_perBC:
-			split = str(each_seq.id).split('|')[2]
-		elif split_by == "taxon":
+
+		if split_by == "taxon":
 			split = str(each_seq.id).split('|')[0]
 		elif split_by == "locus":			
-			#print "Trying to split", each_seq.id
 			split = str(each_seq.id).split('|')[1]
 		elif split_by == "taxon-locus":
 			split = str(each_seq.id).split('|')[0] + "_" + str(each_seq.id).split('|')[1]
 		elif split_by == "locus-taxon": # same as above, but folders/files labeled with locus name before taxon name
 			split = str(each_seq.id).split('|')[1] + "_" + str(each_seq.id).split('|')[0]
+		elif split_by == "barcode" and Multiplex_perBC_flag:
+			split = str(each_seq.id).split('|')[3]
+		elif split_by == "group" and Multiplex_perBC_flag: # where group is the let set to identify the taxonomic groups, e.g, A, B, C, ...
+			split = str(each_seq.id).split('|')[2]			
+		elif split_by == "barcode" and not Multiplex_perBC_flag:
+			split = str(each_seq.id).split('|')[2]
 		else:
 			sys.stderr.write('Error: Attempting to split sequences by an inappropriate (absent?) category.\n')
 
@@ -361,12 +330,12 @@ def SplitBy(annotd_seqs_file, split_by = "locus-taxon", Multiplex_perBC=True): #
 	# FWL - do we not have to close each of the files we've been writing to?
 	return splits_count_dic #as {'BC01': 150, 'BC02': 156} for example
 
-def makeMapDict(mapping_file, locus, Multiplex_perBC=True): #danger? Locus used somewhere else?
+def makeMapDict(mapping_file, locus, Multiplex_perBC_flag=True, DualBC_flag=False): #danger? Locus used somewhere else?
 	map = open(mapping_file, 'rU') #open the correct mapping file
 	outputfile_name = '_' + str(locus) + '.txt'
 
 	#constructing a dict that maps each barcode/locus combination to a specific accession
-	if Multiplex_perBC: # when there are multiple individuals sharing the same barcodes
+	if Multiplex_perBC_flag and not DualBC_flag: # when there are multiple individuals sharing the same barcodes
 		MapDict = {}
 		for each_rec in map:
 			each_rec = each_rec.strip('\n')
@@ -375,7 +344,16 @@ def makeMapDict(mapping_file, locus, Multiplex_perBC=True): #danger? Locus used 
 			map_taxon_name = each_rec.split('\t')[2]
 			key = map_barcode_name + '_' + map_group_name #BC01_A, BC01_B, BC010_C...
 			MapDict[key] = map_taxon_name
-	else: # when a barcode points to one individual; no multiplex per barcode; ignore "group" info and reads a different mapping file format
+	elif not Multiplex_perBC_flag and DualBC_flag:
+		MapDict = {}
+		for each_rec in map:
+			each_rec = each_rec.strip('\n')
+			map_barcodeF_name = each_rec.split('\t')[0]
+			map_barcodeR_name = each_rec.split('\t')[1]
+			map_taxon_name = each_rec.split('\t')[2]
+			key = map_barcodeF_name + '^' + map_barcodeR_name #BCF01^BCR01, BCF02^BCR02, ...
+			MapDict[key] = map_taxon_name
+	elif not Multiplex_perBC_flag and not DualBC_flag: # when a barcode points to one individual; no multiplex per barcode; ignore "group" info and reads a different mapping file format
 		MapDict = {}
 		for each_rec in map:
 			each_rec = each_rec.strip('\n')
@@ -394,12 +372,12 @@ def makeOutFileNames(): #need to change/erase this? it only makes outfiles by lo
 		outFileNames[each_locus] = '_' + str(each_locus) + '.txt'
 	return outFileNames
 
-def annotateIt(filetoannotate, outFile, failsFile, Multiplex_perBC=True, verbose_level=0):	
+def annotateIt(filetoannotate, outFile, failsFile, Multiplex_perBC_flag=True, DualBC_flag=False, verbose_level=0):	
 	"""Uses the blast results (against the reference sequence database) to assign locus and taxon, and write sequences 
 	for a particular locus as specified by map_locus; returns a dictionary containing taxon-locus seq counts"""		
 	
 	# Blasts each sequence in the file (e.g., BC01.fa) against the reference sequences
-	BlastSeq(filetoannotate, 'blast_refseq_out.txt', 'BLAST_DBs/' + refseq_databasefile)
+	BlastSeq(filetoannotate, 'blast_refseq_out.txt', BLAST_DBs_folder + '/' + refseq_databasefile)
 	
 	SeqDict = SeqIO.index(filetoannotate, 'fasta') # Reads the sequences as a dict
 
@@ -412,7 +390,7 @@ def annotateIt(filetoannotate, outFile, failsFile, Multiplex_perBC=True, verbose
 	# each seq to a particular locus and taxon
 	dictOfMapDicts = {} # A dictionary to store all of the map dictionaries
 	for each_file, each_locus in zip(mapping_file_list, locus_list): 
-		dictOfMapDicts[each_locus] = makeMapDict(each_file, each_locus, Multiplex_perBC) # Note the Multiplex_perBC flag (as True/False)
+		dictOfMapDicts[each_locus] = makeMapDict(each_file, each_locus, Multiplex_perBC_flag, DualBC_flag) # Note the Multiplex_perBC and DualBC flags (as True/False)
 
 	annotated_seqs = open(outFile, "w")
 	no_matches = open(failsFile, "w")
@@ -440,7 +418,8 @@ def annotateIt(filetoannotate, outFile, failsFile, Multiplex_perBC=True, verbose
 		if not locus_name in locusList: #keeping track of which loci are found, as a way of potentially diagnosing errors
 			locusList.append(locus_name)	
 		
-		if Multiplex_perBC:
+		# Get the key for retrieving taxon_name in dictOfMapDicts[locus_name]
+		if Multiplex_perBC_flag:
 			group_name = refseq_name.split('_')[1][-1:] # Trying to grab the last letter of the second "word", i.e., the "A" in "grA"		
 			key = seq_name.split('|')[0] + '_' + group_name # Grabbing the barcode from the source seq, and the group from the matching ref seq.
 			#i.e., gets the unique identifier that can link to a specific sample; i.e. BC01_A, BC01_B, BC01_C...
@@ -454,7 +433,7 @@ def annotateIt(filetoannotate, outFile, failsFile, Multiplex_perBC=True, verbose
 			taxon_name = dictOfMapDicts[locus_name][key] 
 			#getting to the dict corresponding to this locus, and then finding that taxon that matches the barcode+group (the key)
 			
-			if Multiplex_perBC:
+			if Multiplex_perBC_flag:
 				new_seq_name = taxon_name + '|' + locus_name + '|' + group_name + '|' + seq_name.replace(seq_name_toErase, '')
 			else:
 				new_seq_name = taxon_name + '|' + locus_name + '|' + seq_name.replace(seq_name_toErase, '')
@@ -469,7 +448,7 @@ def annotateIt(filetoannotate, outFile, failsFile, Multiplex_perBC=True, verbose
 		except:
 			print "The barcode-group combo", key, "wasn't found in", locus_name
 			print "(currently trying to find a match for", seq_name, ")\n"
-			if Multiplex_perBC:
+			if Multiplex_perBC_flag:
 				new_seq_name = locus_name + '|' + group_name + '|' + seq_name.replace(seq_name_toErase, '')
 			else:
 				new_seq_name = locus_name + '|' + seq_name.replace(seq_name_toErase, '')
@@ -625,11 +604,6 @@ else:
 				split_type = setting_argument				
 			elif setting_name == 'in_Barcode_seq_file':	
 				barcode_seq_filename = setting_argument
-			elif setting_name == 'in_Barcode_seq_file2':	
-				try:
-					barcode_seq_filename2 = setting_argument
-				except: # in case there is nothing in the argument
-					continue
 			elif setting_name == 'in_RefSeq_seq_file':	
 				refseq_filename = setting_argument
 			elif setting_name == 'Dual_barcode':
@@ -667,29 +641,24 @@ if mode in [0,1]: # Run the full annotating, clustering, etc.
 	SeqDict = SeqIO.index(raw_sequences, 'fasta') # Read in the raw sequences as dictionary, using biopython's function
 
 	## Remove barcodes ##
+	barcode_trimmed_file = Output_prefix + '_1_bc_trimmed.fa'
 	if Dual_barcode:
 		sys.stderr.write('Removing dual barcodes...\n')
-		barcode_trimmed_file = Output_prefix + '_1_bc_trimmed.fa'
 		barcode_name_list = DeBarcoder_dual(raw_sequences, 'blast_barcode_out.txt', barcode_trimmed_file, BLAST_DBs_folder + '/' + barcode_databasefile, SeqDict)
 	else:
 		sys.stderr.write('Removing barcodes...\n')
-		barcode_trimmed_file = Output_prefix + '_1_bc_trimmed.fa'
 		barcode_name_list = DeBarcoder(raw_sequences, 'blast_barcode_out.txt', barcode_trimmed_file, BLAST_DBs_folder + '/' + barcode_databasefile, SeqDict)
-
-	#sys.exit('done')	
 
 	## Remove primers ##
 	sys.stderr.write('Removing primers...\n')
 	primer_trimmed_file = Output_prefix + '_2_pr_trimmed.fa'
 	doCutAdapt(Fprims = Forward_primer, Rprims = Reverse_primer, InFile = barcode_trimmed_file, OutFile = primer_trimmed_file)
 
-	sys.exit('done')
-
 	## Annotate the sequences with the taxon and locus names, based on the reference sequences ##
 	sys.stderr.write('Annotating seqs...\n')
 	toAnnotate = primer_trimmed_file
 	annoFileName = Output_prefix + '_3_annotated.fa'
-	LocusTaxonCountDict_unclustd = annotateIt(filetoannotate = toAnnotate, outFile = annoFileName, Multiplex_perBC = Multiplex_per_barcode, failsFile = Output_prefix + '_3_unclassifiable.fa', verbose_level = verbose_level)
+	LocusTaxonCountDict_unclustd = annotateIt(filetoannotate = toAnnotate, outFile = annoFileName, Multiplex_perBC_flag = Multiplex_per_barcode, DualBC_flag = Dual_barcode, failsFile = Output_prefix + '_3_unclassifiable.fa', verbose_level = verbose_level)
 
 	## Move into the designated output folder ##
 	if os.path.exists(Output_folder): # overwrite existing folder
@@ -699,7 +668,7 @@ if mode in [0,1]: # Run the full annotating, clustering, etc.
 
 	## Split sequences into separate files/folders for each locus ##
 	sys.stderr.write('Splitting sequences into a folder/file for each locus...\n')
-	locusCounts = SplitBy(annotd_seqs_file = "../" + annoFileName, split_by = "locus", Multiplex_perBC = Multiplex_per_barcode) #Output_folder = "TestSplitterFolder",
+	locusCounts = SplitBy(annotd_seqs_file = "../" + annoFileName, split_by = "locus", Multiplex_perBC_flag = Multiplex_per_barcode) #Output_folder = "TestSplitterFolder",
 
 	## Split the locus files by barcode, and cluster each of the resulting single locus/barcode files
 	sys.stderr.write('Clustering/dechimera-izing seqs...\n')
@@ -715,7 +684,10 @@ if mode in [0,1]: # Run the full annotating, clustering, etc.
 		# with the addition of ".fa". This is set as the file handle in SplitsBy, and if changed there, needs to be changed here too
 		AnnodDict = SeqIO.index(each_folder + ".fa", 'fasta') 
 		if len(AnnodDict) > 0: # ie, the file is not empty
-			bcodeCounts = SplitBy(annotd_seqs_file = each_folder + ".fa", split_by = "barcode", Multiplex_perBC = Multiplex_per_barcode)
+			if Multiplex_per_barcode:	
+				bcodeCounts = SplitBy(annotd_seqs_file = each_folder + ".fa", split_by = "barcode", Multiplex_perBC_flag = Multiplex_per_barcode)
+			else:
+				bcodeCounts = SplitBy(annotd_seqs_file = each_folder + ".fa", split_by = "taxon", Multiplex_perBC_flag = Multiplex_per_barcode)					
 			all_folders_bcodes = bcodeCounts.keys()
 
 			for bcode_folder in all_folders_bcodes:

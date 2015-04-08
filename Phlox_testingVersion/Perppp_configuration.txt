@@ -7,7 +7,10 @@ Mode					= 0		# 0: Construct blast database for barcodes and reference sequences
 
 Multiplex_per_barcode	= 0		# 0: Each barcode contains only one sample
 								# 1: Each barcode contains multiple samples
-									
+
+Dual_barcode			= 0		# 0: Barcodes only one one primer
+								# 1: Barcodes on both primers
+																											
 Align					= 1		# 0: No aligning attempted. 1: Final consensus sequences will be aligned with MUSCLE	
 
 [for Mode 0]

@@ -5,39 +5,37 @@ Mode					= 0		# 0: Construct blast database for barcodes and reference sequences
 								# 3: Just clustering, etc. PPP will take the file(s) in Output_folder and run clustering and chimera-killing on them		
 									#NOTE: for mode 3, ppp must be called from the folder that has Output_folder already in it (and the files need to already be in Output_folder)
 
-Multiplex_per_barcode	= 0		# 0: Each barcode contains only one sample
+Multiplex_per_barcode	= 1		# 0: Each barcode contains only one sample
 								# 1: Each barcode contains multiple samples
 
-Dual_barcode			= 1		# 0: Barcodes only one one primer
+Dual_barcode			= 0		# 0: Barcodes only one one primer
 								# 1: Barcodes on both primers
-																		
-Align					= 1		# 0: No aligning attempted 
-								# 1: Final consensus sequences will be aligned with MUSCLE	
+																											
+Align					= 0		# 0: No aligning attempted. 1: Final consensus sequences will be aligned with MUSCLE	
 
 [for Mode 0]
-in_RefSeq_seq_file		= refseqs_wPolyNothetc.fa					# Fasta file containing reference names and sequences; the input for making blast database
-in_Barcode_seq_file		= barcode_F.fas			# Fasta file containing barcode names and sequences; the input for making blast database
-in_Barcode_seq_file2	= barcode_R.fas			# Fasta file containing barcode names and sequences; for Dual_barcode = 1 
+in_Barcode_seq_file		= barcode_seq_plate1_2_Dep.txt		# Fasta file containing barcode names and sequences; the input for making blast database
+in_RefSeq_seq_file		= refseqs_all.fa					# Fasta file containing reference names and sequences; the input for making blast database
 
 [Executables]
-Usearch 				= usearch7.0			# The name of (or path to) Usearch executable
+Usearch 				= usearch7.0		# The name of (or path to) Usearch executable
 Cutadapt				= cutadapt				# The name of (or path to) Cutadapt executable
 Muscle 					= muscle				# The name of (or path to) Muscle executable
 
 [File Names]
-Input_sequence_file		= KNOX_merged.assembled_chunk1.fasta
-Output_prefix			= Deparia_KNOX
-Output_folder			= Deparia_KNOX
+Input_sequence_file		= PBR3_reduced_forTesting_seqname.fa
+Output_prefix			= PBR3TEST
+Output_folder			= PBR3TEST
 Barcode_blastDB			= barcode_blastdb		# The name of the barcode blast database [either to be created if Mode =0, or pre-existing]
 RefSeq_blastDB			= refseq_blastdb		# The name of the reference sequence blast database [either to be created if Mode =0, or pre-existing]
 
 [Loci]
-Locus_name				= KNOX					# The order must be identical to that in Locus-barcode-taxon_map
-Locus-barcode-taxon_map	= dual_barcode_map.txt
+Locus_name				= ApP, GAP, IBR, PGI, CRY, NOTH, POLY, DEP	# The order must be identical to that in Locus-barcode-taxon_map
+Locus-barcode-taxon_map	= PBR3_APPmap.txt, PBR3_GAPmap.txt, PBR3_IBRmap.txt, PBR3_PGImap.txt
 
 [Primers]
-Forward_primer			= caatctctgctaactttaac	# 5'-3'
-Reverse_primer			= gatgctcggatcactctcac	# 5'-3'
+Forward_primer			= GGACCTGGSCTYGCTGARGAGTG, TCTGCMCATGCMATTGAAAGAGAG, GAGYGTTTGGAATGTYTCWTTCCTYGG, CYACMAACTGCCTTGCRCCTCTTGCC	# 5'-3'
+Reverse_primer			= GGAAGVACCTTYCCTACTGCCTG, TAGCTGCTCRAATTCCATKSAT, CTGATTAAMACATDTGMAGCATCACAAAC, GCTTTCCATACTAAGCTGCAGAC		# 5'-3'
 
 [Clustering Parameters]
 clustID 				= 0.997 	# The similarity criterion for the initial USEARCH clustering
@@ -49,7 +47,7 @@ sizeThreshold2 			= 4			# The min. number of sequences/cluster necessary for tha
 [Miscellaneous]
 split_type				= group		# The category used to split the annotated sequences (either "locus", "barcode", "group", "taxon", "taxon-locus", or "locus-taxon". Do not include the quotation marks).
 									# This is only useful for mode 2 (modes 0 & 1 split by locus and then by barcode)
-seq_name_toErase		= M00278:141:000000000-A7BU8:1:1101:		# Remove this from sequence names
+seq_name_toErase		= m131213_174801_42153_c100618932550000001823119607181400_s1_p0		# Remove this from sequence names
 verbose_level 			= 1			# 0: quiet, 1: noticeable (only uchime+cutadapt output), 2: annoying (all usearch+cutadapt+muscle output)
 
 
