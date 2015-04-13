@@ -2,7 +2,19 @@
 
 #TODO - create two new modes? One that just annotates the seqs (but doesn't split or cluster them)
 # and another that annotates and splits, but doesn't cluster (or forget this one -- the new
-# one above would do it, in conjuction with the current mode 2
+# one above would do it, in conjuction with the current mode 2. need to think about this some more
+# because the clustering needs to happen on single-barcode sets (don't want to cluster seqs from
+# multiple bcodes together)
+
+#TODO/note (to myself, mostly!). The "unclassifiable" output file is very helpful. I think blast may be being a little 
+# problematic in some cases. E.g., there are some sequences that ended up in that file because they
+# were matched to, say, groupB (A.cystopteris, C.montana, C.sudetica, etc) but there was no groupB
+# for that barcode. However, there was a groupC (C.fragilis complex), and that is what these sequences
+# appear to be. So either have to be very careful and check those seqs (individually??), or change the map
+# (so that both group B and C direct to the groupC accession), or tweak the blast?
+# Maybe the secret would be to include "dummy" entries in the maps. Ie., if there's no groupB for a given
+# barcode, map groupB for that barcode to something like "MisMatch". Then they'll show up in the trees
+# etc and can be dealt with.
 
 print
 print """
