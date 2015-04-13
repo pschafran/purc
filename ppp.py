@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+#TODO - create two new modes? One that just annotates the seqs (but doesn't split or cluster them)
+# and another that annotates and splits, but doesn't cluster (or forget this one -- the new
+# one above would do it, in conjuction with the current mode 2
+
 print
 print """
 -------------------------------------------------------------
