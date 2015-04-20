@@ -133,74 +133,45 @@
 
 \renewcommand{\tableofcontents}{}
 
-% ---------------- Begin macros specific to GSI paper ----------------
-
-\newcommand{\gsi}[1]{\ensuremath{GSI(\text{#1})}}
-
-\makeatletter
-
-\newcommand\gs@noargs{\ensuremath{gs}\xspace}
-\newcommand\gs@withargs[1][]{\ensuremath{gs(\text{#1})}}
-\newcommand\gs[1][]{\ifthenelse{\equal{#1}{}}{\gs@noargs}{\gs@withargs[#1]}}
-
-\newcommand\xgs@noargs[1]{\ensuremath{gs_{#1}}\xspace}
-\newcommand\xgs@withargs[2][]{\ensuremath{gs_{#2}(\text{#1})}}
-\newcommand\mings[1][]{\ifthenelse{\equal{#1}{}}{\xgs@noargs{min}}{\xgs@withargs[#1]{min}}}
-\newcommand\maxgs[1][]{\ifthenelse{\equal{#1}{}}{\xgs@noargs{max}}{\xgs@withargs[#1]{max}}}
-\newcommand\obsgs[1][]{\ifthenelse{\equal{#1}{}}{\xgs@noargs{obs}}{\xgs@withargs[#1]{obs}}}
-\makeatother
-
-%----------------- End macros specific to GSI paper -----------------
-
-
 \bibpunct{(}{)}{;}{a}{}{,}  % this is a citation format command for natbib
+
+
+
+%%%%%%%%%%% Title Page Stuff
 
 \begin{document}
 \begin{flushright}
 Version dated: \today
 \end{flushright}
 \bigskip
-\noindent RH: Sample sizes, null hypotheses, and the GSI
 
+\noindent RH: PPP or PURR or PUSS or PUS or..:
 \bigskip
 \medskip
+
 \begin{center}
-
-\noindent{\Large \bf \uppercase{What does the genealogical sorting index index, and the perils of
-permutation}}
+\noindent{\Large \bf PPP/PUSS/Whatever v0.1 Manual}
 \bigskip
-
-
-\noindent {\normalsize \bf Carl J. Rothfels$^1$, Matthew G. Johnson$^2$, and David L. Swofford$^3$}\\
+\noindent {\normalsize \bf Carl J. Rothfels$^1$, and Fay-Wei Li$^{1,2}$}\\
 \noindent {\small \it
 $^1$University Herbarium and Department of Integrative Biology, University of California, Berkeley, California, 94720-2465\\
-$^2$Plant Science and Conservation, Chicago Botanic Garden, Glencoe, IL 60022\\
-$^3$Department of Biology, Duke University, Durham, NC 27708}\\
+$^2$Department of Biology, Duke University, Durham, NC 27708}\\
 \end{center}
 \medskip
+
 \noindent{\bf Corresponding author:} Carl J. Rothfels, University of California, Berkeley, California, USA; E-mail: crothfels@yahoo.ca\\
-
 \vspace{0.5in}
 
-{
-\setlength{\parindent}{0pt}
-\singlespacing
-\abstract{Abstract would go in here
-} % Having a return after this brace makes a difference
-
-}
+% need to figure out how to do a table of contents
 
 \vspace{0.5in}
-
-\noindent \textbf{Keywords:} coalescent, GSI, monophyly, paraphyly, permutation tests,
-species delimitation, taxon sampling
-
-\newpage\noindent Example text: Since its introduction \citep{Cummings:2008}, the genealogical
-sorting index (GSI) has enjoyed considerable popularity among
-evolutionary biologists \citep[e.g.,][]{Welch:2011, Gustafsson:2012,
-Weisrock:2010, Niemiller:2011}.
+\noindent \textbf{Keywords:} polyploidy, next-generation sequencing, PacBio, Pacific BioSciences, reticulate evolution, multi-labeled gene trees, 
 
 
+
+%%%%%%%%%%% Main document
+
+\newpage
 \section{TODO list. So important. Must keep Fay-Wei busy.}
 \todoin{
 \begin{compactitem}
@@ -212,16 +183,65 @@ Weisrock:2010, Niemiller:2011}.
 \end{compactitem}
 }
 
-\section{new section}
+% Is there a sneaky space being inserted in front of the section names?
+\bigskip\section{Introduction}\\
+\subsection{Background} 
+Discussion of the issues with homeologs and paralogs, and the utility of 
+multilabeled genetrees. Issues with cloning. Some terminolog, etc.
+Quick intro to what PPP (to be renamed) does.
+
+\subsection{PPP workflow}
+Make a flowchart? Describe the things that PPP does.
+Describe how to call it.
+
+\bigskip\section{Dependencies}\\ %Describe how to install all of these
+\subsection{Python}
+
+\subsection{BioPython}
+
+\subsection{Blast}
+
+\subsection{USEARCH}
+
+\subsection{MUSCLE}
+
+\subsection{etc}
+
+\bigskip\section{Input data}\\
+Description of how to generate the sorts of data that PPP can use.
+
+\bigskip\section{Supporting files}\\
+\subsection{Configuration file}
+The configuration file is a text file... blah blah, where the user can
+set the following options:
+
+\subsubsection{option1}
+There are four options for \textbf{mode} ... this part should not be bold
+
+\subsubsection{option2}
+
+\subsubsection{option3}
+
+\subsection{Map files}
+
+\subsection{Primer file}
+
+\subsection{Barcode file}
+
+\subsection{Reference sequences}
+
+
+%Example text: Since its introduction \citep{Cummings:2008}, the genealogical
+%sorting index (GSI) has enjoyed considerable popularity among
+%evolutionary biologists \citep[e.g.,][]{Welch:2011, Gustafsson:2012,
+%Weisrock:2010, Niemiller:2011}.
+
+
 
 %%%%%%%%% Acknowledgments
-\section{Acknowledgements}
-
+\bigskip\section{Acknowledgements}\\
 We thank .... NESCent short-term scholar support.. Tree diagrams were
 produced with the \textsf{newicktree} \LaTeX package \citep{Savva:2004}.
-
-
-
 
 \newpage
 
@@ -236,24 +256,17 @@ Example from \citet{Savva:2004}:
 
 %---------------------------------bibliography------------------------------------
 
-% bibtex is over-riding some formatting? Ie, the title of the Groeneveld reference is
-% "... dwarf lemur species at Tsinjoarivo, eastern Madagascar." but it gets compiled as
-% "dwarf lemur species at tsinjoarivo, eastern madagascar."
 
 \bibliography{PPP_documentation}
 
 %------------------------------------figures------------------------------------
 \pagebreak
 
-\begin{figure} %[h]
-\includegraphics[width=0.9\textwidth]{figures/fig_WithOutgroup.pdf}
-%\missingfigure[figwidth=6cm]{Sampling \ldots}
-\caption{Effect of sampling regime on GSI values, with an outgroup. A)
-Test tree 1. Groups A and B are interdigitated with each other, and
-samples are added to the B3 and outgroup clades. B) Values for \gsi{A}.
-C) Values for \gsi{B}. Shaded symbols indicate values that are
-significant ($p<0.05$) under the permutation test.}
-\label{fig:w_outgroup}
-\end{figure}
+%\begin{figure} %[h]
+%\includegraphics[width=0.9\textwidth]{figures/fig_WithOutgroup.pdf}
+%%\missingfigure[figwidth=6cm]{Sampling \ldots}
+%\caption{Effect of sampling regime on ....}
+%\label{fig:w_outgroup}
+%\end{figure}
 
 \end{document}
