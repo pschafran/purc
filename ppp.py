@@ -480,7 +480,7 @@ def annotateIt(filetoannotate, outFile, failsFile, Multiplex_perBC_flag=True, Du
 def sortIt_length(file, verbose_level=0):
 	"""Sorts clusters by seq length"""
 	outFile = re.sub(r"(.*)\..*", r"\1_Sl.fa", file) # Make the outfile name by cutting off the extension of the infile name, and adding "_S1.fa"
-	usearch_cline = "%s -sortbylength %s -output %s" %(Usearch, file, outFile)
+	usearch_cline = "%s -sortbylength %s -fastaout %s" %(Usearch, file, outFile)
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout 
@@ -494,10 +494,10 @@ def clusterIt(file, clustID, round, verbose_level=0):
 	outFile = re.sub(r"(.*)\.fa", r"\1C%s_%s.fa" %(round, clustID), file) # The rs indicate "raw" and thus python's escaping gets turned off
 	outClustFile = re.sub(r"(.*)\.fa", r"\1clusts%s\.uc" %(round), file)	
 	if round == 1:
-		usearch_cline = "%s -cluster_smallmem %s -id %f -gapopen 3I/1E -usersort -consout %s -uc %s -sizeout" % (Usearch, file, clustID, outFile, outClustFile) 
+		usearch_cline = "%s -cluster_fast %s -id %f -gapopen 3I/1E -sort other -consout %s -uc %s -sizeout" % (Usearch, file, clustID, outFile, outClustFile) 
         # Can add in "-cons_truncate" to the usearch call, if the primer removal isn't effective, but note some problems with partial sequences results.
 	elif round > 1:
-		usearch_cline = "%s -cluster_smallmem %s -id %f -gapopen 3I/1E -usersort -consout %s -uc %s -sizein -sizeout" % (Usearch, file, clustID, outFile, outClustFile)
+		usearch_cline = "%s -cluster_fast %s -id %f -gapopen 3I/1E -sort other -consout %s -uc %s -sizein -sizeout" % (Usearch, file, clustID, outFile, outClustFile)
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout 
@@ -526,7 +526,7 @@ def sortIt_size(file, thresh, round, verbose_level=0):
 	(sent as thresh -- ie, sizeThreshold or sizeThreshold2). 
     "round" is used to annotate the outfile name with S1, S2, etc. depending on which sort this is"""
 	outFile = re.sub(r"(.*)\.fa", r"\1Ss%s.fa" %(round), file)
-	usearch_cline = "%s -sortbysize %s -output %s -minsize %f" %(Usearch, file, outFile, thresh)
+	usearch_cline = "%s -sortbysize %s -fastaout %s -minsize %f" %(Usearch, file, outFile, thresh)
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout 
