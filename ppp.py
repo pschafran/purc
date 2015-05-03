@@ -262,8 +262,12 @@ def DeBarcoder_dual(inputfile_raw_sequences, outputfile_bc_blast, outputfile_bc_
 	bc_toomany.close()
 	bc_invalid.close()
 
+def dePrimer(FRprims, InFile, OutFile):
+	'''Attempt to use Usearch to remove primers; not useful as it does not allow indels; stick to cutadapt'''
+	#usearch -search_pcr greengenes.fa -db 16s_primers.fa -strand both -maxdiffs 3 -minamp 30 -maxamp 2000 -pcrout hits.txt -ampout amplicons.fasta
+	usearch_cline = "%s -search_pcr %s -db %s -strand both -maxdiffs 3 -minamp 30 -maxamp 2000 -pcrout hits.txt -ampout %s" % (Usearch, InFile, FRprims, OutFile)
 
-def doCutAdapt (Fprims, Rprims, InFile, OutFile): 
+def doCutAdapt(Fprims, Rprims, InFile, OutFile): 
 	'''This function removes the primers using the Cutadapt program. Replaces the DePrimer function'''
 	
 	# Build the forward and reverse primer portions of the cutadapt command lines by adding each primer in turn
@@ -426,6 +430,8 @@ def annotateIt(filetoannotate, outFile, failsFile, Multiplex_perBC_flag=True, Du
 		each_rec = each_rec.strip('\n')	
 		seq_name = each_rec.split('\t')[0] # The un-annotated sequence name, e.g., "BC02|m131213_174801_42153_c100618932550000001823119607181400_s1_p0/282/ccs;ee=7.2;"
 		refseq_name = each_rec.split('\t')[1].replace(' ','') # The best-hit reference sequence name, e.g., "PGI_grC__C_diapA_BC17"
+		
+		### bad way to get locus_name!!!!!
 		locus_name = refseq_name.split('_')[0] # The names are in the format ">ApP_grA__otherstuff". I.e., >Locus_group_otherstuff
 		if not locus_name in locusList: #keeping track of which loci are found, as a way of potentially diagnosing errors
 			locusList.append(locus_name)	
@@ -481,6 +487,7 @@ def sortIt_length(file, verbose_level=0):
 	"""Sorts clusters by seq length"""
 	outFile = re.sub(r"(.*)\..*", r"\1_Sl.fa", file) # Make the outfile name by cutting off the extension of the infile name, and adding "_S1.fa"
 	usearch_cline = "%s -sortbylength %s -fastaout %s" %(Usearch, file, outFile)
+	#usearch_cline = "%s -sortbylength %s -output %s" %(Usearch, file, outFile) # Usearch 7 
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout 
@@ -494,10 +501,12 @@ def clusterIt(file, clustID, round, verbose_level=0):
 	outFile = re.sub(r"(.*)\.fa", r"\1C%s_%s.fa" %(round, clustID), file) # The rs indicate "raw" and thus python's escaping gets turned off
 	outClustFile = re.sub(r"(.*)\.fa", r"\1clusts%s\.uc" %(round), file)	
 	if round == 1:
-		usearch_cline = "%s -cluster_fast %s -id %f -gapopen 3I/1E -sort other -consout %s -uc %s -sizeout" % (Usearch, file, clustID, outFile, outClustFile) 
+		usearch_cline = "%s -cluster_smallmem %s -id %f -gapopen 3I/1E -sortedby other -centroids %s -uc %s -sizeout" % (Usearch, file, clustID, outFile, outClustFile) 
+		#usearch_cline = "%s -cluster_smallmem %s -id %f -gapopen 3I/1E -usersort -consout %s -uc %s -sizeout" % (Usearch, file, clustID, outFile, outClustFile) # Usearch 7   
         # Can add in "-cons_truncate" to the usearch call, if the primer removal isn't effective, but note some problems with partial sequences results.
 	elif round > 1:
-		usearch_cline = "%s -cluster_fast %s -id %f -gapopen 3I/1E -sort other -consout %s -uc %s -sizein -sizeout" % (Usearch, file, clustID, outFile, outClustFile)
+		usearch_cline = "%s -cluster_smallmem %s -id %f -gapopen 3I/1E -sortedby other -centroids %s -uc %s -sizein -sizeout" % (Usearch, file, clustID, outFile, outClustFile)
+		#usearch_cline = "%s -cluster_smallmem %s -id %f -gapopen 3I/1E -usersort -consout %s -uc %s -sizein -sizeout" % (Usearch, file, clustID, outFile, outClustFile) # Usearch 7	
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout 
@@ -527,6 +536,7 @@ def sortIt_size(file, thresh, round, verbose_level=0):
     "round" is used to annotate the outfile name with S1, S2, etc. depending on which sort this is"""
 	outFile = re.sub(r"(.*)\.fa", r"\1Ss%s.fa" %(round), file)
 	usearch_cline = "%s -sortbysize %s -fastaout %s -minsize %f" %(Usearch, file, outFile, thresh)
+	#usearch_cline = "%s -sortbysize %s -output %s -minsize %f" %(Usearch, file, outFile, thresh) # Usearch 7
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout 
@@ -537,15 +547,15 @@ def sortIt_size(file, thresh, round, verbose_level=0):
 
 def muscleIt(file, verbose_level=0):
 	"""Aligns the sequences using MUSCLE"""
-	outFileName = re.sub(r"(.*)\..*", r"\1.afa", file) # The rs indicate "raw" and thus python's escaping gets turned off
-	muscle_cline = '%s -in %s -out %s' % (Muscle, file, outFileName)
+	outFile = re.sub(r"(.*)\..*", r"\1.afa", file) # The rs indicate "raw" and thus python's escaping gets turned off
+	muscle_cline = '%s -in %s -out %s' % (Muscle, file, outFile)
 	process = subprocess.Popen(muscle_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout 
 	if verbose_level == 2:
 		print '\n**Muscle output on', file, '**\n'
 		print err
-
+	return outFile
 
 #### Setup ####
 if len(sys.argv) < 2:
@@ -846,8 +856,8 @@ if mode in [0,1]: # Run the full annotating, clustering, etc.
 		for file in fastas:
 			print "Aligning ", file, "\n"
 			sys.stderr.write("Aligning " + file + "\n")
-			muscleIt(file, verbose_level)
-
+			outFile = muscleIt(file, verbose_level)
+			
 if mode == 2: # Just split the seqs
 	print "The file to be split is ", raw_sequences, "\n"
 	print "And it should be split by ", split_type
