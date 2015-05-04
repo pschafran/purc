@@ -430,21 +430,20 @@ def annotateIt(filetoannotate, outFile, failsFile, Multiplex_perBC_flag=True, Du
 		each_rec = each_rec.strip('\n')	
 		seq_name = each_rec.split('\t')[0] # The un-annotated sequence name, e.g., "BC02|m131213_174801_42153_c100618932550000001823119607181400_s1_p0/282/ccs;ee=7.2;"
 		refseq_name = each_rec.split('\t')[1].replace(' ','') # The best-hit reference sequence name, e.g., "PGI_grC__C_diapA_BC17"
-		
-		### bad way to get locus_name!!!!!
-		locus_name = refseq_name.split('_')[0] # The names are in the format ">ApP_grA__otherstuff". I.e., >Locus_group_otherstuff
-		if not locus_name in locusList: #keeping track of which loci are found, as a way of potentially diagnosing errors
-			locusList.append(locus_name)	
-		
+				
 		# Get the key for retrieving taxon_name in dictOfMapDicts[locus_name]
 		if Multiplex_perBC_flag:
 			group_name = refseq_name.split('_')[1][-1:] # Trying to grab the last letter of the second "word", i.e., the "A" in "grA"		
+			locus_name = refseq_name.split('_')[0] # The names are in the format ">ApP_grA__otherstuff". I.e., >Locus_group_otherstuff
 			key = seq_name.split('|')[0] + '_' + group_name # Grabbing the barcode from the source seq, and the group from the matching ref seq.
 			#i.e., gets the unique identifier that can link to a specific sample; i.e. BC01_A, BC01_B, BC01_C...
 			if not group_name in groupsList: #keeping track of which groups are found, as a way of potentially diagnosing errors
 				groupsList.append(group_name)
+			if not locus_name in locusList: #keeping track of which loci are found, as a way of potentially diagnosing errors
+				locusList.append(locus_name)	
 		else:
 			key = seq_name.split('|')[0] # Grabbing the barcode from the source seq
+			locus_name = locus_list[0]
 			#i.e., gets the unique barcode that can link to a specific sample; i.e. BC01, BC02, BC03...		
 		
 		try: #use try/except to avoid the error when the key is not present in MapDict				
@@ -838,7 +837,7 @@ if mode in [0,1]: # Run the full annotating, clustering, etc.
 	count_output.write('\n**Allele/copy/cluster/whatever count by locus**\n')	
 	# I think this was breaking if a locus had no sequences, and thus that file is not created. Going to try "try"
 	for each_locus in locus_list:
-		file_name = '_' + str(each_locus) + '.txt'
+		file_name = '_' + str(each_locus) + '_clustered.txt'
 		try: #I'm hoping that this will stop the program from crashing if a locus has no sequences
 			seq_no = len(parse_fasta(file_name))
 			print '\t', each_locus, ':', seq_no
