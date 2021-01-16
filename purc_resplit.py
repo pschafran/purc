@@ -101,7 +101,7 @@ try:
 	if Multiplex_perBC_flag == '-M':
 		SplitBy(annotated_file, split_type, Multiplex_perBC_flag=True)
 	else:
-		print 'Error: unknown argument'
+		print('Error: unknown argument')
 except:
 	SplitBy(annotated_file, split_type, Multiplex_perBC_flag=False)
 

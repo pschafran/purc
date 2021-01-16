@@ -59,7 +59,8 @@ import subprocess
 import shutil
 import time
 import datetime
-import StringIO
+import io
+import fileinput
 try:
 	from Bio import SeqIO
 	from Bio import AlignIO
@@ -78,12 +79,13 @@ def rename_fasta(infile):
 	outfile = prefix + '_renamed.fasta'
 	sed_cmd = "sed 's/;/_/g;s/=/_/g;s/\//_/g' %s > %s" % (infile, outfile)
 	process = subprocess.Popen(sed_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+	process.wait()
 	(out, err) = process.communicate()
 	return outfile
 
 def check_fasta(infile):
 	"""Check if this is a good fasta file, if so return True, if not return False"""
-	for line in open(infile, 'rU'):
+	for line in open(infile, 'r'):
 		if line.startswith('>'):
 			return True
 		else:
@@ -92,8 +94,9 @@ def check_fasta(infile):
 def count_seq_from_fasta(infile):
 	"""Yep. Just returns the number of sequence contain in a fasta file"""
 	cmdLine = "grep '>' %s | wc -w" % infile
-	process = subprocess.Popen(cmdLine, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-	(out, err) = process.communicate()	
+	process = subprocess.Popen(cmdLine, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
+	process.wait()
+	(out, err) = process.communicate()		
 	out = out.strip('\n').replace(' ', '')
 	return out
 
@@ -116,7 +119,8 @@ def makeBlastDB(inFileName, outDBname):
 		seq_no_hyphen.write('>' + str(i.id) + '\n' + new_seq + '\n')
 	seq_no_hyphen.close()
 	makeblastdb_cmd = 'makeblastdb -in %s -dbtype nucl -parse_seqids -out %s' % (inFileName + '.nohyphen.fasta', outDBname)
-	process = subprocess.Popen(makeblastdb_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+	process = subprocess.Popen(makeblastdb_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text = True)
+	process.wait()
 	(out, err) = process.communicate()
 	#print err, out
 	if verbose_level in [1, 2]:
@@ -127,7 +131,8 @@ def makeBlastDB(inFileName, outDBname):
 def BlastSeq(inputfile, outputfile, databasefile, num_threads=1, evalue=0.0000001, max_target=1, outfmt='6 qacc sacc nident mismatch length pident bitscore'):	
 	"""Calls blastn. The output format can be changed by outfmt. Requires the blast database to be made already"""
 	blastn_cLine = "blastn -query %s -task blastn -num_threads %s -db %s -out %s -evalue %s -max_target_seqs %d -outfmt '%s'" % (inputfile, num_threads, databasefile, outputfile, evalue, max_target, outfmt)
-	os.popen(blastn_cLine)	
+	process = subprocess.Popen(blastn_cLine, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text = True)	
+	process.wait()
 	return
 
 def CheckChimericLoci(inputfile_raw_sequences, outputfile_blast, outputfile_goodSeqs, outputfile_chimeras, databasefile, SeqDict, SplitChimera=False):
@@ -138,7 +143,7 @@ def CheckChimericLoci(inputfile_raw_sequences, outputfile_blast, outputfile_good
 	"""
 	BlastSeq(inputfile_raw_sequences, outputfile_blast, databasefile, num_threads=num_threads, evalue=1e-100, max_target=100, outfmt='6 qacc sacc length pident evalue qstart qend qlen sstrand')
 	
-	chimera_blast = open(outputfile_blast, 'rU') # Read the blast result
+	chimera_blast = open(outputfile_blast, 'r') # Read the blast result
 	chimeras = open(outputfile_chimeras, 'w') # File to save chimera sequences (concatemers)
 	non_chimeras = open(outputfile_goodSeqs, 'w') # File to save non-chimeric, good sequences
 
@@ -150,7 +155,7 @@ def CheckChimericLoci(inputfile_raw_sequences, outputfile_blast, outputfile_good
 		each_rec = each_rec.strip('\n')
 		seq_name = each_rec.split('\t')[0]
 		First = True
-		if seq_name not in chimera_dict.keys():
+		if seq_name not in list(chimera_dict.keys()):
 			try:
 				locus_name = re.search('LOCUS=(\w+)/', each_rec.split('\t')[1], re.IGNORECASE).group(1) # The names are in the format "locus=X/group=XY/ref_taxon=XYZ"
 			except:
@@ -159,7 +164,7 @@ def CheckChimericLoci(inputfile_raw_sequences, outputfile_blast, outputfile_good
 			locus_start = each_rec.split('\t')[5]
 			locus_end = each_rec.split('\t')[6]
 			locus_direction = each_rec.split('\t')[-1]
-			if seq_name not in loci_info_dict.keys():
+			if seq_name not in list(loci_info_dict.keys()):
 				loci_info_dict[seq_name] = [(locus_name, int(locus_start), int(locus_end), locus_direction)] # e.g. ('IBR', 41, 906, 'plus')
 
 			else:
@@ -216,7 +221,7 @@ def DeBarcoder(inputfile_raw_sequences, databasefile, SeqDict, Output_folder, Ou
 	
 	BlastSeq(inputfile_raw_sequences, Output_folder + '/blast_barcode_out.txt', databasefile, num_threads=num_threads, evalue=1, max_target=1, outfmt='6 qacc sacc length pident evalue qstart qend qlen')
 	
-	bc_blast = open(Output_folder + '/blast_barcode_out.txt', 'rU') # Read the blast result
+	bc_blast = open(Output_folder + '/blast_barcode_out.txt', 'r') # Read the blast result
 	bc_trimmed = open(Output_folder + '/' + Output_prefix + '_1_bc_trimmed.fa', 'w') # For writing the de-barcoded sequences
 	bc_leftover = open(Output_folder + '/' + Output_prefix + '_1_trashBin_no_bc.fa', 'w') # For saving those without barcodes
 	bc_toomany = open(Output_folder + '/' + Output_prefix + '_1_trashBin_tooMany_bc.fa', 'w') # For saving those more than one barcode
@@ -235,7 +240,7 @@ def DeBarcoder(inputfile_raw_sequences, databasefile, SeqDict, Output_folder, Ou
 		barcode_start_posi = int(each_rec.split('\t')[5])
 		barcode_end_posi = int(each_rec.split('\t')[6])		
 		
-		if seq_name not in barcode_info_dict.keys() and seq_name not in seq_withbc_morethanone_list:
+		if seq_name not in list(barcode_info_dict.keys()) and seq_name not in seq_withbc_morethanone_list:
 			barcode_info_dict[seq_name] = [barcode_name, barcode_start_posi, barcode_end_posi]
 			seq_withbc_list.append(seq_name)
 		elif seq_name in seq_withbc_morethanone_list: 
@@ -304,14 +309,14 @@ def DeBarcoder_ends(SeqDict, databasefile, Output_folder, Output_prefix, search_
 	seq_withoutbc_list = [] # A list containing all the seq names that do not have barcode identified by BLAST
 	barcode_info_dict = {} # {seq_name1: [BC01, 0, 12], seq_name2: [BC08, 0, 12]}; barcode_info_dict[seq_name] = [barcode_name, barcode_start_posi, barcode_end_posi]
 
-	bc_blast_F = open(Output_folder + '/blast_barcodeF_out.txt', 'rU')
+	bc_blast_F = open(Output_folder + '/blast_barcodeF_out.txt', 'r')
 	for each_rec in bc_blast_F:
 		each_rec = each_rec.strip('\n')
 		seq_name = each_rec.split('\t')[0]
 		barcode_name = each_rec.split('\t')[1] # E.g. BC01, BC24...
 		barcode_start_posi = int(each_rec.split('\t')[5])
 		barcode_end_posi = int(each_rec.split('\t')[6])		
-		if seq_name not in barcode_info_dict.keys():
+		if seq_name not in list(barcode_info_dict.keys()):
 			barcode_info_dict[seq_name] = [barcode_name, barcode_start_posi, barcode_end_posi, '+']
 			seq_withbc_list.append(seq_name)
 		else: # means that this seq has more than one barcode, then take out this seq record from seq_withbc_list, but append it to seq_withbc_morethanone_list
@@ -319,14 +324,14 @@ def DeBarcoder_ends(SeqDict, databasefile, Output_folder, Output_prefix, search_
 			seq_withbc_list.remove(seq_name)
 			seq_withbc_morethanone_list.append(seq_name)
 
-	bc_blast_R = open(Output_folder + '/blast_barcodeR_out.txt', 'rU')
+	bc_blast_R = open(Output_folder + '/blast_barcodeR_out.txt', 'r')
 	for each_rec in bc_blast_R:
 		each_rec = each_rec.strip('\n')
 		seq_name = each_rec.split('\t')[0]
 		barcode_name = each_rec.split('\t')[1] # E.g. BC01, BC24...
 		barcode_start_posi = int(each_rec.split('\t')[5])
 		barcode_end_posi = int(each_rec.split('\t')[6])		
-		if seq_name not in barcode_info_dict.keys() and seq_name not in seq_withbc_morethanone_list:
+		if seq_name not in list(barcode_info_dict.keys()) and seq_name not in seq_withbc_morethanone_list:
 			barcode_info_dict[seq_name] = [barcode_name, barcode_start_posi, barcode_end_posi, '-']
 			seq_withbc_list.append(seq_name)
 		elif seq_name in seq_withbc_morethanone_list: 
@@ -373,7 +378,7 @@ def DeBarcoder_dual(inputfile_raw_sequences, databasefile, SeqDict):
 	
 	BlastSeq(inputfile_raw_sequences, Output_folder + '/blast_barcode_out.txt', databasefile, num_threads=num_threads, evalue=1, max_target=2, outfmt='6 qacc sacc length pident bitscore qstart qend')
 	
-	bc_blast = open(Output_folder + '/blast_barcode_out.txt', 'rU') # Read the blast result
+	bc_blast = open(Output_folder + '/blast_barcode_out.txt', 'r') # Read the blast result
 	bc_trimmed = open(Output_folder + '/' + Output_prefix + '_1_bc_trimmed.fa', 'w') # For writing the de-barcoded sequences
 	bc_leftover = open(Output_folder + '/' + Output_prefix + '_1_trashBin_no_bc.fa', 'w') # For saving those without barcodes
 	bc_onlyF = open(Output_folder + '/' + Output_prefix + '_1_trashBin_onlyF_bc.fa', 'w')
@@ -533,7 +538,8 @@ def doCutAdapt(Fprims, Rprims, InFile, OutFile, minimum_len=50):
 	# -e: Maximum allowed error rate (no. of errors divided by the length of the matching region)
 	# -n: Try to remove primers at most -n times.
 	
-	process = subprocess.Popen(cutadapt_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+	process = subprocess.Popen(cutadapt_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
+	process.wait()
 	(out, err) = process.communicate()
 	if verbose_level in [1, 2]:
 		log.write('**Primer-trimming results**\n')
@@ -594,7 +600,7 @@ def makeMapDict(mapping_file, locus, Multiplex_perBC_flag=True, DualBC_flag=Fals
 	"""Constructs a dictionary, MapDict, that maps each barcode/locus combination to a specific accession
 	This function is used in annotateIt"""
 	
-	map = open(mapping_file, 'rU') #open the mapping file
+	map = open(mapping_file, 'r') #open the mapping file
 
 	if Multiplex_perBC_flag and not DualBC_flag: # when there are multiple individuals sharing the same barcodes
 		MapDict = {}
@@ -642,7 +648,7 @@ def annotateIt(filetoannotate, outFile, failsFile, Multiplex_perBC_flag=True, Du
 	for each_file, each_locus in zip(mapping_file_list, locus_list): 
 		dictOfMapDicts[each_locus.upper()] = makeMapDict(each_file, each_locus, Multiplex_perBC_flag, DualBC_flag) # Note the Multiplex_perBC and DualBC flags (as True/False)
 
-	refseq_blast = open(Output_folder + '/blast_refseq_out.txt', 'rU') 	
+	refseq_blast = open(Output_folder + '/blast_refseq_out.txt', 'r') 	
 	annotated_seqs = open(outFile, "w")
 	no_matches = open(failsFile, "w")
 	groupsList = []
@@ -718,28 +724,33 @@ def annotateIt(filetoannotate, outFile, failsFile, Multiplex_perBC_flag=True, Du
 	return LocusTaxonCountDict #as {('C_mem_6732', 'PGI'): 2, ('C_mem_6732', 'IBR'): 4} for example
 
 def sortIt_length(file, verbose_level=0):
+	log.write("sortIt_length")
 	"""Sorts clusters by seq length"""
 	outFile = re.sub(r"(.*)\..*", r"\1_Sl.fa", file) # Make the outfile name by cutting off the extension of the infile name, and adding "_S1.fa"
-	usearch_cline = "%s -sortbylength %s -fastaout %s" %(Usearch, file, outFile)
-	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
+	usearch_cline = "%s --sortbylength %s --output %s" %(Usearch, file, outFile)
+	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)	
+	process.wait()
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout 
 	if verbose_level == 2:
-		log.write('\n**Usearch-sorting output on' + str(file) + '**\n')
+		log.write('\n**vsearch-sorting output on' + str(file) + '**\n')
 		log.write(str(err))
 	return outFile # having it spit out the outfile name, if necessary, so that it can be used to call downstream stuff and avoid complicated glob.globbing
 
 def sortIt_size(file, thresh, round, verbose_level=0):
+	log.write("sortIt_size\n")
 	"""Sorts clusters by size, and removes those that are smaller than a particular size
 	(sent as thresh -- ie, sizeThreshold). 
     "round" is used to annotate the outfile name with S1, S2, etc. depending on which sort this is"""
 	outFile = re.sub(r"(.*)\.fa", r"\1Ss%s.fa" %(round), file)
-	usearch_cline = "%s -sortbysize %s -fastaout %s -minsize %f" %(Usearch, file, outFile, thresh)
-	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
+	logFile = outFile + ".sortIt_size.log"
+	usearch_cline = "%s --sortbysize %s --output %s --minsize %d --log %s" %(Usearch, file, outFile, thresh, logFile)
+	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)	
+	process.wait()
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout 
 	if verbose_level == 2:
-		log.write('\n**Usearch-sorting output on' + str(file) + '**\n')
+		log.write('\n**vsearch-sorting output on' + str(file) + '**\n')
 		log.write(str(err))
 	return outFile
 
@@ -748,7 +759,8 @@ def align_and_consensus(inputfile, output_prefix):
 	output_alignment = output_prefix.split(';')[0] + '_aligned.fa'
 	output_consensus = output_prefix.split(';')[0] + '_consensus.fa'
 	muscle_cline = '%s -in %s -out %s' % (Muscle, inputfile, output_alignment)
-	process = subprocess.Popen(muscle_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
+	process = subprocess.Popen(muscle_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)	
+	process.wait()
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout 
 
@@ -760,21 +772,34 @@ def align_and_consensus(inputfile, output_prefix):
 	return
 
 def clusterIt(file, clustID, round, previousClusterToCentroid_dict, verbose_level=0):
+	log.write("clusterIt\n")
 	"""The clustering step, using the clustID value"""
 	outFile = re.sub(r"(.*)\.fa", r"\1C%s_%s.fa" %(round, clustID), file) # The rs indicate "raw" and thus python's escaping gets turned off
 	outClustFile = re.sub(r"(.*).fa", r"\1clusts%s.uc" %(round), file)
+	logFile = outFile + ".clusterIt.log"
 	if round == 1:
-		usearch_cline = "%s -cluster_fast %s -id %f -gapopen 3I/1E -consout %s -uc %s -sizeout -threads %s" % (Usearch, file, clustID, outFile, outClustFile, num_threads) 
+		usearch_cline = "%s --cluster_fast %s --id %f --gapopen 3I/1E --consout %s --uc %s --sizeout --threads %s --log %s" % (Usearch, file, clustID, outFile, outClustFile, num_threads, logFile) 
 	elif round > 1:
-		usearch_cline = "%s -cluster_fast %s -id %f -gapopen 3I/1E -consout %s -uc %s -sizein -sizeout -threads %s" % (Usearch, file, clustID, outFile, outClustFile, num_threads)
-	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
+		usearch_cline = "%s --cluster_fast %s --id %f --gapopen 3I/1E --consout %s --uc %s --sizein --sizeout --threads %s --log %s" % (Usearch, file, clustID, outFile, outClustFile, num_threads, logFile)
+	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)	
+	process.wait()
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout 
 	if verbose_level == 2:
-		log.write('\n**Usearch-clustering output on' + str(file) + '**\n')
+		log.write('\n**vsearch-clustering output on' + str(file) + '**\n')
 		log.write(str(err))
 	
-	uc = open(outClustFile, 'rU')
+	# remove "centroid=" instances from output files
+	with fileinput.input(files = outFile, inplace = True) as fa:
+		for line in fa:
+			line = line.strip("\n")
+			if line.startswith(">"):
+				line = line.replace("centroid=", "")
+				print(line)
+			else:
+				print(line)
+	
+	uc = open(outClustFile, 'r')
 	ClusterToCentroid_dict = {} # {Cluster0:}
 	for line in uc:
 		if line.startswith('C'):
@@ -782,7 +807,8 @@ def clusterIt(file, clustID, round, previousClusterToCentroid_dict, verbose_leve
 			centroid_seq_name = line.split('\t')[-2]
 			
 			if round > 1:
-				ClusterToCentroid_dict[cluster_name] = previousClusterToCentroid_dict[centroid_seq_name.split(';')[0]]
+				#ClusterToCentroid_dict[cluster_name] = previousClusterToCentroid_dict[centroid_seq_name.split(';')[0]]
+				ClusterToCentroid_dict[cluster_name] = centroid_seq_name
 			elif round == 1:
 				ClusterToCentroid_dict[cluster_name] = centroid_seq_name
 
@@ -797,27 +823,31 @@ def clusterIt(file, clustID, round, previousClusterToCentroid_dict, verbose_leve
 			os.rename('temp', outFile)
 		except:
 			log.write(outFile + ' is empty; perhaps sizeThreshold too high\n')
+	
 	return outFile, ClusterToCentroid_dict, outClustFile
 
 def deChimeIt(file, round, abskew=1.9, verbose_level=0):
+	log.write("deChimeIt\n")
 	"""Chimera remover"""
 	outFile = re.sub(r"(.*)\.fa", r"\1dCh%s.fa" %(round), file) # The rs indicate "raw" and thus python's escaping gets turned off
 	outFile_uchime = re.sub(r"(.*)\.fa", r"\1dCh%s.uchime" %(round), file) # The rs indicate "raw" and thus python's escaping gets turned off
-	usearch_cline = "%s -uchime_denovo %s -abskew %s -nonchimeras %s -uchimeout %s -threads %s" % (Usearch, file, abskew, outFile, outFile_uchime, num_threads)
+	logFile = outFile + ".deChimeIt.log"
+	usearch_cline = "%s --uchime_denovo %s --abskew %s --nonchimeras %s --uchimeout %s --log %s" % (Usearch, file, abskew, outFile, outFile_uchime, logFile)
 	
 	## To make the chimera-killing more stringent, change the usearch command line (above) to something like:
 	# usearch_cline = "%s -uchime_denovo %s -abskew 1.1 -minh 0.2 -xn 3 -dn 0.5 -nonchimeras %s -uchimeout %s" % (Usearch, file, outFile, outFile_uchime)
 
-	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
+	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)	
+	process.wait()
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout 
 	if verbose_level in [1, 2]:
-		log.write('\n**Uchime output on' + str(file) + '**\n')
+		log.write('\n**Uchime output on ' + str(file) + ' written to ' + str(outFile) + ' and ' + str(outFile_uchime) + '**\n')
 		log.write(str(err))
 
 	# count number of chimera seq found by parsing 'outFile_uchime'
 	chimera_count = 0
-	uchime_out = open(outFile_uchime, 'rU')
+	uchime_out = open(outFile_uchime, 'r')
 	for line in uchime_out:
 		line = line.strip('\n')
 		if line.split('\t')[-1] == 'Y':
@@ -828,22 +858,24 @@ def muscleIt(file, verbose_level=0):
 	"""Aligns the sequences using MUSCLE"""
 	outFile = re.sub(r"(.*)\..*", r"\1.afa", file) 
 	muscle_cline = '%s -in %s -out %s' % (Muscle, file, outFile)
-	process = subprocess.Popen(muscle_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
+	process = subprocess.Popen(muscle_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)	
+	process.wait()
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout 
 	if verbose_level == 2:
-		log.write('\n**Muscle output on' + str(file) + '**\n')
+		log.write('\n**Muscle output on ' + str(file) + '**\n')
 		log.write(str(err))
 	return outFile
 
 def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, sizeThreshold, sizeThreshold2, verbose_level = 1):
+	log.write("IterativeClusterDechimera\n")
 	## Split sequences into separate files/folders for each locus ##
 	sys.stderr.write('Splitting sequences into a folder/file for each locus...\n')
 	locusCounts = SplitBy(annotd_seqs_file = annoFileName, split_by = "locus", Multiplex_perBC_flag = Multiplex_per_barcode) 
 
 	sys.stderr.write('Clustering/dechimera-izing seqs...\n')
 	log.write('#Sequence clustering/dechimera-izing#\n')
-	all_folders_loci = locusCounts.keys() # SplitBy makes a dictionary where the keys are the subcategories (and thus also the
+	all_folders_loci = list(locusCounts.keys()) # SplitBy makes a dictionary where the keys are the subcategories (and thus also the
 		# folders) and they correspond to the counts for each.
 	LocusTaxonCountDict_clustd = {} # {('C_dia_5316', 'ApP'): 28} for example, to store clusted seq count
 	LocusTaxonCountDict_chimera = {} # {('C_dia_5316', 'ApP'): [1,0,0,0,0]} for example, to store the chimerc seq count for each chimera-killing step
@@ -858,7 +890,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 		if not os.stat(locus_folder + ".fa").st_size == 0: # ie, the file is not empty
 			## Split sequences into separate taxon folders ##
 			taxonCounts = SplitBy(annotd_seqs_file = locus_folder + ".fa", split_by = "taxon", Multiplex_perBC_flag = Multiplex_per_barcode)					
-			all_folders_taxon = taxonCounts.keys()
+			all_folders_taxon = list(taxonCounts.keys())
 
 			for taxon_folder in all_folders_taxon:
 				if verbose_level in [1,2]:
@@ -895,7 +927,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 				deChimered3, chimera_count3 = deChimeIt(file = clustered3, round = 3, abskew = abskew, verbose_level = verbose_level)
 
 				if verbose_level in [1,2]:
-					log.write("\Forth clustering\n")
+					log.write("\Fourth clustering\n")
 				sorted_size3 = sortIt_size(file = deChimered3, thresh = sizeThreshold, round = 2, verbose_level = verbose_level)
 				clustered4, previousClusterToCentroid_dict, outClustFile4 = clusterIt(file = sorted_size3, previousClusterToCentroid_dict = previousClusterToCentroid_dict, clustID = clustID3, round = 4, verbose_level = verbose_level)
 
@@ -906,64 +938,105 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 				sorted_size4 = sortIt_size(file = deChimered4, thresh = sizeThreshold2, round = 4, verbose_level = verbose_level)
 
 				## Collect all sequences from each cluster and re-consensus ##
-				# Go through the first clustering uc file
-				ClusterToSeq_dict1 = {}
-				file_to_read = open(outClustFile1, 'rU')
-				for line in file_to_read:	
-					line = line.strip('\n')
-					if line.startswith('H') or line.startswith('C'):
-						key = 'Cluster' + line.split('\t')[1]
-						seq = line.split('\t')[8]
-						try:
-							ClusterToSeq_dict1[key].append(seq)
-						except:
-							ClusterToSeq_dict1[key] = [seq]
-				file_to_read.close()
-
-				# Go through the second clustering uc file
-				ClusterToSeq_dict2 = {}
-				file_to_read = open(outClustFile2, 'rU')
-				for line in file_to_read:	
-					line = line.strip('\n')
-					if line.startswith('H') or line.startswith('C'):
-						key = 'Cluster' + line.split('\t')[1]
-						seqs = ClusterToSeq_dict1[line.split('\t')[8].split(';')[0]] # use Cluster1 as key
-						for seq in seqs:
-							try:
-								ClusterToSeq_dict2[key].append(seq)
-							except:
-								ClusterToSeq_dict2[key] = [seq]
-				file_to_read.close()
-
-				# Go through the third clustering uc file
-				ClusterToSeq_dict3 = {}
-				file_to_read = open(outClustFile3, 'rU')				
-				for line in file_to_read:	
-					line = line.strip('\n')
-					if line.startswith('H') or line.startswith('C'):
-						key = 'Cluster' + line.split('\t')[1]
-						seqs = ClusterToSeq_dict2[line.split('\t')[8].split(';')[0]] # use Cluster1 as key
-						for seq in seqs:
-							try:
-								ClusterToSeq_dict3[key].append(seq)
-							except:
-								ClusterToSeq_dict3[key] = [seq]
-				file_to_read.close()
-
-				# Go through the forth clustering uc file
 				ClusterToSeq_dict4 = {}
-				file_to_read = open(outClustFile4, 'rU')				
-				for line in file_to_read:	
-					line = line.strip('\n')
-					if line.startswith('H') or line.startswith('C'):
-						key = 'Cluster' + line.split('\t')[1]
-						seqs = ClusterToSeq_dict3[line.split('\t')[8].split(';')[0]] # use Cluster1 as key
-						for seq in seqs:
+				with open(outClustFile4, 'r') as file_to_read:
+					for line in file_to_read:
+						if line.startswith("H") or line.startswith("C"):
+							key = 'Cluster' + line.split('\t')[1]
+							seq = line.split("\t")[8].split(";")[0]
 							try:
 								ClusterToSeq_dict4[key].append(seq)
 							except:
 								ClusterToSeq_dict4[key] = [seq]
-				file_to_read.close()
+				
+				with open(outClustFile3, 'r') as file_to_read:
+					for line in file_to_read:
+						if line.startswith("H"):
+							seq = line.split("\t")[8].split(";")[0]
+							centroid = line.split("\t")[9].split(";")[0]
+							for key in ClusterToSeq_dict4.keys():
+								if centroid in ClusterToSeq_dict4[key]:
+									ClusterToSeq_dict4[key].append(seq)
+				
+				with open(outClustFile2, 'r') as file_to_read:
+					for line in file_to_read:
+						if line.startswith("H"):
+							seq = line.split("\t")[8].split(";")[0]
+							centroid = line.split("\t")[9].split(";")[0]
+							for key in ClusterToSeq_dict4.keys():
+								if centroid in ClusterToSeq_dict4[key]:
+									ClusterToSeq_dict4[key].append(seq)
+				
+				with open(outClustFile1, 'r') as file_to_read:
+					for line in file_to_read:
+						if line.startswith("H"):
+							seq = line.split("\t")[8].split(";")[0]
+							centroid = line.split("\t")[9].split(";")[0]
+							for key in ClusterToSeq_dict4.keys():
+								if centroid in ClusterToSeq_dict4[key]:
+									ClusterToSeq_dict4[key].append(seq)
+
+				# Go through the first clustering uc file
+				#ClusterToSeq_dict1 = {}
+				#file_to_read = open(outClustFile1, 'r')
+				#for line in file_to_read:	
+				#	line = line.strip('\n')
+				#	if line.startswith('H') or line.startswith('C'):
+				#		key = 'Cluster' + line.split('\t')[1]
+				#		seq = line.split('\t')[8].split(';')[0]
+				#		try:
+				#			ClusterToSeq_dict1[key].append(seq)
+				#		except:
+				#			ClusterToSeq_dict1[key] = [seq]
+				#file_to_read.close()
+
+				# Go through the second clustering uc file
+				#ClusterToSeq_dict2 = {}
+				#file_to_read = open(outClustFile2, 'r')
+				#for line in file_to_read:	
+				#	line = line.strip('\n')
+				#	if line.startswith('H') or line.startswith('C'):
+				#		key = 'Cluster' + line.split('\t')[1]
+				#		#seqs = ClusterToSeq_dict1[line.split('\t')[8].split(';')[0]] # use Cluster1 as key
+				#		seq = line.split('\t')[8].split(';')[0]
+				#		#for seq in seqs:
+				#		try:
+				#			ClusterToSeq_dict2[key].append(seq)
+				#		except:
+				#			ClusterToSeq_dict2[key] = [seq]
+				#file_to_read.close()
+
+				# Go through the third clustering uc file
+				#ClusterToSeq_dict3 = {}
+				#file_to_read = open(outClustFile3, 'r')				
+				#for line in file_to_read:	
+				#	line = line.strip('\n')
+				#	if line.startswith('H') or line.startswith('C'):
+				#		key = 'Cluster' + line.split('\t')[1]
+				#		#seqs = ClusterToSeq_dict2[line.split('\t')[8].split(';')[0]] # use Cluster1 as key
+				#		seq = line.split('\t')[8].split(';')[0]
+				#		#for seq in seqs:
+				#		try:
+				#			ClusterToSeq_dict3[key].append(seq)
+				#		except:
+				#			ClusterToSeq_dict3[key] = [seq]
+				#file_to_read.close()
+
+				# Go through the forth clustering uc file
+				#ClusterToSeq_dict4 = {}
+				#file_to_read = open(outClustFile4, 'r')				
+				#for line in file_to_read:	
+				#	line = line.strip('\n')
+				#	if line.startswith('H') or line.startswith('C'):
+				#		key = 'Cluster' + line.split('\t')[1]
+				#		#seqs = ClusterToSeq_dict3[line.split('\t')[8].split(';')[0]] # use Cluster1 as key
+				#		seq = line.split('\t')[8].split(';')[0]
+				#		#for seq in seqs:
+				#		try:
+				#			ClusterToSeq_dict4[key].append(seq)
+				#		except:
+				#			ClusterToSeq_dict4[key] = [seq]
+				#file_to_read.close()
 
 				## Align and re-consensus of all constituent seq for each cluster ##
 				SeqDict = SeqIO.index(taxon_folder + ".fa", 'fasta')
@@ -980,25 +1053,28 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 				all_consensus_seq = open(taxon_folder + '_Cluster_Finalconsensus.fa', 'w')
 				files_to_add_reconsensus = glob.glob("*_consensus.fa")
 				for file in files_to_add_reconsensus: 
-					shutil.copyfileobj(open(file,'rb'), all_consensus_seq) #Add each file to the final output
+					shutil.copyfileobj(open(file,'r'), all_consensus_seq) #Add each file to the final output
 				all_consensus_seq.close()
 
 				## Do final clustering and chimera-killing ##
-				usearch_cline = "%s -sortbysize %s -fastaout %s" %(Usearch, taxon_folder + '_Cluster_Finalconsensus.fa', taxon_folder + '_Cluster_FinalconsensusSs.fa')
-				process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
+				usearch_cline = "%s --sortbysize %s --output %s" %(Usearch, taxon_folder + '_Cluster_Finalconsensus.fa', taxon_folder + '_Cluster_FinalconsensusSs.fa')
+				process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)	
+				process.wait()
 				(out, err) = process.communicate() #the stdout and stderr
 				
-				usearch_cline = "%s -cluster_fast %s -id %f -gapopen 3I/1E -consout %s -uc %s -sizein -sizeout" % (Usearch, taxon_folder + '_Cluster_FinalconsensusSs.fa', clustID4, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + '.fa', taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + '.uc')
-				process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
+				usearch_cline = "%s --cluster_fast %s --id %f --gapopen 3I/1E --consout %s --uc %s --sizein --sizeout" % (Usearch, taxon_folder + '_Cluster_FinalconsensusSs.fa', clustID4, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + '.fa', taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + '.uc')
+				process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)	
+				process.wait()
 				(out, err) = process.communicate() #the stdout and stderr
 
-				usearch_cline = "%s -uchime_denovo %s -abskew %s -nonchimeras %s -uchimeout %s" % (Usearch, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + '.fa', abskew, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.fa', taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.uchime')
-				process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
+				usearch_cline = "%s --uchime_denovo %s --abskew %s --nonchimeras %s --uchimeout %s" % (Usearch, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + '.fa', abskew, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.fa', taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.uchime')
+				process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)	
+				process.wait()
 				(out, err) = process.communicate() #the stdout and stderr
 				
 				## Count number of chimera seq found by parsing 'outFile_uchime' ##
 				chimera_count5 = 0
-				uchime_out = open(taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.uchime', 'rU')
+				uchime_out = open(taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.uchime', 'r')
 				for line in uchime_out:
 					line = line.strip('\n')
 					if line.split('\t')[-1] == 'Y':
@@ -1021,6 +1097,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 				## Rename sequences in the final fasta: add taxon name ##
 				sed_cmd = "sed 's/>/>%s_/g' %s > %s" % (taxon_folder, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.fa', taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh_renamed.fa')
 				process = subprocess.Popen(sed_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
+				process.wait()
 				(out, err) = process.communicate() #the stdout and stderr
 
 				## Remove intermediate files if requsted ##
@@ -1046,7 +1123,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 				os.chdir(taxon_folder)
 				files_to_add_reconsensus = glob.glob("*_Cluster_FinalconsensusSsC*_renamed.fa")
 				for file in files_to_add_reconsensus: 
-					shutil.copyfileobj(open(file,'rb'), outputfile_reconsensus) #Add each file to the final output
+					shutil.copyfileobj(open(file,'r'), outputfile_reconsensus) #Add each file to the final output
 
 				os.chdir('..')
 		os.chdir('..')
@@ -1078,7 +1155,7 @@ class ScoringMatrix(object):
         if filename:
             fs = open(filename)
         else:
-            fs = StringIO.StringIO(text)
+            fs = io.StringIO(text)
         self.scores = []
         self.bases = None
         self.wildcard_score = wildcard_score
@@ -1153,16 +1230,16 @@ class LocalAlignment(object):
         ref = ref.upper()
         query = query.upper()
         matrix = Matrix(len(query) + 1, len(ref) + 1, (0, ' ', 0))
-        for row in xrange(1, matrix.rows):
+        for row in range(1, matrix.rows):
             matrix.set(row, 0, (0, 'i', 0))
-        for col in xrange(1, matrix.cols):
+        for col in range(1, matrix.cols):
             matrix.set(0, col, (0, 'd', 0))
         max_val = 0
         max_row = 0
         max_col = 0
         # calculate matrix
-        for row in xrange(1, matrix.rows):
-            for col in xrange(1, matrix.cols):
+        for row in range(1, matrix.rows):
+            for col in range(1, matrix.cols):
                 mm_val = matrix.get(row - 1, col - 1)[0] + self.scoring_matrix.score(query[row - 1], ref[col - 1], self.wildcard)
                 ins_run = 0
                 del_run = 0
@@ -1228,7 +1305,7 @@ class LocalAlignment(object):
             row = matrix.rows - 1
             max_val = 0
             col = 0
-            for c in xrange(1, matrix.cols):
+            for c in range(1, matrix.cols):
                 if matrix.get(row, c)[0] > max_val:
                     col = c
                     max_val = matrix.get(row, c)[0]
@@ -1268,21 +1345,21 @@ class LocalAlignment(object):
         aln.reverse()
         if self.verbose:
             self.dump_matrix(ref, query, matrix, path)
-            print aln
-            print (max_row, max_col), max_val
+            print(aln)
+            print((max_row, max_col), max_val)
         cigar = _reduce_cigar(aln)
         return Alignment(orig_query, orig_ref, row, col, cigar, max_val, ref_name, query_name, rc, self.globalalign, self.wildcard)
     def dump_matrix(self, ref, query, matrix, path, show_row=-1, show_col=-1):
         sys.stdout.write('      -      ')
         sys.stdout.write('       '.join(ref))
         sys.stdout.write('\n')
-        for row in xrange(matrix.rows):
+        for row in range(matrix.rows):
             if row == 0:
                 sys.stdout.write('-')
             else:
                 sys.stdout.write(query[row - 1])
 
-            for col in xrange(matrix.cols):
+            for col in range(matrix.cols):
                 if show_row == row and show_col == col:
                     sys.stdout.write('       *')
                 else:
@@ -1337,7 +1414,7 @@ class Alignment(object):
             if op == 'M':
                 q_len += count
                 r_len += count
-                for k in xrange(count):
+                for k in range(count):
                     if self.query[j] == self.ref[i]:
                         self.matches += 1
                     else:
@@ -1371,7 +1448,7 @@ class Alignment(object):
         working = []
         for count, op in self.cigar:
             if op == 'M':
-                for k in xrange(count):
+                for k in range(count):
                     if self.query[self.q_pos + qpos + k] == self.ref[self.r_pos + rpos + k]:
                         ext_cigar_str += 'M'
                     else:
@@ -1407,7 +1484,7 @@ class Alignment(object):
             if op == 'M':
                 qlen += count
                 rlen += count
-                for k in xrange(count):
+                for k in range(count):
                     q += self.orig_query[j]
                     r += self.orig_ref[i]
                     if self.query[j] == self.ref[i] or (self.wildcard and (self.query[j] in self.wildcard or self.ref[i] in self.wildcard)):
@@ -1418,14 +1495,14 @@ class Alignment(object):
                     j += 1
             elif op == 'D':
                 rlen += count
-                for k in xrange(count):
+                for k in range(count):
                     q += '-'
                     r += self.orig_ref[i]
                     m += ' '
                     i += 1
             elif op == 'I':
                 qlen += count
-                for k in xrange(count):
+                for k in range(count):
                     q += self.orig_query[j]
                     r += '-'
                     m += ' '
@@ -1515,7 +1592,7 @@ elif sys.argv[1] in ['-help', '-h', '-citation']:
 
 else:	
 	try:
-		configuration = open(sys.argv[1], 'rU')
+		configuration = open(sys.argv[1], 'r')
 	except:
 		sys.stderr.write('Error: Cannot open the configuration file\n')
 		sys.exit(usage)
@@ -1541,7 +1618,7 @@ else:
 	barcode_databasefile = 'barcode_blastdb'
 	refseq_databasefile = 'refseq_blastdb'
 	seq_name_toErase = ''
-	Usearch = ppp_location + '/' + 'Dependencies/usearch8.1.1756'
+	Usearch = ppp_location + '/' + 'Dependencies/vsearch'
 	Cutadapt = ppp_location + '/' + 'Dependencies/cutadapt_source/bin/cutadapt'
 	Muscle = ppp_location + '/' + 'Dependencies/muscle3.8.31'
 	log_file = 'purc_log_' + time_stamp + '.txt'
@@ -1672,32 +1749,35 @@ else:
 	sys.stderr.write('Checking dependencies...\n')	
 	# Check if muscle can be executed
 	muscle_cline = '%s -version' % (Muscle)
-	process = subprocess.Popen(muscle_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
+	print(muscle_cline)
+	process = subprocess.Popen(muscle_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 	(out, err) = process.communicate() #the stdout and stderr
-	if not str(out).startswith('MUSCLE'):
+	if not str(out).startswith("MUSCLE"):
 		sys.exit("Error: could not execute Muscle")
 
 	# Check if Usearch can be executed
-	usearch_cline = '%s -version' % (Usearch)
-	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
+	usearch_cline = '%s --version' % (Usearch)
+	print(usearch_cline)
+	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 	(out, err) = process.communicate() #the stdout and stderr
-	if not str(out).startswith('usearch'):
-		sys.exit("Error: could not execute Usearch")
+	if not str(err).startswith("vsearch"):
+		sys.exit("Error: could not execute vsearch")
 
 	# Check if cutadapt can be executed
 	cutadapt_cline = '%s --help' % (Cutadapt)
-	process = subprocess.Popen(cutadapt_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
+	print(cutadapt_cline)
+	process = subprocess.Popen(cutadapt_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 	(out, err) = process.communicate() #the stdout and stderr
 	#print out
-	if not str(out).startswith('cutadapt'):
-		if not str(out).startswith('Usage'): #for older cutadapt version
+	if not str(out).startswith("cutadapt"):
+		if not str(out).startswith("Usage"): #for older cutadapt version
 			sys.exit("Error: could not execute Cutadapt")
 
 	# Check if blast can be execuated
 	blast_cline = 'blastn -version'
-	process = subprocess.Popen(blast_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
+	process = subprocess.Popen(blast_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 	(out, err) = process.communicate() #the stdout and stderr
-	if not str(out).replace(' ','').startswith('blastn'):
+	if not str(out).replace(' ','').startswith("blastn"):
 		sys.exit("Error: could not execute BLAST")
 
 
@@ -1880,7 +1960,7 @@ log.write('Sequences that cannot be classified:\t' + str(count_seq_unclassifiabl
 # Get lists of taxa and loci
 taxon_list = []
 locus_list = []
-for taxon_locus in LocusTaxonCountDict_clustd.keys():
+for taxon_locus in list(LocusTaxonCountDict_clustd.keys()):
 	taxon_list.append(taxon_locus[0])
 	locus_list.append(taxon_locus[1])
 taxon_list = set(taxon_list)

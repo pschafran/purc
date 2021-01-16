@@ -59,7 +59,7 @@ import subprocess
 import shutil
 import time
 import datetime
-import StringIO
+import io
 try:
 	from Bio import SeqIO
 	from Bio import AlignIO
@@ -207,7 +207,7 @@ def CheckChimericLoci(inputfile_raw_sequences, outputfile_blast, outputfile_good
 		each_rec = each_rec.strip('\n')
 		seq_name = each_rec.split('\t')[0]
 		First = True
-		if seq_name not in chimera_dict.keys():
+		if seq_name not in list(chimera_dict.keys()):
 			try:
 				locus_name = re.search('LOCUS=(\w+)/', each_rec.split('\t')[1], re.IGNORECASE).group(1) # The names are in the format "locus=X/group=XY/ref_taxon=XYZ"
 			except:
@@ -216,7 +216,7 @@ def CheckChimericLoci(inputfile_raw_sequences, outputfile_blast, outputfile_good
 			locus_start = each_rec.split('\t')[5]
 			locus_end = each_rec.split('\t')[6]
 			locus_direction = each_rec.split('\t')[-1]
-			if seq_name not in loci_info_dict.keys():
+			if seq_name not in list(loci_info_dict.keys()):
 				loci_info_dict[seq_name] = [(locus_name, int(locus_start), int(locus_end), locus_direction)] # e.g. ('IBR', 41, 906, 'plus')
 
 			else:
@@ -292,7 +292,7 @@ def DeBarcoder(inputfile_raw_sequences, databasefile, SeqDict, Output_folder, Ou
 		barcode_start_posi = int(each_rec.split('\t')[5])
 		barcode_end_posi = int(each_rec.split('\t')[6])		
 		
-		if seq_name not in barcode_info_dict.keys() and seq_name not in seq_withbc_morethanone_list:
+		if seq_name not in list(barcode_info_dict.keys()) and seq_name not in seq_withbc_morethanone_list:
 			barcode_info_dict[seq_name] = [barcode_name, barcode_start_posi, barcode_end_posi]
 			seq_withbc_list.append(seq_name)
 		elif seq_name in seq_withbc_morethanone_list: 
@@ -369,7 +369,7 @@ def DeBarcoder_ends(SeqDict, databasefile, Output_folder, Output_prefix, search_
 		barcode_name = each_rec.split('\t')[1] # E.g. BC01, BC24...
 		barcode_start_posi = int(each_rec.split('\t')[5])
 		barcode_end_posi = int(each_rec.split('\t')[6])		
-		if seq_name not in barcode_info_dict.keys():
+		if seq_name not in list(barcode_info_dict.keys()):
 			barcode_info_dict[seq_name] = [barcode_name, barcode_start_posi, barcode_end_posi, '+']
 			seq_withbc_list.append(seq_name)
 		else: # means that this seq has more than one barcode, then take out this seq record from seq_withbc_list, but append it to seq_withbc_morethanone_list
@@ -384,7 +384,7 @@ def DeBarcoder_ends(SeqDict, databasefile, Output_folder, Output_prefix, search_
 		barcode_name = each_rec.split('\t')[1] # E.g. BC01, BC24...
 		barcode_start_posi = int(each_rec.split('\t')[5])
 		barcode_end_posi = int(each_rec.split('\t')[6])		
-		if seq_name not in barcode_info_dict.keys() and seq_name not in seq_withbc_morethanone_list:
+		if seq_name not in list(barcode_info_dict.keys()) and seq_name not in seq_withbc_morethanone_list:
 			barcode_info_dict[seq_name] = [barcode_name, barcode_start_posi, barcode_end_posi, '-']
 			seq_withbc_list.append(seq_name)
 		elif seq_name in seq_withbc_morethanone_list: 
@@ -1130,7 +1130,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 
 	sys.stderr.write('Clustering/dechimera-izing seqs...\n')
 	log.write('#Sequence clustering/dechimera-izing#\n')
-	all_folders_loci = locusCounts.keys() # SplitBy makes a dictionary where the keys are the subcategories (and thus also the
+	all_folders_loci = list(locusCounts.keys()) # SplitBy makes a dictionary where the keys are the subcategories (and thus also the
 		# folders) and they correspond to the counts for each.
 	LocusTaxonCountDict_clustd = {} # {('C_dia_5316', 'ApP'): 28} for example, to store clusted seq count
 	LocusTaxonCountDict_chimera = {} # {('C_dia_5316', 'ApP'): [1,0,0,0,0]} for example, to store the chimerc seq count for each chimera-killing step
@@ -1145,7 +1145,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 		if not os.stat(locus_folder + ".fa").st_size == 0: # ie, the file is not empty
 			## Split sequences into separate taxon folders ##
 			taxonCounts = SplitBy(annotd_seqs_file = locus_folder + ".fa", split_by = "taxon", Multiplex_perBC_flag = Multiplex_per_barcode)					
-			all_folders_taxon = taxonCounts.keys()
+			all_folders_taxon = list(taxonCounts.keys())
 
 			for taxon_folder in all_folders_taxon:
 				if verbose_level in [1,2]:
@@ -1356,7 +1356,7 @@ class ScoringMatrix(object):
         if filename:
             fs = open(filename)
         else:
-            fs = StringIO.StringIO(text)
+            fs = io.StringIO(text)
         self.scores = []
         self.bases = None
         self.wildcard_score = wildcard_score
@@ -1431,16 +1431,16 @@ class LocalAlignment(object):
         ref = ref.upper()
         query = query.upper()
         matrix = Matrix(len(query) + 1, len(ref) + 1, (0, ' ', 0))
-        for row in xrange(1, matrix.rows):
+        for row in range(1, matrix.rows):
             matrix.set(row, 0, (0, 'i', 0))
-        for col in xrange(1, matrix.cols):
+        for col in range(1, matrix.cols):
             matrix.set(0, col, (0, 'd', 0))
         max_val = 0
         max_row = 0
         max_col = 0
         # calculate matrix
-        for row in xrange(1, matrix.rows):
-            for col in xrange(1, matrix.cols):
+        for row in range(1, matrix.rows):
+            for col in range(1, matrix.cols):
                 mm_val = matrix.get(row - 1, col - 1)[0] + self.scoring_matrix.score(query[row - 1], ref[col - 1], self.wildcard)
                 ins_run = 0
                 del_run = 0
@@ -1506,7 +1506,7 @@ class LocalAlignment(object):
             row = matrix.rows - 1
             max_val = 0
             col = 0
-            for c in xrange(1, matrix.cols):
+            for c in range(1, matrix.cols):
                 if matrix.get(row, c)[0] > max_val:
                     col = c
                     max_val = matrix.get(row, c)[0]
@@ -1546,21 +1546,21 @@ class LocalAlignment(object):
         aln.reverse()
         if self.verbose:
             self.dump_matrix(ref, query, matrix, path)
-            print aln
-            print (max_row, max_col), max_val
+            print(aln)
+            print((max_row, max_col), max_val)
         cigar = _reduce_cigar(aln)
         return Alignment(orig_query, orig_ref, row, col, cigar, max_val, ref_name, query_name, rc, self.globalalign, self.wildcard)
     def dump_matrix(self, ref, query, matrix, path, show_row=-1, show_col=-1):
         sys.stdout.write('      -      ')
         sys.stdout.write('       '.join(ref))
         sys.stdout.write('\n')
-        for row in xrange(matrix.rows):
+        for row in range(matrix.rows):
             if row == 0:
                 sys.stdout.write('-')
             else:
                 sys.stdout.write(query[row - 1])
 
-            for col in xrange(matrix.cols):
+            for col in range(matrix.cols):
                 if show_row == row and show_col == col:
                     sys.stdout.write('       *')
                 else:
@@ -1615,7 +1615,7 @@ class Alignment(object):
             if op == 'M':
                 q_len += count
                 r_len += count
-                for k in xrange(count):
+                for k in range(count):
                     if self.query[j] == self.ref[i]:
                         self.matches += 1
                     else:
@@ -1649,7 +1649,7 @@ class Alignment(object):
         working = []
         for count, op in self.cigar:
             if op == 'M':
-                for k in xrange(count):
+                for k in range(count):
                     if self.query[self.q_pos + qpos + k] == self.ref[self.r_pos + rpos + k]:
                         ext_cigar_str += 'M'
                     else:
@@ -1685,7 +1685,7 @@ class Alignment(object):
             if op == 'M':
                 qlen += count
                 rlen += count
-                for k in xrange(count):
+                for k in range(count):
                     q += self.orig_query[j]
                     r += self.orig_ref[i]
                     if self.query[j] == self.ref[i] or (self.wildcard and (self.query[j] in self.wildcard or self.ref[i] in self.wildcard)):
@@ -1696,14 +1696,14 @@ class Alignment(object):
                     j += 1
             elif op == 'D':
                 rlen += count
-                for k in xrange(count):
+                for k in range(count):
                     q += '-'
                     r += self.orig_ref[i]
                     m += ' '
                     i += 1
             elif op == 'I':
                 qlen += count
-                for k in xrange(count):
+                for k in range(count):
                     q += self.orig_query[j]
                     r += '-'
                     m += ' '
@@ -2210,7 +2210,7 @@ log.write('Sequences that cannot be assigned to locus:\t' + str(count_seq_unclas
 # locus_list = set(locus_list)
 
 taxon_list = []
-for i in LocusTaxonCountDict_unclustd.keys():
+for i in list(LocusTaxonCountDict_unclustd.keys()):
 	taxon_list.append(i[0])
 
 # Output read count per taxon per locus

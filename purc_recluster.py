@@ -278,7 +278,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 	
 	sys.stderr.write('Clustering/dechimera-izing seqs...\n')
 	log.write('#Sequence clustering/dechimera-izing#\n')
-	all_folders_loci = locusCounts.keys() # SplitBy makes a dictionary where the keys are the subcategories (and thus also the
+	all_folders_loci = list(locusCounts.keys()) # SplitBy makes a dictionary where the keys are the subcategories (and thus also the
 		# folders) and they correspond to the counts for each.
 	LocusTaxonCountDict_clustd = {}
 	LocusTaxonCountDict_chimera = {}
@@ -296,7 +296,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 				taxonCounts = SplitBy(annotd_seqs_file = locus_folder + ".fa", split_by = "taxon", Clust_particular = True, specimen_to_clust = specimen_to_cluster)					
 			else: # cluster all		
 				taxonCounts = SplitBy(annotd_seqs_file = locus_folder + ".fa", split_by = "taxon", Clust_particular = False, specimen_to_clust = '')								
-			all_folders_taxon = taxonCounts.keys()
+			all_folders_taxon = list(taxonCounts.keys())
 
 			for taxon_folder in all_folders_taxon:
 				if verbose_level in [1,2]:
@@ -604,7 +604,7 @@ LocusTaxonCountDict_clustd, LocusTaxonCountDict_unclustd, LocusTaxonCountDict_ch
 
 taxon_list = []
 locus_list = []
-for taxon_locus in LocusTaxonCountDict_clustd.keys():
+for taxon_locus in list(LocusTaxonCountDict_clustd.keys()):
 	taxon_list.append(taxon_locus[0])
 	locus_list.append(taxon_locus[1])
 taxon_list = set(taxon_list)

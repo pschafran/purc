@@ -45,14 +45,14 @@ sizeThreshold2 			= 4			# The min. number of sequences/cluster necessary for tha
 abundance_skew			= 1.9		
 
 [Dependencies]
-Usearch 				= Dependencies/usearch8.1.1756							# The name of (or path to) Usearch executable; Here use the executables come together with PURC
+Vsearch 				= Dependencies/vsearch-2.15.1-macos-x86_64/bin/vsearch							# The name of (or path to) Vsearch executable; Here use the executables come together with PURC
 Cutadapt				= Dependencies/cutadapt_source/bin/cutadapt				# The name of (or path to) Cutadapt executable; Here use the executables come together with PURC
 Muscle 					= Dependencies/muscle3.8.31								# The name of (or path to) Muscle executable; Here use the executables come together with PURC
 
 [Miscellaneous]
 Threads					= 8						# The number of threads for running BLAST
 Verbose_level 			= 2						# 0: quiet, 1: noticeable (only uchime+cutadapt output), 2: annoying (all usearch+cutadapt+muscle output)
-Remove_intermediates	= 1						# 0: keep all the intermediate files, 1: remove intermediate files
+Remove_intermediates	= 0						# 0: keep all the intermediate files, 1: remove intermediate files
 Barcode_blastDB			= barcode_blastdb		# The name of the barcode blast database 
 RefSeq_blastDB			= refseq_blastdb		# The name of the reference sequence blast database 
 seq_name_toErase		= 						# Remove this from sequence names
