@@ -4,8 +4,8 @@ Input_sequence_file		= 1-PacBio_seq.fasta	# Fasta file containing your sequencin
 in_Barcode_seq_file		= 2-barcodes.fasta		# Fasta file containing barcode names and sequences; the input for making blast database
 in_RefSeq_seq_file		= 3-ref_sequences.fasta	# Fasta file containing reference names and sequences; the input for making blast database
 Output_prefix			= purc					# The prefix for output files
-Output_folder			= purc_out				# The folder in where all purc output will be saved
-Log_file				= log					# If left empty, default time-stamped log file name will be used
+Output_folder			= purc_out_example2				# The folder in where all purc output will be saved
+Log_file				= log_example2					# If left empty, default time-stamped log file name will be used
 
 [Loci]
 Locus_name				= ApP, GAP, IBR, PGI	# The order must be identical to that in Locus-barcode-taxon_map
@@ -45,14 +45,14 @@ sizeThreshold2 			= 4			# The min. number of sequences/cluster necessary for tha
 abundance_skew			= 1.9		
 
 [Dependencies]
-Usearch 				= Dependencies/usearch8.1.1756							# The name of (or path to) Usearch executable; Here use the executables come together with PURC
+Usearch 				= Dependencies/vsearch							# The name of (or path to) Usearch executable; Here use the executables come together with PURC
 Cutadapt				= Dependencies/cutadapt_source/bin/cutadapt				# The name of (or path to) Cutadapt executable; Here use the executables come together with PURC
 Muscle 					= Dependencies/muscle3.8.31								# The name of (or path to) Muscle executable; Here use the executables come together with PURC
 
 [Miscellaneous]
 Threads					= 8						# The number of threads for running BLAST
 Verbose_level 			= 2						# 0: quiet, 1: noticeable (only uchime+cutadapt output), 2: annoying (all usearch+cutadapt+muscle output)
-Remove_intermediates	= 1						# 0: keep all the intermediate files, 1: remove intermediate files
+Remove_intermediates	= 0						# 0: keep all the intermediate files, 1: remove intermediate files
 Barcode_blastDB			= barcode_blastdb		# The name of the barcode blast database 
 RefSeq_blastDB			= refseq_blastdb		# The name of the reference sequence blast database 
 seq_name_toErase		= 						# Remove this from sequence names

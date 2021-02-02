@@ -213,6 +213,10 @@ def CheckChimericLoci(inputfile_raw_sequences, outputfile_blast, outputfile_good
 
 	return chimera_dict # as {seq1: [locus1, locus2], seq2: [locus1, locus3]}
 	
+def limaDebarcode(inputfile_raw_sequences, barcode_seq_file, Output_folder, Output_prefix):
+	pass
+	
+
 def DeBarcoder(inputfile_raw_sequences, databasefile, SeqDict, Output_folder, Output_prefix):
 	"""Blasts the raw sequences against the barcode blast database, identifies the barcode, adds the barcode ID to the 
 	sequence name, removes the barcode from sequence; returns a list of barcode names.
@@ -953,7 +957,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 					for line in file_to_read:
 						if line.startswith("H"):
 							seq = line.split("\t")[8].split(";")[0]
-							centroid = line.split("\t")[9].split(";")[0]
+							centroid = line.strip("\n").split("\t")[9].split(";")[0]
 							for key in ClusterToSeq_dict4.keys():
 								if centroid in ClusterToSeq_dict4[key]:
 									ClusterToSeq_dict4[key].append(seq)
@@ -962,7 +966,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 					for line in file_to_read:
 						if line.startswith("H"):
 							seq = line.split("\t")[8].split(";")[0]
-							centroid = line.split("\t")[9].split(";")[0]
+							centroid = line.strip("\n").split("\t")[9].split(";")[0]
 							for key in ClusterToSeq_dict4.keys():
 								if centroid in ClusterToSeq_dict4[key]:
 									ClusterToSeq_dict4[key].append(seq)
@@ -971,7 +975,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 					for line in file_to_read:
 						if line.startswith("H"):
 							seq = line.split("\t")[8].split(";")[0]
-							centroid = line.split("\t")[9].split(";")[0]
+							centroid = line.strip("\n").split("\t")[9].split(";")[0]
 							for key in ClusterToSeq_dict4.keys():
 								if centroid in ClusterToSeq_dict4[key]:
 									ClusterToSeq_dict4[key].append(seq)
@@ -1095,10 +1099,17 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 						log.write(str(all_consensus_seq) + 'is an empty file\n')
 
 				## Rename sequences in the final fasta: add taxon name ##
-				sed_cmd = "sed 's/>/>%s_/g' %s > %s" % (taxon_folder, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.fa', taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh_renamed.fa')
-				process = subprocess.Popen(sed_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
-				process.wait()
-				(out, err) = process.communicate() #the stdout and stderr
+				with open(taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.fa', "r") as renamingFile:
+					with open(taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh_renamed.fa', "w") as renamedFile:
+						for line in renamingFile:
+							if line.startswith(">"):
+								line = re.sub(r"centroid=","",line)
+								line = re.sub(r";seqs=\d+;", ";", line)
+							renamedFile.write(line)
+				#sed_cmd = "sed 's/>/>%s_/g' %s > %s" % (taxon_folder, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.fa', taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh_renamed.fa')
+				#process = subprocess.Popen(sed_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)	
+				#process.wait()
+				#(out, err) = process.communicate() #the stdout and stderr
 
 				## Remove intermediate files if requsted ##
 				if remove_intermediates == 1:
@@ -1131,6 +1142,65 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 	
 	return LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera
 
+def inferASV():
+	with open("ASV.R", "w") as rscript:
+		rscript.write('''
+# load libraries
+library(dada2);packageVersion("dada2"))
+library(Biostrings); packageVersion("Biostrings")
+library(ShortRead); packageVersion("ShortRead")
+library(ggplot2); packageVersion("ggplot2")
+library(reshape2); packageVersion("reshape2")
+library(gridExtra); packageVersion("gridExtra")
+library(phyloseq); packageVersion("phyloseq")
+'''
+		# set paths
+		path = 
+		rscript.write('''path <- "%s"
+		path.out <- "~/Desktop/DADA/Figures/"
+		path.rds <- "~/Desktop/DADA/RDS/"
+
+'''
+
+
+def dada(annotd_seqs_file, verbose_level = 1):
+	log.write("IterativeClusterDechimera\n")
+	## Split sequences into separate files/folders for each locus ##
+	sys.stderr.write('Splitting sequences into a folder/file for each locus...\n')
+	locusCounts = SplitBy(annotd_seqs_file = annoFileName, split_by = "locus", Multiplex_perBC_flag = Multiplex_per_barcode) 
+
+	sys.stderr.write('Sorting sequences into ASVs...\n')
+	log.write('#Sorting sequences into ASVs#\n')
+	all_folders_loci = list(locusCounts.keys()) # SplitBy makes a dictionary where the keys are the subcategories (and thus also the
+		# folders) and they correspond to the counts for each.
+	LocusTaxonCountDict_clustd = {} # {('C_dia_5316', 'ApP'): 28} for example, to store clusted seq count
+	LocusTaxonCountDict_chimera = {} # {('C_dia_5316', 'ApP'): [1,0,0,0,0]} for example, to store the chimerc seq count for each chimera-killing step
+	
+	## Go through each locus ##
+	for locus_folder in all_folders_loci: # locus_folder = locus name
+		os.chdir(locus_folder)
+		sys.stderr.write('\nWorking on: ' + locus_folder + '...\n')
+		if verbose_level in [1,2]:
+			log.write('\nWorking on ' + str(locus_folder) + ' ...\n')
+		
+		if not os.stat(locus_folder + ".fa").st_size == 0: # ie, the file is not empty
+			## Split sequences into separate taxon folders ##
+			taxonCounts = SplitBy(annotd_seqs_file = locus_folder + ".fa", split_by = "taxon", Multiplex_perBC_flag = Multiplex_per_barcode)					
+			all_folders_taxon = list(taxonCounts.keys())
+
+			for taxon_folder in all_folders_taxon:
+				if verbose_level in [1,2]:
+					log.write("Working on " + taxon_folder + '\n')
+				os.chdir(taxon_folder)
+				
+				if verbose_level in [1,2]:
+					log.write("\tFirst clustering\n")
+					log.write("\nAttempting to sort: " + taxon_folder + ".fa\n")
+	
+	
+	
+
+	
 '''
 Smith-Waterman aligner, modified from github.com/mbreese/swalign
 '''
@@ -1580,7 +1650,7 @@ class Alignment(object):
 
 
 ################################################ Setup ################################################
-
+SYSOS="MACOS"
 ts = time.time()
 time_stamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
 

@@ -1,4 +1,7 @@
 #!/bin/bash
+echo "setting variables..."
+sed -i 's/SYSOS.*/SYSOS=\"LINUX\"/' purc.py
+
 cd Dependencies
 
 echo 'making sure muscle is executable...'
@@ -10,8 +13,12 @@ echo 'making sure vsearch is executable...'
 ln -sf vsearch-2.15.1-linux-x86_64/bin/vsearch vsearch
 chmod +x vsearch-2.15.1-linux-x86_64/bin/vsearch
 
+echo 'install DADA2'
+Rscript install_dada2.R
+
 echo 'compiling cutadapt...'
 cd cutadapt_source
 python setup.py build_ext -i
+
 
 echo 'done.'

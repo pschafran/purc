@@ -1,4 +1,12 @@
 # PURC: Pipeline for Untangling Reticulate Complexes
+# v2.0 updated 2021 Jan 23
+
+## Changes from v1 ##
+* PURC updated for compatibility with Python3 and macOS Catalina and Big Sur
+* Usearch replaced with [vsearch](https://github.com/torognes/vsearch) for Linux and macOS
+* Amplicon sequence variant (ASVs) identification using [DADA2](https://benjjneb.github.io/dada2/index.html) introduced
+* Linux only: PacBio's [lima](https://github.com/pacificbiosciences/barcoding/) and [IsoSeq](https://github.com/PacificBiosciences/IsoSeq) replace BLAST methods for demultiplexing and concatemer detection, respectively
+* General usability improvements
 
 ## **Overview** ##
 PURC is a pipeline for inferring the underlying biological sequences (alleles, paralogs, or homeologs) from amplicon sequencing data (PacBio, Illumina, etc), de-multiplexing them (labeling each sequence with its locus and source sample), and cleaning them (removing PCR errors, sequencing errors, and chimeras). It is geared toward analyzing polyploid species complexes but is also effective for other applications; the final output of a full run includes an alignment for each locus with each homeolog or allele sequence in the amplicon data labeled with the source sample information and amount of coverage. 
