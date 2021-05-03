@@ -1,0 +1,14 @@
+S	0	481	*	.	*	*	*	species28_Cluster43;size=4;	*
+S	1	489	*	.	*	*	*	species28_Cluster34;size=7;	*
+S	2	486	*	.	*	*	*	species28_Cluster60;size=5;	*
+S	3	526	*	.	*	*	*	species28_Cluster23;size=5;	*
+S	4	485	*	.	*	*	*	species28_Cluster0;size=10;	*
+S	5	486	*	.	*	*	*	species28_Cluster1;size=5;	*
+S	6	486	*	.	*	*	*	species28_Cluster22;size=32;	*
+C	0	4	*	*	*	*	*	species28_Cluster43;size=4;	*
+C	1	7	*	*	*	*	*	species28_Cluster34;size=7;	*
+C	2	5	*	*	*	*	*	species28_Cluster60;size=5;	*
+C	3	5	*	*	*	*	*	species28_Cluster23;size=5;	*
+C	4	10	*	*	*	*	*	species28_Cluster0;size=10;	*
+C	5	5	*	*	*	*	*	species28_Cluster1;size=5;	*
+C	6	32	*	*	*	*	*	species28_Cluster22;size=32;	*

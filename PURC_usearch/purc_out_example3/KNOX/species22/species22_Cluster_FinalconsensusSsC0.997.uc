@@ -1,0 +1,10 @@
+S	0	486	*	.	*	*	*	species22_Cluster8;size=13;	*
+S	1	490	*	.	*	*	*	species22_Cluster26;size=4;	*
+S	2	486	*	.	*	*	*	species22_Cluster18;size=5;	*
+S	3	476	*	.	*	*	*	species22_Cluster21;size=8;	*
+S	4	526	*	.	*	*	*	species22_Cluster7;size=4;	*
+C	0	13	*	*	*	*	*	species22_Cluster8;size=13;	*
+C	1	4	*	*	*	*	*	species22_Cluster26;size=4;	*
+C	2	5	*	*	*	*	*	species22_Cluster18;size=5;	*
+C	3	8	*	*	*	*	*	species22_Cluster21;size=8;	*
+C	4	4	*	*	*	*	*	species22_Cluster7;size=4;	*

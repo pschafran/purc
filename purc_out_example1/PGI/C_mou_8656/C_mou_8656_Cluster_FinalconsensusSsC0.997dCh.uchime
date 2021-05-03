@@ -1,0 +1,4 @@
+0.0000	centroid=C_mou_8656_Cluster16;seqs=1;size=11	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	centroid=C_mou_8656_Cluster9;seqs=1;size=9	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	centroid=C_mou_8656_Cluster6;seqs=1;size=5	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.1620	centroid=C_mou_8656_Cluster5;seqs=1;size=4	centroid=C_mou_8656_Cluster16;seqs=1;size=11	centroid=C_mou_8656_Cluster9;seqs=1;size=9	centroid=C_mou_8656_Cluster9;seqs=1;size=9	97.0	93.0	96.0	93.5	96.0	6	1	5	23	2	8	1.0	N

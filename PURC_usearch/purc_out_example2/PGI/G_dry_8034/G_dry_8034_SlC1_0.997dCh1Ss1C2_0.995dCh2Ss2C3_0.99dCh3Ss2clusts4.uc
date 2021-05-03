@@ -1,0 +1,13 @@
+S	0	602	*	.	*	*	*	Cluster0;size=73;	*
+S	1	603	*	.	*	*	*	Cluster2;size=1;	*
+H	0	597	99.2	+	0	0	26MI18MI83MI18MI405MI47M	Cluster3;size=1;	Cluster0;size=73;
+S	2	609	*	.	*	*	*	Cluster4;size=1;	*
+H	0	603	99.7	+	0	0	D160MD43MI398M	Cluster1;size=2;	Cluster0;size=73;
+H	0	607	99.2	+	0	0	MD323MD148MD7MD109MD14M	Cluster5;size=1;	Cluster0;size=73;
+S	3	595	*	.	*	*	*	Cluster6;size=1;	*
+H	0	633	99.7	+	0	0	29D329MD72MD201M	Cluster7;size=1;	Cluster0;size=73;
+H	0	596	99.0	+	0	0	19MI40MI50MI110MI29MI295MI53M	Cluster8;size=1;	Cluster0;size=73;
+C	0	79	*	*	*	*	*	Cluster0;size=73;	*
+C	1	1	*	*	*	*	*	Cluster2;size=1;	*
+C	2	1	*	*	*	*	*	Cluster4;size=1;	*
+C	3	1	*	*	*	*	*	Cluster6;size=1;	*

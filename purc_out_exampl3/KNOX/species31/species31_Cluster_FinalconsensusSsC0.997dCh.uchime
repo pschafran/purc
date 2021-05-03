@@ -1,0 +1,5 @@
+0.0000	centroid=species31_Cluster75;seqs=1;size=65	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	centroid=species31_Cluster36;seqs=1;size=26	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	centroid=species31_Cluster35;seqs=1;size=19	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	centroid=species31_Cluster52;seqs=1;size=10	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0077	centroid=species31_Cluster4;seqs=1;size=6	centroid=species31_Cluster36;seqs=1;size=26	centroid=species31_Cluster75;seqs=1;size=65	centroid=species31_Cluster75;seqs=1;size=65	97.7	97.3	97.5	99.2	97.5	1	0	1	2	0	10	0.2	N

@@ -1,0 +1,34 @@
+#nexus
+
+BEGIN Taxa;
+DIMENSIONS ntax=5;
+TAXLABELS
+[1] 'C_mou_8735_Cluster3_size_23'
+[2] 'C_mou_8735_Cluster2_size_22'
+[3] 'C_mou_8735_Cluster14_size_10'
+[4] 'C_mou_8735_Cluster7_size_10'
+[5] 'C_mou_8735_Cluster13_size_9'
+;
+END; [Taxa]
+
+BEGIN Splits;
+DIMENSIONS ntax=5 nsplits=14;
+FORMAT labels=no weights=yes confidences=no intervals=no;
+MATRIX
+	100	 2,
+	100	 3,
+	100	 4,
+	100	 5,
+	88	 4 5,
+	96	 1 2,
+	100	 1,
+	7	 3 4,
+	5	 3 5,
+	4	 2 3,
+	0	 1 4,
+	0	 1 3,
+	0	 2 5,
+	0	 1 5,
+;
+END; [Splits]
+

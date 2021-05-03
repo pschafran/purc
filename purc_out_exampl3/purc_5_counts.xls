@@ -1,0 +1,120 @@
+Total input sequences:	6333
+Sequences with barcodes:	6333
+Sequences without barcodes:	0
+Sequences with too many barcodes:	0
+Sequences annotated:	6333
+Sequences that cannot be classified:	0
+
+**Raw reads per accession per locus**
+	KNOX
+species7	155	
+species31	360	
+species22	134	
+species26	167	
+species30	237	
+species17	168	
+species10	30	
+species33	32	
+species24	131	
+species1	143	
+species9	171	
+species25	30	
+species21	268	
+species8	224	
+species16	308	
+species12	136	
+species27	72	
+species29	328	
+species35	97	
+species14	332	
+species34	88	
+species13	219	
+species18	220	
+species3	151	
+species6	323	
+species28	252	
+species23	116	
+species5	148	
+species11	356	
+species32	180	
+species15	228	
+species36	42	
+species19	191	
+species2	212	
+
+**Final clustered sequences per accession per locus**
+	KNOX
+species7	4	
+species31	5	
+species22	4	
+species26	3	
+species30	2	
+species17	4	
+species10	1	
+species33	1	
+species24	3	
+species1	3	
+species9	4	
+species25	1	
+species21	3	
+species8	3	
+species16	4	
+species12	4	
+species27	2	
+species29	4	
+species35	3	
+species14	5	
+species34	3	
+species13	6	
+species18	7	
+species3	3	
+species6	2	
+species28	4	
+species23	4	
+species5	5	
+species11	6	
+species32	6	
+species15	6	
+species36	1	
+species19	5	
+species2	3	
+
+**Allele/copy/cluster/whatever count by locus**
+KNOX	124
+
+**Chimeric clusters/sequence count by locus**
+KNOX
+	species7	0	3	0	0	0
+	species31	0	1	4	1	0
+	species22	2	0	0	0	0
+	species26	0	1	0	0	0
+	species30	0	5	2	0	0
+	species17	0	2	3	1	0
+	species10	2	0	0	0	0
+	species33	0	0	1	0	0
+	species24	0	0	2	0	0
+	species1	1	2	1	0	0
+	species9	0	0	0	0	0
+	species25	0	0	0	0	0
+	species21	0	0	4	1	0
+	species8	0	0	1	0	0
+	species16	0	0	0	0	0
+	species12	1	1	0	0	0
+	species27	0	0	1	0	0
+	species29	8	0	2	1	0
+	species35	0	0	1	0	0
+	species14	0	1	1	0	0
+	species34	0	0	0	0	0
+	species13	6	0	0	0	0
+	species18	1	4	0	0	0
+	species3	0	0	7	0	0
+	species6	2	0	2	0	0
+	species28	3	0	1	0	0
+	species23	2	3	1	0	0
+	species5	0	0	3	0	0
+	species11	6	0	0	0	0
+	species32	0	3	1	0	0
+	species15	0	3	3	0	0
+	species36	0	0	0	0	0
+	species19	0	4	0	0	0
+	species2	2	0	6	0	0

@@ -1,0 +1,9 @@
+S	0	463	*	.	*	*	*	Cluster0;size=1;	*
+S	1	495	*	.	*	*	*	Cluster1;size=1;	*
+S	2	463	*	.	*	*	*	Cluster3;size=3;	*
+S	3	463	*	.	*	*	*	Cluster4;size=1;	*
+H	0	463	99.1	+	0	0	463M	Cluster2;size=5;	Cluster0;size=1;
+C	0	6	*	*	*	*	*	Cluster0;size=1;	*
+C	1	1	*	*	*	*	*	Cluster1;size=1;	*
+C	2	3	*	*	*	*	*	Cluster3;size=3;	*
+C	3	1	*	*	*	*	*	Cluster4;size=1;	*

@@ -1,0 +1,10 @@
+S	0	486	*	.	*	*	*	species3_Cluster67;size=9;	*
+S	1	485	*	.	*	*	*	species3_Cluster98;size=4;	*
+S	2	526	*	.	*	*	*	species3_Cluster41;size=5;	*
+S	3	529	*	.	*	*	*	species3_Cluster81;size=4;	*
+S	4	504	*	.	*	*	*	species3_Cluster35;size=5;	*
+C	0	9	*	*	*	*	*	species3_Cluster67;size=9;	*
+C	1	4	*	*	*	*	*	species3_Cluster98;size=4;	*
+C	2	5	*	*	*	*	*	species3_Cluster41;size=5;	*
+C	3	4	*	*	*	*	*	species3_Cluster81;size=4;	*
+C	4	5	*	*	*	*	*	species3_Cluster35;size=5;	*

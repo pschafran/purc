@@ -1,0 +1,113 @@
+IQ-TREE multicore version 2.0.3 for Mac OS X 64-bit built Apr 26 2020
+Developed by Bui Quang Minh, Nguyen Lam Tung, Olga Chernomor,
+Heiko Schmidt, Dominik Schrempf, Michael Woodhams.
+
+Host:    Peters-iMac.local (AVX2, FMA3, 128 GB RAM)
+Command: iqtree -s C_mou_8735/C_mou_8735_Cluster_FinalconsensusSsC0.997dCh_renamed.fa.MAFFT -m MFP -nt 2 -B 1000
+Seed:    558900 (Using SPRNG - Scalable Parallel Random Number Generator)
+Time:    Fri Jan 22 17:43:43 2021
+Kernel:  AVX+FMA - 2 threads (16 CPU cores detected)
+
+Reading alignment file C_mou_8735/C_mou_8735_Cluster_FinalconsensusSsC0.997dCh_renamed.fa.MAFFT ... Fasta format detected
+Alignment most likely contains DNA/RNA sequences
+Alignment has 3 sequences with 460 columns, 33 distinct patterns
+0 parsimony-informative, 31 singleton sites, 429 constant sites
+WARNING: Some sequence names are changed as follows:
+C_mou_8735_Cluster11;size=6 -> C_mou_8735_Cluster11_size_6
+C_mou_8735_Cluster16;size=5 -> C_mou_8735_Cluster16_size_5
+C_mou_8735_Cluster26;size=4 -> C_mou_8735_Cluster26_size_4
+
+                             Gap/Ambiguity  Composition  p-value
+   1  C_mou_8735_Cluster11_size_6    0.87%    passed     99.85%
+   2  C_mou_8735_Cluster16_size_5    1.09%    passed     99.96%
+   3  C_mou_8735_Cluster26_size_4    3.70%    passed     99.95%
+****  TOTAL                          1.88%  0 sequences failed composition chi2 test (p-value<5%; df=3)
+
+NOTE: Restoring information from model checkpoint file C_mou_8735/C_mou_8735_Cluster_FinalconsensusSsC0.997dCh_renamed.fa.MAFFT.model.gz
+
+CHECKPOINT: Initial tree restored
+WARNING: Number of threads seems too high for short alignments. Use -nt AUTO to determine best number of threads.
+Perform fast likelihood tree search using GTR+I+G model...
+CHECKPOINT: Tree restored, LogL: -803.917
+NOTE: ModelFinder requires 0 MB RAM!
+ModelFinder will test up to 286 DNA models (sample size: 460) ...
+ No. Model         -LnL         df  AIC          AICc         BIC
+  1  GTR+F         801.884      11  1625.767     1626.356     1671.211
+  2  GTR+F+I       801.885      12  1627.771     1628.469     1677.345
+  3  GTR+F+G4      801.885      12  1627.770     1628.468     1677.344
+  4  GTR+F+I+G4    802.035      13  1630.071     1630.887     1683.777
+  5  GTR+F+R2      801.964      13  1629.928     1630.744     1683.634
+  6  GTR+F+R3      801.990      15  1633.979     1635.060     1695.948
+ 14  SYM           808.263      8   1632.526     1632.845     1665.576
+ 15  SYM+I         808.264      9   1634.527     1634.927     1671.708
+ 16  SYM+G4        808.264      9   1634.527     1634.927     1671.708
+ 27  TVM+F         803.279      10  1626.557     1627.047     1667.869
+ 28  TVM+F+I       803.281      11  1628.561     1629.151     1674.005
+ 29  TVM+F+G4      803.281      11  1628.561     1629.151     1674.005
+ 40  TVMe          809.822      7   1633.643     1633.891     1662.562
+ 41  TVMe+I        809.822      8   1635.643     1635.962     1668.693
+ 42  TVMe+G4       809.822      8   1635.644     1635.963     1668.693
+ 53  TIM3+F        802.248      9   1622.495     1622.895     1659.676
+ 54  TIM3+F+I      802.248      10  1624.496     1624.986     1665.808
+ 55  TIM3+F+G4     802.248      10  1624.496     1624.986     1665.808
+ 66  TIM3e         808.619      6   1629.238     1629.423     1654.025
+ 67  TIM3e+I       808.619      7   1631.238     1631.486     1660.157
+ 68  TIM3e+G4      808.620      7   1631.239     1631.487     1660.158
+ 79  TIM2+F        802.199      9   1622.398     1622.798     1659.579
+ 80  TIM2+F+I      802.200      10  1624.401     1624.891     1665.713
+ 81  TIM2+F+G4     802.200      10  1624.399     1624.889     1665.712
+ 92  TIM2e         808.655      6   1629.310     1629.496     1654.097
+ 93  TIM2e+I       808.656      7   1631.312     1631.560     1660.231
+ 94  TIM2e+G4      808.656      7   1631.311     1631.559     1660.230
+105  TIM+F         801.892      9   1621.783     1622.183     1658.964
+106  TIM+F+I       801.892      10  1623.785     1624.275     1665.097
+107  TIM+F+G4      801.892      10  1623.784     1624.274     1665.096
+118  TIMe          808.349      6   1628.699     1628.884     1653.486
+119  TIMe+I        808.350      7   1630.699     1630.947     1659.618
+120  TIMe+G4       808.350      7   1630.699     1630.947     1659.618
+131  TPM3u+F       803.643      8   1623.285     1623.604     1656.335
+132  TPM3u+F+I     803.643      9   1625.286     1625.686     1662.467
+133  TPM3u+F+G4    803.643      9   1625.286     1625.686     1662.467
+144  TPM3+F        803.643      8   1623.285     1623.604     1656.335
+145  TPM3+F+I      803.643      9   1625.286     1625.686     1662.467
+146  TPM3+F+G4     803.643      9   1625.286     1625.686     1662.467
+157  TPM2u+F       803.594      8   1623.188     1623.507     1656.238
+158  TPM2u+F+I     803.594      9   1625.188     1625.588     1662.369
+159  TPM2u+F+G4    803.594      9   1625.188     1625.588     1662.369
+170  TPM2+F        803.594      8   1623.188     1623.507     1656.238
+171  TPM2+F+I      803.594      9   1625.188     1625.588     1662.369
+172  TPM2+F+G4     803.594      9   1625.188     1625.588     1662.369
+183  K3Pu+F        803.287      8   1622.574     1622.893     1655.623
+184  K3Pu+F+I      803.288      9   1624.575     1624.975     1661.756
+185  K3Pu+F+G4     803.288      9   1624.575     1624.975     1661.756
+196  K3P           809.909      5   1629.818     1629.950     1650.474
+197  K3P+I         809.909      6   1631.818     1632.004     1656.606
+198  K3P+G4        809.909      6   1631.819     1632.004     1656.606
+209  TN+F          802.248      8   1620.497     1620.816     1653.546
+210  TN+F+I        802.249      9   1622.497     1622.897     1659.678
+211  TN+F+G4       802.250      9   1622.499     1622.899     1659.681
+222  TNe           808.697      5   1627.395     1627.527     1648.051
+223  TNe+I         808.698      6   1629.395     1629.581     1654.183
+224  TNe+G4        808.698      6   1629.395     1629.581     1654.183
+235  HKY+F         803.643      7   1621.285     1621.533     1650.204
+236  HKY+F+I       803.643      8   1623.285     1623.605     1656.335
+237  HKY+F+G4      803.643      8   1623.286     1623.605     1656.336
+248  K2P           810.257      4   1628.514     1628.602     1645.039
+249  K2P+I         810.257      5   1630.514     1630.646     1651.170
+250  K2P+G4        810.257      5   1630.515     1630.647     1651.171
+261  F81+F         807.857      6   1627.713     1627.899     1652.500
+262  F81+F+I       807.857      7   1629.713     1629.961     1658.632
+263  F81+F+G4      807.857      7   1629.714     1629.961     1658.632
+274  JC            814.267      3   1634.535     1634.587     1646.928
+275  JC+I          814.267      4   1636.535     1636.623     1653.060
+276  JC+G4         814.268      4   1636.535     1636.623     1653.060
+Akaike Information Criterion:           TN+F
+Corrected Akaike Information Criterion: TN+F
+Bayesian Information Criterion:         K2P
+Best-fit model: K2P chosen according to BIC
+
+All model information printed to C_mou_8735/C_mou_8735_Cluster_FinalconsensusSsC0.997dCh_renamed.fa.MAFFT.model.gz
+CPU time for ModelFinder: 0.010 seconds (0h:0m:0s)
+Wall-clock time for ModelFinder: 0.008 seconds (0h:0m:0s)
+Generating 1000 samples for ultrafast bootstrap (seed: 558900)...
+ERROR: It makes no sense to perform bootstrap with less than 4 sequences.

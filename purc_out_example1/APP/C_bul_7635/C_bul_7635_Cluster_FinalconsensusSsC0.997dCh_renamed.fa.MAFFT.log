@@ -1,0 +1,184 @@
+IQ-TREE multicore version 2.0.3 for Mac OS X 64-bit built Apr 26 2020
+Developed by Bui Quang Minh, Nguyen Lam Tung, Olga Chernomor,
+Heiko Schmidt, Dominik Schrempf, Michael Woodhams.
+
+Host:    Peters-iMac.local (AVX2, FMA3, 128 GB RAM)
+Command: iqtree -s C_bul_7635/C_bul_7635_Cluster_FinalconsensusSsC0.997dCh_renamed.fa.MAFFT -m MFP -nt 2 -B 1000
+Seed:    293628 (Using SPRNG - Scalable Parallel Random Number Generator)
+Time:    Fri Jan 22 17:43:50 2021
+Kernel:  AVX+FMA - 2 threads (16 CPU cores detected)
+
+Reading alignment file C_bul_7635/C_bul_7635_Cluster_FinalconsensusSsC0.997dCh_renamed.fa.MAFFT ... Fasta format detected
+Alignment most likely contains DNA/RNA sequences
+WARNING: 4 sites contain only gaps or ambiguous characters.
+Alignment has 3 sequences with 411 columns, 9 distinct patterns
+0 parsimony-informative, 4 singleton sites, 407 constant sites
+WARNING: Some sequence names are changed as follows:
+C_bul_7635_Cluster2;size=24 -> C_bul_7635_Cluster2_size_24
+C_bul_7635_Cluster8;size=23 -> C_bul_7635_Cluster8_size_23
+C_bul_7635_Cluster6;size=4 -> C_bul_7635_Cluster6_size_4
+
+                             Gap/Ambiguity  Composition  p-value
+   1  C_bul_7635_Cluster2_size_24    0.97%    passed     99.81%
+   2  C_bul_7635_Cluster8_size_23    0.97%    passed     99.93%
+   3  C_bul_7635_Cluster6_size_4     0.97%    passed     99.97%
+****  TOTAL                          0.97%  0 sequences failed composition chi2 test (p-value<5%; df=3)
+
+NOTE: Restoring information from model checkpoint file C_bul_7635/C_bul_7635_Cluster_FinalconsensusSsC0.997dCh_renamed.fa.MAFFT.model.gz
+WARNING: 2 threads for alignment length 9 will slow down analysis
+
+CHECKPOINT: Initial tree restored
+Perform fast likelihood tree search using GTR+I+G model...
+CHECKPOINT: Tree restored, LogL: -584.720
+NOTE: ModelFinder requires 0 MB RAM!
+ModelFinder will test up to 286 DNA models (sample size: 411) ...
+ No. Model         -LnL         df  AIC          AICc         BIC
+WARNING: 2 threads for alignment length 9 will slow down analysis
+  1  GTR+F         582.482      11  1186.963     1187.625     1231.168
+WARNING: 2 threads for alignment length 9 will slow down analysis
+  2  GTR+F+I       582.480      12  1188.960     1189.744     1237.183
+WARNING: 2 threads for alignment length 9 will slow down analysis
+  3  GTR+F+G4      582.480      12  1188.961     1189.744     1237.184
+WARNING: 2 threads for alignment length 9 will slow down analysis
+  4  GTR+F+I+G4    582.500      13  1191.000     1191.917     1243.241
+WARNING: 2 threads for alignment length 9 will slow down analysis
+  5  GTR+F+R2      582.489      13  1190.979     1191.896     1243.221
+WARNING: 2 threads for alignment length 9 will slow down analysis
+  6  GTR+F+R3      582.493      15  1194.986     1196.201     1255.265
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 14  SYM           591.472      8   1198.944     1199.302     1231.093
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 15  SYM+I         591.470      9   1200.940     1201.389     1237.107
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 16  SYM+G4        591.472      9   1200.944     1201.393     1237.112
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 27  TVM+F         582.485      10  1184.969     1185.519     1225.155
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 28  TVM+F+I       582.485      11  1186.969     1187.631     1231.174
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 29  TVM+F+G4      582.485      11  1186.969     1187.631     1231.174
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 40  TVMe          591.471      7   1196.942     1197.220     1225.072
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 41  TVMe+I        591.471      8   1198.942     1199.300     1231.091
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 42  TVMe+G4       591.471      8   1198.942     1199.300     1231.091
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 53  TIM3+F        582.516      9   1183.032     1183.481     1219.199
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 54  TIM3+F+I      582.516      10  1185.032     1185.582     1225.218
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 55  TIM3+F+G4     582.516      10  1185.032     1185.582     1225.218
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 66  TIM3e         591.479      6   1194.959     1195.167     1219.070
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 67  TIM3e+I       591.479      7   1196.959     1197.237     1225.089
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 68  TIM3e+G4      591.479      7   1196.959     1197.237     1225.089
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 79  TIM2+F        584.421      9   1186.841     1187.290     1223.009
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 80  TIM2+F+I      584.421      10  1188.841     1189.391     1229.027
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 81  TIM2+F+G4     584.421      10  1188.841     1189.391     1229.027
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 92  TIM2e         593.101      6   1198.203     1198.411     1222.314
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 93  TIM2e+I       593.101      7   1200.203     1200.481     1228.333
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ 94  TIM2e+G4      593.101      7   1200.203     1200.481     1228.333
+WARNING: 2 threads for alignment length 9 will slow down analysis
+105  TIM+F         584.444      9   1186.888     1187.337     1223.056
+WARNING: 2 threads for alignment length 9 will slow down analysis
+106  TIM+F+I       584.444      10  1188.888     1189.438     1229.074
+WARNING: 2 threads for alignment length 9 will slow down analysis
+107  TIM+F+G4      584.444      10  1188.888     1189.438     1229.074
+WARNING: 2 threads for alignment length 9 will slow down analysis
+118  TIMe          593.111      6   1198.223     1198.431     1222.335
+WARNING: 2 threads for alignment length 9 will slow down analysis
+119  TIMe+I        593.111      7   1200.223     1200.501     1228.353
+WARNING: 2 threads for alignment length 9 will slow down analysis
+120  TIMe+G4       593.111      7   1200.223     1200.501     1228.353
+WARNING: 2 threads for alignment length 9 will slow down analysis
+131  TPM3u+F       582.516      8   1181.032     1181.390     1213.180
+WARNING: 2 threads for alignment length 9 will slow down analysis
+132  TPM3u+F+I     582.516      9   1183.032     1183.481     1219.199
+WARNING: 2 threads for alignment length 9 will slow down analysis
+133  TPM3u+F+G4    582.516      9   1183.032     1183.481     1219.199
+WARNING: 2 threads for alignment length 9 will slow down analysis
+144  TPM3+F        582.516      8   1181.032     1181.390     1213.180
+WARNING: 2 threads for alignment length 9 will slow down analysis
+145  TPM3+F+I      582.516      9   1183.032     1183.481     1219.199
+WARNING: 2 threads for alignment length 9 will slow down analysis
+146  TPM3+F+G4     582.516      9   1183.032     1183.481     1219.199
+WARNING: 2 threads for alignment length 9 will slow down analysis
+157  TPM2u+F       584.423      8   1184.847     1185.205     1216.995
+WARNING: 2 threads for alignment length 9 will slow down analysis
+158  TPM2u+F+I     584.423      9   1186.847     1187.295     1223.014
+WARNING: 2 threads for alignment length 9 will slow down analysis
+159  TPM2u+F+G4    584.423      9   1186.847     1187.295     1223.014
+WARNING: 2 threads for alignment length 9 will slow down analysis
+170  TPM2+F        584.423      8   1184.847     1185.205     1216.995
+WARNING: 2 threads for alignment length 9 will slow down analysis
+171  TPM2+F+I      584.423      9   1186.847     1187.295     1223.014
+WARNING: 2 threads for alignment length 9 will slow down analysis
+172  TPM2+F+G4     584.423      9   1186.847     1187.295     1223.014
+WARNING: 2 threads for alignment length 9 will slow down analysis
+183  K3Pu+F        584.447      8   1184.893     1185.251     1217.042
+WARNING: 2 threads for alignment length 9 will slow down analysis
+184  K3Pu+F+I      584.447      9   1186.893     1187.342     1223.061
+WARNING: 2 threads for alignment length 9 will slow down analysis
+185  K3Pu+F+G4     584.447      9   1186.893     1187.342     1223.061
+WARNING: 2 threads for alignment length 9 will slow down analysis
+196  K3P           593.110      5   1196.220     1196.369     1216.313
+WARNING: 2 threads for alignment length 9 will slow down analysis
+197  K3P+I         593.109      6   1198.218     1198.426     1222.330
+WARNING: 2 threads for alignment length 9 will slow down analysis
+198  K3P+G4        593.109      6   1198.218     1198.426     1222.330
+WARNING: 2 threads for alignment length 9 will slow down analysis
+209  TN+F          584.443      8   1184.886     1185.244     1217.035
+WARNING: 2 threads for alignment length 9 will slow down analysis
+210  TN+F+I        584.443      9   1186.886     1187.335     1223.053
+WARNING: 2 threads for alignment length 9 will slow down analysis
+211  TN+F+G4       584.443      9   1186.886     1187.335     1223.053
+WARNING: 2 threads for alignment length 9 will slow down analysis
+222  TNe           593.107      5   1196.214     1196.362     1216.307
+WARNING: 2 threads for alignment length 9 will slow down analysis
+223  TNe+I         593.107      6   1198.214     1198.422     1222.326
+WARNING: 2 threads for alignment length 9 will slow down analysis
+224  TNe+G4        593.107      6   1198.214     1198.422     1222.326
+WARNING: 2 threads for alignment length 9 will slow down analysis
+235  HKY+F         584.446      7   1182.892     1183.170     1211.022
+WARNING: 2 threads for alignment length 9 will slow down analysis
+236  HKY+F+I       584.446      8   1184.892     1185.250     1217.041
+WARNING: 2 threads for alignment length 9 will slow down analysis
+237  HKY+F+G4      584.446      8   1184.892     1185.250     1217.041
+WARNING: 2 threads for alignment length 9 will slow down analysis
+248  K2P           593.107      4   1194.215     1194.313     1210.289
+WARNING: 2 threads for alignment length 9 will slow down analysis
+249  K2P+I         593.107      5   1196.215     1196.363     1216.308
+WARNING: 2 threads for alignment length 9 will slow down analysis
+250  K2P+G4        593.107      5   1196.215     1196.363     1216.308
+WARNING: 2 threads for alignment length 9 will slow down analysis
+261  F81+F         584.711      6   1181.422     1181.630     1205.534
+WARNING: 2 threads for alignment length 9 will slow down analysis
+262  F81+F+I       584.711      7   1183.422     1183.700     1211.552
+WARNING: 2 threads for alignment length 9 will slow down analysis
+263  F81+F+G4      584.711      7   1183.422     1183.700     1211.552
+WARNING: 2 threads for alignment length 9 will slow down analysis
+274  JC            593.344      3   1192.688     1192.746     1204.743
+WARNING: 2 threads for alignment length 9 will slow down analysis
+275  JC+I          593.344      4   1194.688     1194.786     1210.762
+WARNING: 2 threads for alignment length 9 will slow down analysis
+276  JC+G4         593.344      4   1194.688     1194.786     1210.762
+Akaike Information Criterion:           TPM3u+F
+Corrected Akaike Information Criterion: TPM3u+F
+Bayesian Information Criterion:         JC
+Best-fit model: JC chosen according to BIC
+
+All model information printed to C_bul_7635/C_bul_7635_Cluster_FinalconsensusSsC0.997dCh_renamed.fa.MAFFT.model.gz
+CPU time for ModelFinder: 0.007 seconds (0h:0m:0s)
+Wall-clock time for ModelFinder: 0.008 seconds (0h:0m:0s)
+Generating 1000 samples for ultrafast bootstrap (seed: 293628)...
+WARNING: 2 threads for alignment length 9 will slow down analysis
+ERROR: It makes no sense to perform bootstrap with less than 4 sequences.

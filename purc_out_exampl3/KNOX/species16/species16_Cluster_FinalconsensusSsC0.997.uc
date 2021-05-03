@@ -1,0 +1,10 @@
+S	0	489	*	*	*	*	*	species16_Cluster53;size=8;	*
+S	1	486	*	*	*	*	*	species16_Cluster64;size=49;	*
+S	2	486	*	*	*	*	*	species16_Cluster29;size=24;	*
+H	2	486	100.0	+	0	0	=	species16_Cluster28;size=5;	species16_Cluster29;size=24;
+S	3	485	*	*	*	*	*	species16_Cluster38;size=18;	*
+H	3	485	99.8	+	0	0	485M	species16_Cluster143;size=13;	species16_Cluster38;size=18;
+C	0	8	*	*	*	*	*	species16_Cluster53;size=8;	*
+C	1	49	*	*	*	*	*	species16_Cluster64;size=49;	*
+C	2	29	*	*	*	*	*	species16_Cluster29;size=24;	*
+C	3	31	*	*	*	*	*	species16_Cluster38;size=18;	*

@@ -1,0 +1,11 @@
+IQ-TREE multicore version 2.0.3 for Mac OS X 64-bit built Apr 26 2020
+Developed by Bui Quang Minh, Nguyen Lam Tung, Olga Chernomor,
+Heiko Schmidt, Dominik Schrempf, Michael Woodhams.
+
+Host:    Peters-iMac.local (AVX2, FMA3, 128 GB RAM)
+Command: iqtree -s C_mou_8732/C_mou_8732_Cluster_FinalconsensusSsC0.997dCh_renamed.fa.MAFFT -m MFP -nt 2 -B 1000
+Seed:    195104 (Using SPRNG - Scalable Parallel Random Number Generator)
+Time:    Fri Jan 22 17:44:04 2021
+Kernel:  AVX+FMA - 2 threads (16 CPU cores detected)
+
+Reading alignment file C_mou_8732/C_mou_8732_Cluster_FinalconsensusSsC0.997dCh_renamed.fa.MAFFT ... ERROR: Cannot read file C_mou_8732/C_mou_8732_Cluster_FinalconsensusSsC0.997dCh_renamed.fa.MAFFT

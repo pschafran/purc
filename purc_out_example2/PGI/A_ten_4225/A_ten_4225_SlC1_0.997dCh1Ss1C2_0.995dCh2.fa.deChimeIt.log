@@ -1,0 +1,18 @@
+vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
+/Users/peter/PURC/Dependencies/vsearch --uchime_denovo A_ten_4225_SlC1_0.997dCh1Ss1C2_0.995.fa --abskew 1.9 --nonchimeras A_ten_4225_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa --uchimeout A_ten_4225_SlC1_0.997dCh1Ss1C2_0.995dCh2.uchime --log A_ten_4225_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa.deChimeIt.log
+Started  Fri Jan 22 16:03:21 2021
+8100 nt in 14 seqs, min 569, max 605, avg 579
+
+    0.28  minh
+    8.00  xn
+    1.40  dn
+    1.00  xa
+    0.80  mindiv
+    0.55  id
+       2  maxp
+
+A_ten_4225_SlC1_0.997dCh1Ss1C2_0.995.fa: 0/14 chimeras (0.0%)
+
+Finished Fri Jan 22 16:03:21 2021
+Elapsed time 00:00
+Max memory 11.8MB

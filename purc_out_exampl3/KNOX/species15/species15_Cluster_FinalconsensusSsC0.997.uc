@@ -1,0 +1,12 @@
+S	0	529	*	*	*	*	*	species15_Cluster11;size=5;	*
+S	1	520	*	*	*	*	*	species15_Cluster70;size=8;	*
+S	2	504	*	*	*	*	*	species15_Cluster89;size=4;	*
+S	3	486	*	*	*	*	*	species15_Cluster108;size=9;	*
+S	4	486	*	*	*	*	*	species15_Cluster109;size=4;	*
+S	5	485	*	*	*	*	*	species15_Cluster110;size=11;	*
+C	0	5	*	*	*	*	*	species15_Cluster11;size=5;	*
+C	1	8	*	*	*	*	*	species15_Cluster70;size=8;	*
+C	2	4	*	*	*	*	*	species15_Cluster89;size=4;	*
+C	3	9	*	*	*	*	*	species15_Cluster108;size=9;	*
+C	4	4	*	*	*	*	*	species15_Cluster109;size=4;	*
+C	5	11	*	*	*	*	*	species15_Cluster110;size=11;	*

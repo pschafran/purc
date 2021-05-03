@@ -1,0 +1,12 @@
+S	0	490	*	*	*	*	*	species32_Cluster37;size=4;	*
+S	1	490	*	*	*	*	*	species32_Cluster38;size=4;	*
+S	2	486	*	*	*	*	*	species32_Cluster56;size=26;	*
+S	3	486	*	*	*	*	*	species32_Cluster36;size=7;	*
+S	4	485	*	*	*	*	*	species32_Cluster57;size=10;	*
+S	5	476	*	*	*	*	*	species32_Cluster113;size=10;	*
+C	0	4	*	*	*	*	*	species32_Cluster37;size=4;	*
+C	1	4	*	*	*	*	*	species32_Cluster38;size=4;	*
+C	2	26	*	*	*	*	*	species32_Cluster56;size=26;	*
+C	3	7	*	*	*	*	*	species32_Cluster36;size=7;	*
+C	4	10	*	*	*	*	*	species32_Cluster57;size=10;	*
+C	5	10	*	*	*	*	*	species32_Cluster113;size=10;	*

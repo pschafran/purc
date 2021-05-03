@@ -1,0 +1,10 @@
+S	0	422	*	.	*	*	*	Cluster0;size=1;	*
+H	0	425	99.1	+	0	0	108MD262MD20MD32M	Cluster1;size=4;	Cluster0;size=1;
+S	1	424	*	.	*	*	*	Cluster2;size=2;	*
+S	2	708	*	.	*	*	*	Cluster3;size=1;	*
+S	3	428	*	.	*	*	*	Cluster4;size=1;	*
+H	3	425	99.1	+	0	0	65MI38M2I322M	Cluster5;size=1;	Cluster4;size=1;
+C	0	5	*	*	*	*	*	Cluster0;size=1;	*
+C	1	2	*	*	*	*	*	Cluster2;size=2;	*
+C	2	1	*	*	*	*	*	Cluster3;size=1;	*
+C	3	2	*	*	*	*	*	Cluster4;size=1;	*
