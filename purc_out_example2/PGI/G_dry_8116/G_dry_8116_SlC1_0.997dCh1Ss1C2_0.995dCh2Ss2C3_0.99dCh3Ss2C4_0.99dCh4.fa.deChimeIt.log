@@ -1,0 +1,18 @@
+vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
+/Users/peter/PURC/Dependencies/vsearch --uchime_denovo G_dry_8116_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa --abskew 1.9 --nonchimeras G_dry_8116_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99dCh4.fa --uchimeout G_dry_8116_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99dCh4.uchime --log G_dry_8116_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99dCh4.fa.deChimeIt.log
+Started  Fri Jan 22 16:03:15 2021
+2997 nt in 5 seqs, min 595, max 609, avg 599
+
+    0.28  minh
+    8.00  xn
+    1.40  dn
+    1.00  xa
+    0.80  mindiv
+    0.55  id
+       2  maxp
+
+G_dry_8116_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa: 0/5 chimeras (0.0%)
+
+Finished Fri Jan 22 16:03:15 2021
+Elapsed time 00:00
+Max memory 11.3MB

@@ -1,0 +1,10 @@
+vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
+/Users/peter/PURC/Dependencies/vsearch --sortbysize A_ten_6138_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3.fa --output A_ten_6138_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2.fa --minsize 1 --log A_ten_6138_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2.fa.sortIt_size.log
+Started  Fri Jan 22 16:02:12 2021
+17206 nt in 43 seqs, min 386, max 427, avg 400
+
+Median abundance: 1
+
+Finished Fri Jan 22 16:02:12 2021
+Elapsed time 00:00
+Max memory 1.0MB

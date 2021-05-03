@@ -1,0 +1,283 @@
+Total input sequences:	7530
+Concatemers (multi-locus seqs):	67
+Sequences with barcodes:	6603
+Sequences without barcodes:	795
+Sequences with too many barcodes:	65
+Sequences annotated:	6460
+Sequences that cannot be classified:	143
+
+**Raw reads per accession per locus**
+	APP	GAP	IBR	PGI
+C_mon_7941	0	0	82	75	
+G_xbr_7806	10	25	20	38	
+C_mon_5839	0	0	12	30	
+G_dry_7653	50	23	41	32	
+G_dry_8034	12	69	55	82	
+G_dry_8116	0	0	9	71	
+C_fra_7303	21	25	0	0	
+G_oya_8739	39	40	45	29	
+C_tenu_7648	122	123	0	16	
+C_mon_8672	0	0	92	42	
+G_rob_8119	8	11	34	66	
+G_dry_4601	39	31	69	39	
+C_fra_8657	42	33	0	0	
+A_jap_8740	57	76	0	0	
+G_dry_7059	12	30	24	72	
+G_dry_6457	73	55	91	81	
+C_fra_8049	86	83	0	50	
+A_jap_8703	49	52	21	46	
+C_fra_8519	24	51	0	0	
+C_fra_7620	90	44	0	0	
+C_fra_7622	88	42	0	19	
+C_ree_7038	63	81	12	21	
+A_ten_6138	259	62	139	0	
+G_rob_8258	71	42	17	21	
+C_tenu_7798	24	51	0	0	
+G_sp_8737	115	32	42	0	
+G_sp_8736	10	23	0	0	
+C_fra_8673	29	53	0	1	
+C_dic_8716	51	68	0	23	
+G_dry_7000	25	59	10	3	
+G_rem_3066	35	22	61	59	
+C_mil_6761	35	41	21	20	
+G_dis_8629	60	58	54	45	
+G_con_8053	22	42	84	37	
+A_ten_4225	27	42	31	42	
+C_fra_7106	243	78	49	55	
+C_tenn_4513	112	1	38	33	
+C_fra_7616	58	43	0	0	
+G_oya_7983	11	26	31	0	
+C_mon_7002	0	0	67	18	
+G_con_8120	30	16	18	23	
+C_pro_7518	47	41	25	32	
+C_dia_7994	10	16	38	37	
+
+**Final clustered sequences per accession per locus**
+	APP	GAP	IBR	PGI
+C_mon_7941	0	0	2	1	
+G_xbr_7806	2	3	2	2	
+C_mon_5839	0	0	1	1	
+G_dry_7653	2	2	2	1	
+G_dry_8034	1	2	2	1	
+G_dry_8116	0	0	1	1	
+C_fra_7303	1	1	0	0	
+G_oya_8739	2	2	1	1	
+C_tenu_7648	3	4	0	2	
+C_mon_8672	0	0	2	1	
+G_rob_8119	1	1	1	2	
+G_dry_4601	1	1	2	2	
+C_fra_8657	3	3	0	0	
+A_jap_8740	2	3	0	0	
+G_dry_7059	1	2	2	1	
+G_dry_6457	1	1	2	1	
+C_fra_8049	4	4	0	3	
+A_jap_8703	2	2	1	3	
+C_fra_8519	2	1	0	0	
+C_fra_7620	4	4	0	0	
+C_fra_7622	5	4	0	1	
+C_ree_7038	2	5	0	2	
+A_ten_6138	2	1	2	0	
+G_rob_8258	3	2	2	1	
+C_tenu_7798	2	2	0	0	
+G_sp_8737	2	2	3	0	
+G_sp_8736	1	2	0	0	
+C_fra_8673	3	2	0	0	
+C_dic_8716	2	1	0	2	
+G_dry_7000	3	2	1	0	
+G_rem_3066	1	1	1	1	
+C_mil_6761	1	1	1	1	
+G_dis_8629	1	1	1	1	
+G_con_8053	2	3	3	2	
+A_ten_4225	2	2	2	1	
+C_fra_7106	6	3	2	3	
+C_tenn_4513	2	0	1	2	
+C_fra_7616	2	2	0	0	
+G_oya_7983	1	1	1	0	
+C_mon_7002	0	0	2	1	
+G_con_8120	2	2	2	2	
+C_pro_7518	2	1	2	1	
+C_dia_7994	0	2	1	2	
+
+**Allele/copy/cluster/whatever count by locus**
+APP	79
+GAP	78
+IBR	48
+PGI	46
+
+**Chimeric clusters/sequence count by locus**
+APP
+	C_mon_7941
+	G_xbr_7806	0	0	0	0	0
+	C_mon_5839
+	G_dry_7653	0	0	0	0	0
+	G_dry_8034	0	0	0	0	0
+	G_dry_8116
+	C_fra_7303	0	0	0	0	0
+	G_oya_8739	0	0	0	0	0
+	C_tenu_7648	0	0	0	0	0
+	C_mon_8672
+	G_rob_8119	0	0	0	0	0
+	G_dry_4601	0	0	0	0	0
+	C_fra_8657	0	0	0	0	0
+	A_jap_8740	0	0	0	0	0
+	G_dry_7059	0	0	0	0	0
+	G_dry_6457	0	0	0	0	0
+	C_fra_8049	0	0	0	0	0
+	A_jap_8703	0	0	0	1	0
+	C_fra_8519	0	0	0	0	0
+	C_fra_7620	0	0	0	0	0
+	C_fra_7622	1	0	0	0	0
+	C_ree_7038	0	0	0	0	0
+	A_ten_6138	0	0	0	0	0
+	G_rob_8258	0	0	0	0	0
+	C_tenu_7798	0	0	0	0	0
+	G_sp_8737	0	0	0	0	0
+	G_sp_8736	0	0	0	0	0
+	C_fra_8673	0	0	0	0	0
+	C_dic_8716	0	0	0	0	0
+	G_dry_7000	0	0	0	0	0
+	G_rem_3066	0	0	0	0	0
+	C_mil_6761	0	0	0	0	0
+	G_dis_8629	0	0	0	0	0
+	G_con_8053	0	0	0	0	0
+	A_ten_4225	0	0	0	0	0
+	C_fra_7106	0	0	0	0	0
+	C_tenn_4513	0	0	0	0	0
+	C_fra_7616	0	0	0	0	0
+	G_oya_7983	0	0	0	0	0
+	C_mon_7002
+	G_con_8120	0	0	0	0	0
+	C_pro_7518	0	0	0	0	0
+	C_dia_7994	0	0	0	0	0
+GAP
+	C_mon_7941
+	G_xbr_7806	0	0	0	0	0
+	C_mon_5839
+	G_dry_7653	0	0	0	0	0
+	G_dry_8034	0	0	0	0	0
+	G_dry_8116
+	C_fra_7303	0	0	0	0	0
+	G_oya_8739	0	0	0	0	0
+	C_tenu_7648	4	0	0	0	0
+	C_mon_8672
+	G_rob_8119	0	0	0	0	0
+	G_dry_4601	0	0	0	0	0
+	C_fra_8657	1	0	0	0	0
+	A_jap_8740	0	0	1	1	0
+	G_dry_7059	0	0	0	0	0
+	G_dry_6457	0	0	0	0	0
+	C_fra_8049	3	1	0	0	0
+	A_jap_8703	0	0	0	0	0
+	C_fra_8519	0	0	0	0	0
+	C_fra_7620	1	0	0	0	0
+	C_fra_7622	0	1	0	1	0
+	C_ree_7038	0	0	0	0	0
+	A_ten_6138	0	0	0	0	0
+	G_rob_8258	0	0	0	0	0
+	C_tenu_7798	0	0	0	0	0
+	G_sp_8737	0	0	0	0	0
+	G_sp_8736	0	0	0	0	0
+	C_fra_8673	0	0	0	0	0
+	C_dic_8716	0	0	0	0	0
+	G_dry_7000	0	0	0	0	0
+	G_rem_3066	0	0	0	0	0
+	C_mil_6761	0	0	0	0	0
+	G_dis_8629	0	0	0	0	0
+	G_con_8053	0	0	0	0	0
+	A_ten_4225	0	0	0	0	0
+	C_fra_7106	0	0	0	0	0
+	C_tenn_4513	0	0	0	0	0
+	C_fra_7616	1	0	0	0	0
+	G_oya_7983	0	0	0	0	0
+	C_mon_7002
+	G_con_8120	0	0	0	0	0
+	C_pro_7518	0	0	0	0	0
+	C_dia_7994	0	0	0	0	0
+IBR
+	C_mon_7941	0	0	0	0	0
+	G_xbr_7806	0	0	0	0	0
+	C_mon_5839	0	0	0	0	0
+	G_dry_7653	0	0	0	0	0
+	G_dry_8034	0	0	0	0	0
+	G_dry_8116	0	0	0	0	0
+	C_fra_7303
+	G_oya_8739	0	0	0	0	0
+	C_tenu_7648
+	C_mon_8672	0	0	0	0	0
+	G_rob_8119	0	0	0	0	0
+	G_dry_4601	0	0	0	0	0
+	C_fra_8657
+	A_jap_8740
+	G_dry_7059	0	0	0	0	0
+	G_dry_6457	0	0	0	0	0
+	C_fra_8049
+	A_jap_8703	0	0	0	0	0
+	C_fra_8519
+	C_fra_7620
+	C_fra_7622
+	C_ree_7038	0	0	0	0	0
+	A_ten_6138	0	0	0	0	0
+	G_rob_8258	0	0	0	0	0
+	C_tenu_7798
+	G_sp_8737	1	0	0	0	0
+	G_sp_8736
+	C_fra_8673
+	C_dic_8716
+	G_dry_7000	0	0	0	0	0
+	G_rem_3066	0	0	0	0	0
+	C_mil_6761	0	0	0	0	0
+	G_dis_8629	0	0	0	0	0
+	G_con_8053	0	0	0	0	0
+	A_ten_4225	0	0	0	0	0
+	C_fra_7106	0	0	0	0	0
+	C_tenn_4513	0	0	0	0	0
+	C_fra_7616
+	G_oya_7983	0	0	0	0	0
+	C_mon_7002	0	0	0	0	0
+	G_con_8120	0	0	0	0	0
+	C_pro_7518	0	0	0	0	0
+	C_dia_7994	0	0	0	0	0
+PGI
+	C_mon_7941	0	0	0	0	0
+	G_xbr_7806	0	0	0	0	0
+	C_mon_5839	0	0	0	0	0
+	G_dry_7653	0	0	0	0	0
+	G_dry_8034	0	0	0	0	0
+	G_dry_8116	0	0	0	0	0
+	C_fra_7303
+	G_oya_8739	0	0	0	0	0
+	C_tenu_7648	0	0	0	0	0
+	C_mon_8672	0	0	0	0	0
+	G_rob_8119	0	0	0	0	0
+	G_dry_4601	0	0	0	0	0
+	C_fra_8657
+	A_jap_8740
+	G_dry_7059	0	0	0	0	0
+	G_dry_6457	0	0	0	0	0
+	C_fra_8049	1	0	2	1	0
+	A_jap_8703	0	0	0	0	0
+	C_fra_8519
+	C_fra_7620
+	C_fra_7622	0	0	1	0	0
+	C_ree_7038	0	0	1	0	0
+	A_ten_6138
+	G_rob_8258	0	0	0	0	0
+	C_tenu_7798
+	G_sp_8737
+	G_sp_8736
+	C_fra_8673	0	0	0	0	0
+	C_dic_8716	0	0	0	0	0
+	G_dry_7000	0	0	0	0	0
+	G_rem_3066	0	0	0	0	0
+	C_mil_6761	0	0	0	0	0
+	G_dis_8629	0	0	0	0	0
+	G_con_8053	6	0	1	0	0
+	A_ten_4225	0	0	0	0	0
+	C_fra_7106	1	0	0	0	0
+	C_tenn_4513	1	2	0	0	0
+	C_fra_7616
+	G_oya_7983
+	C_mon_7002	0	0	0	0	0
+	G_con_8120	0	0	0	0	0
+	C_pro_7518	0	0	0	0	0
+	C_dia_7994	0	0	0	0	0

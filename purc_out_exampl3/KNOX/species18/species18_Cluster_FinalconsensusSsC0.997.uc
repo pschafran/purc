@@ -1,0 +1,14 @@
+S	0	526	*	*	*	*	*	species18_Cluster13;size=13;	*
+S	1	512	*	*	*	*	*	species18_Cluster59;size=6;	*
+S	2	505	*	*	*	*	*	species18_Cluster68;size=4;	*
+S	3	489	*	*	*	*	*	species18_Cluster77;size=13;	*
+S	4	486	*	*	*	*	*	species18_Cluster96;size=21;	*
+S	5	486	*	*	*	*	*	species18_Cluster97;size=6;	*
+S	6	485	*	*	*	*	*	species18_Cluster126;size=11;	*
+C	0	13	*	*	*	*	*	species18_Cluster13;size=13;	*
+C	1	6	*	*	*	*	*	species18_Cluster59;size=6;	*
+C	2	4	*	*	*	*	*	species18_Cluster68;size=4;	*
+C	3	13	*	*	*	*	*	species18_Cluster77;size=13;	*
+C	4	21	*	*	*	*	*	species18_Cluster96;size=21;	*
+C	5	6	*	*	*	*	*	species18_Cluster97;size=6;	*
+C	6	11	*	*	*	*	*	species18_Cluster126;size=11;	*

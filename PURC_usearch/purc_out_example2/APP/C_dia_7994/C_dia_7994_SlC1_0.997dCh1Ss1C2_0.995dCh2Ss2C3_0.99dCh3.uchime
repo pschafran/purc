@@ -1,0 +1,5 @@
+0.0000	Cluster2;size=3;	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	Cluster4;size=3;	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	Cluster3;size=2;	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	Cluster0;size=1;	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0198	Cluster1;size=1;	Cluster3;size=2;	Cluster2;size=3;	97.3	96.3	96.8	95.5	96.5	8	6	4	3	1	0	0.7	N

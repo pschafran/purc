@@ -1,0 +1,133 @@
+Total input sequences:	3095
+Concatemers (multi-locus seqs):	12
+Sequences with barcodes:	3083
+Sequences without barcodes:	0
+Sequences with too many barcodes:	0
+Sequences annotated:	3083
+Sequences that cannot be classified:	0
+
+**Raw reads per accession per locus**
+	APP	IBR	GAP	PGI
+C_pro_7518	47	25	41	32	
+C_mon_8672	243	141	78	96	
+C_mou_8656	86	0	82	50	
+C_mou_8734	90	0	43	0	
+C_fra_8657	16	0	24	0	
+C_fra_7303	19	0	24	0	
+C_mil_6761	35	21	41	20	
+C_tenu_7648	122	82	122	91	
+C_mou_8735	88	0	42	19	
+C_mon_5839	10	50	16	67	
+C_ree_7038	63	79	82	39	
+C_tenn_4513	113	59	2	33	
+C_mou_8732	29	0	51	1	
+C_bul_7635	65	62	0	48	
+C_fra_7616	58	0	43	0	
+C_pel_8733	51	0	68	23	
+C_tenu_7798	24	0	51	0	
+C_mou_8665	25	0	51	0	
+
+**Final clustered sequences per accession per locus**
+	APP	IBR	GAP	PGI
+C_pro_7518	2	1	1	1	
+C_mon_8672	5	6	3	3	
+C_mou_8656	3	0	4	3	
+C_mou_8734	4	0	3	0	
+C_fra_8657	1	0	1	0	
+C_fra_7303	1	0	1	0	
+C_mil_6761	1	1	1	1	
+C_tenu_7648	3	2	5	3	
+C_mou_8735	6	0	2	1	
+C_mon_5839	0	2	1	2	
+C_ree_7038	1	1	3	3	
+C_tenn_4513	2	2	0	2	
+C_mou_8732	3	0	1	0	
+C_bul_7635	3	1	0	1	
+C_fra_7616	2	0	2	0	
+C_pel_8733	2	0	1	1	
+C_tenu_7798	1	0	2	0	
+C_mou_8665	2	0	1	0	
+
+**Allele/copy/cluster/whatever count by locus**
+APP	42
+IBR	16
+GAP	32
+PGI	21
+
+**Chimeric clusters/sequence count by locus**
+APP
+	C_pro_7518	0	0	0	0	0
+	C_mon_8672	1	0	0	0	0
+	C_mou_8656	0	0	0	0	0
+	C_mou_8734	0	0	0	0	0
+	C_fra_8657	0	0	0	0	0
+	C_fra_7303	0	0	0	0	0
+	C_mil_6761	0	0	0	0	0
+	C_tenu_7648	0	0	0	0	0
+	C_mou_8735	0	0	0	0	0
+	C_mon_5839	0	0	0	0	0
+	C_ree_7038	0	0	0	0	0
+	C_tenn_4513	0	0	0	0	0
+	C_mou_8732	0	0	0	0	0
+	C_bul_7635	0	0	0	0	0
+	C_fra_7616	0	0	0	0	0
+	C_pel_8733	0	0	0	0	0
+	C_tenu_7798	0	0	0	0	0
+	C_mou_8665	0	0	0	0	0
+IBR
+	C_pro_7518	0	0	0	0	0
+	C_mon_8672	0	0	0	0	0
+	C_mou_8656
+	C_mou_8734
+	C_fra_8657
+	C_fra_7303
+	C_mil_6761	0	0	0	0	0
+	C_tenu_7648	0	0	0	0	0
+	C_mou_8735
+	C_mon_5839	0	0	0	0	0
+	C_ree_7038	0	0	0	0	0
+	C_tenn_4513	2	0	0	0	0
+	C_mou_8732
+	C_bul_7635	0	0	0	0	0
+	C_fra_7616
+	C_pel_8733
+	C_tenu_7798
+	C_mou_8665
+GAP
+	C_pro_7518	0	0	0	0	0
+	C_mon_8672	0	0	0	0	0
+	C_mou_8656	1	0	1	0	0
+	C_mou_8734	1	0	0	0	0
+	C_fra_8657	1	0	0	0	0
+	C_fra_7303	0	0	0	0	0
+	C_mil_6761	0	0	0	0	0
+	C_tenu_7648	0	0	0	0	0
+	C_mou_8735	0	0	0	0	0
+	C_mon_5839	0	0	0	0	0
+	C_ree_7038	1	0	0	0	0
+	C_tenn_4513	0	0	0	0	0
+	C_mou_8732	0	0	0	0	0
+	C_bul_7635
+	C_fra_7616	1	0	0	0	0
+	C_pel_8733	0	0	0	0	0
+	C_tenu_7798	0	0	0	0	0
+	C_mou_8665	0	0	0	0	0
+PGI
+	C_pro_7518	0	0	0	0	0
+	C_mon_8672	0	0	0	0	0
+	C_mou_8656	2	0	0	0	0
+	C_mou_8734
+	C_fra_8657
+	C_fra_7303
+	C_mil_6761	0	0	0	0	0
+	C_tenu_7648	0	0	0	0	0
+	C_mou_8735	0	0	0	0	0
+	C_mon_5839	0	0	0	0	0
+	C_ree_7038	0	0	0	0	0
+	C_tenn_4513	2	0	0	0	0
+	C_mou_8732	0	0	0	0	0
+	C_bul_7635	0	0	0	0	0
+	C_fra_7616
+	C_pel_8733	0	0	0	0	0
+	C_tenu_7798
+	C_mou_8665

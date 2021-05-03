@@ -1,0 +1,11 @@
+S	0	407	*	*	*	*	*	C_fra_7622_Cluster2;size=22;	*
+S	1	407	*	*	*	*	*	C_fra_7622_Cluster3;size=18;	*
+H	1	407	99.8	+	0	0	407M	C_fra_7622_Cluster8;size=5;	C_fra_7622_Cluster3;size=18;
+S	2	406	*	*	*	*	*	C_fra_7622_Cluster7;size=10;	*
+S	3	406	*	*	*	*	*	C_fra_7622_Cluster13;size=9;	*
+S	4	405	*	*	*	*	*	C_fra_7622_Cluster14;size=10;	*
+C	0	22	*	*	*	*	*	C_fra_7622_Cluster2;size=22;	*
+C	1	23	*	*	*	*	*	C_fra_7622_Cluster3;size=18;	*
+C	2	10	*	*	*	*	*	C_fra_7622_Cluster7;size=10;	*
+C	3	9	*	*	*	*	*	C_fra_7622_Cluster13;size=9;	*
+C	4	10	*	*	*	*	*	C_fra_7622_Cluster14;size=10;	*

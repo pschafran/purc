@@ -1,0 +1,16 @@
+IQ-TREE multicore version 2.0.3 for Mac OS X 64-bit built Apr 26 2020
+Developed by Bui Quang Minh, Nguyen Lam Tung, Olga Chernomor,
+Heiko Schmidt, Dominik Schrempf, Michael Woodhams.
+
+Host:    Peters-iMac.local (AVX2, FMA3, 128 GB RAM)
+Command: iqtree -s C_mon_8672/C_mon_8672_Cluster_FinalconsensusSsC0.997dCh_renamed.fa -m MFP -nt 2 -B 1000
+Seed:    451930 (Using SPRNG - Scalable Parallel Random Number Generator)
+Time:    Fri Jan 22 17:35:17 2021
+Kernel:  AVX+FMA - 2 threads (16 CPU cores detected)
+
+Reading alignment file C_mon_8672/C_mon_8672_Cluster_FinalconsensusSsC0.997dCh_renamed.fa ... Fasta format detected
+ERROR: Sequence C_mon_8672_Cluster3;size=46 contains too many characters (407)
+ERROR: Sequence C_mon_8672_Cluster25;size=31 contains too many characters (407)
+ERROR: Sequence C_mon_8672_Cluster45;size=25 contains not enough characters (403)
+ERROR: Sequence C_mon_8672_Cluster47;size=4 contains not enough characters (403)
+ERROR: 

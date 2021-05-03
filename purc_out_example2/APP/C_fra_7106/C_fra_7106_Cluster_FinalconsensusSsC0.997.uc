@@ -1,0 +1,10 @@
+S	0	407	*	*	*	*	*	C_fra_7106_Cluster3;size=46;	*
+S	1	407	*	*	*	*	*	C_fra_7106_Cluster25;size=31;	*
+S	2	404	*	*	*	*	*	C_fra_7106_Cluster24;size=78;	*
+S	3	403	*	*	*	*	*	C_fra_7106_Cluster45;size=25;	*
+S	4	403	*	*	*	*	*	C_fra_7106_Cluster47;size=4;	*
+C	0	46	*	*	*	*	*	C_fra_7106_Cluster3;size=46;	*
+C	1	31	*	*	*	*	*	C_fra_7106_Cluster25;size=31;	*
+C	2	78	*	*	*	*	*	C_fra_7106_Cluster24;size=78;	*
+C	3	25	*	*	*	*	*	C_fra_7106_Cluster45;size=25;	*
+C	4	4	*	*	*	*	*	C_fra_7106_Cluster47;size=4;	*

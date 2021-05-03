@@ -1,0 +1,3 @@
+0.0000	centroid=C_mon_8672_Cluster14;seqs=1;size=46	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	centroid=C_mon_8672_Cluster22;seqs=1;size=17	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.1014	centroid=C_mon_8672_Cluster4;seqs=1;size=7	centroid=C_mon_8672_Cluster14;seqs=1;size=46	centroid=C_mon_8672_Cluster22;seqs=1;size=17	centroid=C_mon_8672_Cluster22;seqs=1;size=17	98.4	95.4	98.0	95.6	98.0	4	2	3	17	1	3	0.4	N

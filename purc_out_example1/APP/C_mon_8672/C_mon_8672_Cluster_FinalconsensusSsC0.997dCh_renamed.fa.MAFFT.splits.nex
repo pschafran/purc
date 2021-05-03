@@ -1,0 +1,35 @@
+#nexus
+
+BEGIN Taxa;
+DIMENSIONS ntax=5;
+TAXLABELS
+[1] 'C_mon_8672_Cluster24_size_78'
+[2] 'C_mon_8672_Cluster3_size_46'
+[3] 'C_mon_8672_Cluster25_size_31'
+[4] 'C_mon_8672_Cluster45_size_25'
+[5] 'C_mon_8672_Cluster47_size_4'
+;
+END; [Taxa]
+
+BEGIN Splits;
+DIMENSIONS ntax=5 nsplits=15;
+FORMAT labels=no weights=yes confidences=no intervals=no;
+MATRIX
+	100	 2,
+	100	 3,
+	98	 2 3,
+	100	 5,
+	31	 1 4,
+	100	 4,
+	100	 1,
+	35	 4 5,
+	33	 1 5,
+	1	 2 5,
+	1	 3 4,
+	1	 2 4,
+	1	 3 5,
+	0	 1 2,
+	0	 1 3,
+;
+END; [Splits]
+

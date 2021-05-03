@@ -1,0 +1,13 @@
+S	0	407	*	.	*	*	*	C_mon_8672_Cluster0;size=31;	*
+S	1	406	*	.	*	*	*	C_mon_8672_Cluster8;size=4;	*
+S	2	403	*	.	*	*	*	C_mon_8672_Cluster13;size=25;	*
+S	3	407	*	.	*	*	*	C_mon_8672_Cluster12;size=46;	*
+S	4	406	*	.	*	*	*	C_mon_8672_Cluster19;size=4;	*
+S	5	404	*	.	*	*	*	C_mon_8672_Cluster3;size=69;	*
+H	5	424	100.0	+	0	0	20D404M	C_mon_8672_Cluster14;size=4;	C_mon_8672_Cluster3;size=69;
+C	0	31	*	*	*	*	*	C_mon_8672_Cluster0;size=31;	*
+C	1	4	*	*	*	*	*	C_mon_8672_Cluster8;size=4;	*
+C	2	25	*	*	*	*	*	C_mon_8672_Cluster13;size=25;	*
+C	3	46	*	*	*	*	*	C_mon_8672_Cluster12;size=46;	*
+C	4	4	*	*	*	*	*	C_mon_8672_Cluster19;size=4;	*
+C	5	73	*	*	*	*	*	C_mon_8672_Cluster3;size=69;	*
