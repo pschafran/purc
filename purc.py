@@ -765,7 +765,8 @@ def annotateIt(filetoannotate, outFile, failsFile, verbose_level, Multiplex_perB
 		else:
 			try:
 				locus_name = re.search('LOCUS=(\w+)/', refseq_name, re.IGNORECASE).group(1)
-				locusList.append(locus_name)
+				if not locus_name in locusList:
+					locusList.append(locus_name)
 				#i.e., gets the unique barcode that can link to a specific sample; i.e. BC01, BC02, BC03...
 			except:
 				sys.exit('ERROR in parsing locus annotations in the reference sequences; should be in the format of >locus=X/group=XY/ref_taxon=XYZ')
@@ -1378,7 +1379,7 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
 				except:
 					print("WARNING: No ASVs found for %s" % taxon_folder)
 					if verbose_level in [1,2]:
-						log.write(str(taxon_folder + '_ASVs.fasta') + 'is an empty file\n')
+						log.write(str(taxon_folder + '_ASVs.fasta ') + 'is an empty file\n')
 
 				## Count chimeras
 				try:
@@ -1390,7 +1391,7 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
 							LocusTaxonCountDict_chimera[taxon_folder, locus_folder] = 1
 				except:
 					if verbose_level in [1,2]:
-						log.write(str(taxon_folder + '_chimeras.fasta') + 'is an empty file\n')
+						log.write(str(taxon_folder + '_chimeras.fasta ') + 'is an empty file\n')
 					LocusTaxonCountDict_chimera[taxon_folder, locus_folder] = 0
 				os.chdir("..")
 		locusCount += 1
@@ -2391,12 +2392,15 @@ for each_locus in locus_list:
 	#log.write(each_locus + '\t')
 	for each_taxon in set(taxon_list):
 		try:
-			count_output.write('\t' + each_taxon + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][0]) + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][1]) + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][2]) + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][3]) + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][4]))
+			if Clustering_method == "OTU":
+				count_output.write('\t' + each_taxon + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][0]) + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][1]) + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][2]) + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][3]) + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][4]))
+			elif Clustering_method =="ASV":
+				count_output.write('\t' + each_taxon + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus]))
 		except:
 			count_output.write('\t' + each_taxon)
 
 		count_output.write('\n')
-
+count_output.close()
 ## Aligning the sequences ##
 if Align == 1: # Aligning can be turned on/off in the configuration file
 	fastas = glob.glob("*_clustered_reconsensus.fa")
