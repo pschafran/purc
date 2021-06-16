@@ -1,4 +1,4 @@
-S	0	548	*	*	*	*	*	G_con_8120_Cluster1;size=14;	*
-S	1	516	*	*	*	*	*	G_con_8120_Cluster2;size=7;	*
-C	0	14	*	*	*	*	*	G_con_8120_Cluster1;size=14;	*
-C	1	7	*	*	*	*	*	G_con_8120_Cluster2;size=7;	*
+S	0	914	*	*	*	*	*	G_con_8120_Cluster2;size=11;	*
+S	1	882	*	*	*	*	*	G_con_8120_Cluster3;size=4;	*
+C	0	11	*	*	*	*	*	G_con_8120_Cluster2;size=11;	*
+C	1	4	*	*	*	*	*	G_con_8120_Cluster3;size=4;	*

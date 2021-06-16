@@ -1,11 +1,13 @@
 #!/bin/bash
 echo "setting variables..."
-sed -i "" 's/SYSOS.*/SYSOS=\"MACOS\"/' purc.py
+cp purc.py purc.py.bak
+sed 's/SYSOS=\".*\"/SYSOS=\"Darwin\"/' purc.py.bak > purc.py
 
 cd Dependencies
 
 echo 'making sure muscle is executable...'
-chmod +x muscle3.8.31
+ln -sf muscle3.8.31_i86darwin64 muscle3.8.31
+chmod +x muscle3.8.31_i86darwin64
 
 echo 'making sure vsearch is executable...'
 ln -sf vsearch-2.15.1-macos-x86_64/bin/vsearch vsearch

@@ -1,2 +1,2 @@
-S	0	443	*	*	*	*	*	C_fra_8519_Cluster2;size=46;	*
-C	0	46	*	*	*	*	*	C_fra_8519_Cluster2;size=46;	*
+S	0	941	*	*	*	*	*	C_fra_8519_Cluster2;size=44;	*
+C	0	44	*	*	*	*	*	C_fra_8519_Cluster2;size=44;	*

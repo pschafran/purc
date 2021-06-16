@@ -1,2 +1,2 @@
-S	0	436	*	*	*	*	*	A_ten_6138_Cluster2;size=55;	*
-C	0	55	*	*	*	*	*	A_ten_6138_Cluster2;size=55;	*
+S	0	961	*	*	*	*	*	A_ten_6138_Cluster0;size=52;	*
+C	0	52	*	*	*	*	*	A_ten_6138_Cluster0;size=52;	*

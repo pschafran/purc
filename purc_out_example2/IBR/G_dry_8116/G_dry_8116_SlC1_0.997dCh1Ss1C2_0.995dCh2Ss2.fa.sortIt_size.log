@@ -1,10 +1,10 @@
-vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
-/Users/peter/PURC/Dependencies/vsearch --sortbysize G_dry_8116_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa --output G_dry_8116_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2.fa --minsize 1 --log G_dry_8116_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2.fa.sortIt_size.log
-Started  Fri Jan 22 16:03:59 2021
-1399 nt in 3 seqs, min 463, max 470, avg 466
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --sortbysize G_dry_8116_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa --output G_dry_8116_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2.fa --minsize 1 --log G_dry_8116_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2.fa.sortIt_size.log
+Started  Tue Jun 15 13:54:07 2021
+2542 nt in 3 seqs, min 817, max 865, avg 847
 
 Median abundance: 2
 
-Finished Fri Jan 22 16:03:59 2021
+Finished Tue Jun 15 13:54:07 2021
 Elapsed time 00:00
-Max memory 1.0MB
+Max memory 9.6MB

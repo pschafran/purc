@@ -1,7 +1,7 @@
-vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
-/Users/peter/PURC/Dependencies/vsearch --uchime_denovo G_dry_4601_SlC1_0.997.fa --abskew 1.9 --nonchimeras G_dry_4601_SlC1_0.997dCh1.fa --uchimeout G_dry_4601_SlC1_0.997dCh1.uchime --log G_dry_4601_SlC1_0.997dCh1.fa.deChimeIt.log
-Started  Fri Jan 22 16:02:34 2021
-9337 nt in 19 seqs, min 460, max 1000, avg 491
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --uchime_denovo G_dry_4601_SlC1_0.997.fa --abskew 1.9 --nonchimeras G_dry_4601_SlC1_0.997dCh1.fa --uchimeout G_dry_4601_SlC1_0.997dCh1.uchime --log G_dry_4601_SlC1_0.997dCh1.fa.deChimeIt.log
+Started  Tue Jun 15 13:48:11 2021
+70476 nt in 70 seqs, min 949, max 1038, avg 1007
 
     0.28  minh
     8.00  xn
@@ -11,8 +11,8 @@ Started  Fri Jan 22 16:02:34 2021
     0.55  id
        2  maxp
 
-G_dry_4601_SlC1_0.997.fa: 0/19 chimeras (0.0%)
+G_dry_4601_SlC1_0.997.fa: 0/70 chimeras (0.0%)
 
-Finished Fri Jan 22 16:02:34 2021
+Finished Tue Jun 15 13:48:11 2021
 Elapsed time 00:00
-Max memory 14.8MB
+Max memory 242.3MB

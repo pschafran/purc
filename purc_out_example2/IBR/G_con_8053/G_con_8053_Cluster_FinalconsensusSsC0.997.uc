@@ -1,6 +1,8 @@
-S	0	473	*	*	*	*	*	G_con_8053_Cluster11;size=6;	*
-S	1	470	*	*	*	*	*	G_con_8053_Cluster12;size=22;	*
-S	2	469	*	*	*	*	*	G_con_8053_Cluster19;size=23;	*
-C	0	6	*	*	*	*	*	G_con_8053_Cluster11;size=6;	*
-C	1	22	*	*	*	*	*	G_con_8053_Cluster12;size=22;	*
-C	2	23	*	*	*	*	*	G_con_8053_Cluster19;size=23;	*
+S	0	824	*	*	*	*	*	G_con_8053_Cluster4;size=7;	*
+S	1	824	*	*	*	*	*	G_con_8053_Cluster6;size=7;	*
+S	2	821	*	*	*	*	*	G_con_8053_Cluster5;size=21;	*
+S	3	820	*	*	*	*	*	G_con_8053_Cluster15;size=23;	*
+C	0	7	*	*	*	*	*	G_con_8053_Cluster4;size=7;	*
+C	1	7	*	*	*	*	*	G_con_8053_Cluster6;size=7;	*
+C	2	21	*	*	*	*	*	G_con_8053_Cluster5;size=21;	*
+C	3	23	*	*	*	*	*	G_con_8053_Cluster15;size=23;	*

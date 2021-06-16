@@ -1,7 +1,7 @@
-vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
-/Users/peter/PURC/Dependencies/vsearch --uchime_denovo C_dic_8716_SlC1_0.997dCh1Ss1C2_0.995.fa --abskew 1.9 --nonchimeras C_dic_8716_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa --uchimeout C_dic_8716_SlC1_0.997dCh1Ss1C2_0.995dCh2.uchime --log C_dic_8716_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa.deChimeIt.log
-Started  Fri Jan 22 16:03:25 2021
-6330 nt in 11 seqs, min 565, max 608, avg 575
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --uchime_denovo C_dic_8716_SlC1_0.997dCh1Ss1C2_0.995.fa --abskew 1.9 --nonchimeras C_dic_8716_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa --uchimeout C_dic_8716_SlC1_0.997dCh1Ss1C2_0.995dCh2.uchime --log C_dic_8716_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa.deChimeIt.log
+Started  Tue Jun 15 13:52:02 2021
+11997 nt in 13 seqs, min 682, max 979, avg 923
 
     0.28  minh
     8.00  xn
@@ -11,8 +11,8 @@ Started  Fri Jan 22 16:03:25 2021
     0.55  id
        2  maxp
 
-C_dic_8716_SlC1_0.997dCh1Ss1C2_0.995.fa: 0/11 chimeras (0.0%)
+C_dic_8716_SlC1_0.997dCh1Ss1C2_0.995.fa: 0/13 chimeras (0.0%)
 
-Finished Fri Jan 22 16:03:25 2021
+Finished Tue Jun 15 13:52:02 2021
 Elapsed time 00:00
-Max memory 8.3MB
+Max memory 161.6MB

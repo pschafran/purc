@@ -1,0 +1,23 @@
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --cluster_fast C_mon_7002_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2.fa --id 0.990000 --gapopen 3I/1E --consout C_mon_7002_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa --uc C_mon_7002_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2clusts3.uc --sizein --sizeout --threads 8 --log C_mon_7002_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa.clusterIt.log
+Started  Tue Jun 15 13:46:59 2021
+29913 nt in 32 seqs, min 896, max 997, avg 935
+
+
+      Alphabet  nt
+    Word width  8
+     Word ones  8
+        Spaced  No
+        Hashed  No
+         Coded  No
+       Stepped  No
+         Slots  65536 (65.5k)
+       DBAccel  100%
+
+Clusters: 12 Size min 1, max 24, avg 2.7
+Singletons: 10, 31.2% of seqs, 83.3% of clusters
+
+
+Finished Tue Jun 15 13:47:00 2021
+Elapsed time 00:01
+Max memory 398.1MB

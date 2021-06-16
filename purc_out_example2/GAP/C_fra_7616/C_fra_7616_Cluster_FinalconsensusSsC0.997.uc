@@ -1,4 +1,4 @@
-S	0	456	*	*	*	*	*	C_fra_7616_Cluster2;size=14;	*
-S	1	452	*	*	*	*	*	C_fra_7616_Cluster17;size=10;	*
-C	0	14	*	*	*	*	*	C_fra_7616_Cluster2;size=14;	*
-C	1	10	*	*	*	*	*	C_fra_7616_Cluster17;size=10;	*
+S	0	965	*	*	*	*	*	C_fra_7616_Cluster6;size=12;	*
+S	1	960	*	*	*	*	*	C_fra_7616_Cluster16;size=9;	*
+C	0	12	*	*	*	*	*	C_fra_7616_Cluster6;size=12;	*
+C	1	9	*	*	*	*	*	C_fra_7616_Cluster16;size=9;	*

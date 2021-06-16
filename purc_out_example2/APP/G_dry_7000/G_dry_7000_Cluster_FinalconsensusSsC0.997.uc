@@ -1,4 +1,4 @@
-S	0	426	*	*	*	*	*	G_dry_7000_Cluster1;size=12;	*
-S	1	425	*	*	*	*	*	G_dry_7000_Cluster2;size=11;	*
-C	0	12	*	*	*	*	*	G_dry_7000_Cluster1;size=12;	*
-C	1	11	*	*	*	*	*	G_dry_7000_Cluster2;size=11;	*
+S	0	972	*	*	*	*	*	G_dry_7000_Cluster0;size=13;	*
+S	1	956	*	*	*	*	*	G_dry_7000_Cluster2;size=10;	*
+C	0	13	*	*	*	*	*	G_dry_7000_Cluster0;size=13;	*
+C	1	10	*	*	*	*	*	G_dry_7000_Cluster2;size=10;	*

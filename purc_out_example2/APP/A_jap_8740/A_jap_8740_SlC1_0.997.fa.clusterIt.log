@@ -1,7 +1,7 @@
-vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
-/Users/peter/PURC/Dependencies/vsearch --cluster_fast A_jap_8740_Sl.fa --id 0.997000 --gapopen 3I/1E --consout A_jap_8740_SlC1_0.997.fa --uc A_jap_8740_Slclusts1.uc --sizeout --threads 8 --log A_jap_8740_SlC1_0.997.fa.clusterIt.log
-Started  Fri Jan 22 16:02:24 2021
-22998 nt in 57 seqs, min 396, max 429, avg 403
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --cluster_fast A_jap_8740_Sl.fa --id 0.997000 --gapopen 3I/1E --consout A_jap_8740_SlC1_0.997.fa --uc A_jap_8740_Slclusts1.uc --sizeout --threads 8 --log A_jap_8740_SlC1_0.997.fa.clusterIt.log
+Started  Tue Jun 15 13:47:15 2021
+74020 nt in 80 seqs, min 626, max 983, avg 925
 
 
       Alphabet  nt
@@ -14,10 +14,10 @@ Started  Fri Jan 22 16:02:24 2021
          Slots  65536 (65.5k)
        DBAccel  100%
 
-Clusters: 22 Size min 1, max 25, avg 2.6
-Singletons: 20, 35.1% of seqs, 90.9% of clusters
+Clusters: 54 Size min 1, max 13, avg 1.5
+Singletons: 48, 60.0% of seqs, 88.9% of clusters
 
 
-Finished Fri Jan 22 16:02:24 2021
+Finished Tue Jun 15 13:47:15 2021
 Elapsed time 00:00
-Max memory 14.1MB
+Max memory 339.0MB

@@ -1,7 +1,7 @@
-vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
-/Users/peter/PURC/Dependencies/vsearch --uchime_denovo G_con_8053_SlC1_0.997dCh1Ss1C2_0.995.fa --abskew 1.9 --nonchimeras G_con_8053_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa --uchimeout G_con_8053_SlC1_0.997dCh1Ss1C2_0.995dCh2.uchime --log G_con_8053_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa.deChimeIt.log
-Started  Fri Jan 22 16:02:49 2021
-16826 nt in 36 seqs, min 458, max 493, avg 467
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --uchime_denovo G_con_8053_SlC1_0.997dCh1Ss1C2_0.995.fa --abskew 1.9 --nonchimeras G_con_8053_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa --uchimeout G_con_8053_SlC1_0.997dCh1Ss1C2_0.995dCh2.uchime --log G_con_8053_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa.deChimeIt.log
+Started  Tue Jun 15 13:49:19 2021
+39416 nt in 39 seqs, min 789, max 1050, avg 1011
 
     0.28  minh
     8.00  xn
@@ -11,8 +11,8 @@ Started  Fri Jan 22 16:02:49 2021
     0.55  id
        2  maxp
 
-G_con_8053_SlC1_0.997dCh1Ss1C2_0.995.fa: 0/36 chimeras (0.0%)
+G_con_8053_SlC1_0.997dCh1Ss1C2_0.995.fa: 2/39 chimeras (5.1%)
 
-Finished Fri Jan 22 16:02:49 2021
+Finished Tue Jun 15 13:49:19 2021
 Elapsed time 00:00
-Max memory 8.4MB
+Max memory 281.7MB

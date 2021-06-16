@@ -1,6 +1,10 @@
-S	0	608	*	*	*	*	*	C_fra_7106_Cluster5;size=7;	*
-S	1	576	*	*	*	*	*	C_fra_7106_Cluster17;size=6;	*
-S	2	571	*	*	*	*	*	C_fra_7106_Cluster21;size=17;	*
-C	0	7	*	*	*	*	*	C_fra_7106_Cluster5;size=7;	*
-C	1	6	*	*	*	*	*	C_fra_7106_Cluster17;size=6;	*
-C	2	17	*	*	*	*	*	C_fra_7106_Cluster21;size=17;	*
+S	0	984	*	*	*	*	*	C_fra_7106_Cluster3;size=8;	*
+S	1	974	*	*	*	*	*	C_fra_7106_Cluster6;size=5;	*
+S	2	950	*	*	*	*	*	C_fra_7106_Cluster13;size=8;	*
+S	3	949	*	*	*	*	*	C_fra_7106_Cluster12;size=22;	*
+S	4	937	*	*	*	*	*	C_fra_7106_Cluster20;size=18;	*
+C	0	8	*	*	*	*	*	C_fra_7106_Cluster3;size=8;	*
+C	1	5	*	*	*	*	*	C_fra_7106_Cluster6;size=5;	*
+C	2	8	*	*	*	*	*	C_fra_7106_Cluster13;size=8;	*
+C	3	22	*	*	*	*	*	C_fra_7106_Cluster12;size=22;	*
+C	4	18	*	*	*	*	*	C_fra_7106_Cluster20;size=18;	*

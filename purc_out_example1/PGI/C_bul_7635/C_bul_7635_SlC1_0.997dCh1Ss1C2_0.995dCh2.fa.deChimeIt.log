@@ -1,7 +1,7 @@
-vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
-/Users/peter/PURC/Dependencies/vsearch --uchime_denovo C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995.fa --abskew 1.9 --nonchimeras C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa --uchimeout C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2.uchime --log C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa.deChimeIt.log
-Started  Fri Jan 22 17:01:01 2021
-10838 nt in 17 seqs, min 632, max 659, avg 638
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --uchime_denovo C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995.fa --abskew 1.9 --nonchimeras C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa --uchimeout C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2.uchime --log C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa.deChimeIt.log
+Started  Tue Jun 15 13:03:50 2021
+12148 nt in 12 seqs, min 1003, max 1042, avg 1012
 
     0.28  minh
     8.00  xn
@@ -11,8 +11,8 @@ Started  Fri Jan 22 17:01:01 2021
     0.55  id
        2  maxp
 
-C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995.fa: 0/17 chimeras (0.0%)
+C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995.fa: 0/12 chimeras (0.0%)
 
-Finished Fri Jan 22 17:01:01 2021
+Finished Tue Jun 15 13:03:50 2021
 Elapsed time 00:00
-Max memory 24.1MB
+Max memory 207.8MB

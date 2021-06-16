@@ -1,4 +1,4 @@
-S	0	408	*	*	*	*	*	C_tenn_4513_Cluster8;size=51;	*
-S	1	407	*	*	*	*	*	C_tenn_4513_Cluster9;size=27;	*
-C	0	51	*	*	*	*	*	C_tenn_4513_Cluster8;size=51;	*
-C	1	27	*	*	*	*	*	C_tenn_4513_Cluster9;size=27;	*
+S	0	954	*	*	*	*	*	C_tenn_4513_Cluster5;size=32;	*
+S	1	947	*	*	*	*	*	C_tenn_4513_Cluster14;size=56;	*
+C	0	32	*	*	*	*	*	C_tenn_4513_Cluster5;size=32;	*
+C	1	56	*	*	*	*	*	C_tenn_4513_Cluster14;size=56;	*

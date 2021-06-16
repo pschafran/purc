@@ -1,7 +1,7 @@
-vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
-/Users/peter/PURC/Dependencies/vsearch --uchime_denovo C_fra_8049_SlC1_0.997.fa --abskew 1.9 --nonchimeras C_fra_8049_SlC1_0.997dCh1.fa --uchimeout C_fra_8049_SlC1_0.997dCh1.uchime --log C_fra_8049_SlC1_0.997dCh1.fa.deChimeIt.log
-Started  Fri Jan 22 16:02:09 2021
-16237 nt in 40 seqs, min 397, max 411, avg 406
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --uchime_denovo C_fra_8049_SlC1_0.997.fa --abskew 1.9 --nonchimeras C_fra_8049_SlC1_0.997dCh1.fa --uchimeout C_fra_8049_SlC1_0.997dCh1.uchime --log C_fra_8049_SlC1_0.997dCh1.fa.deChimeIt.log
+Started  Tue Jun 15 13:45:42 2021
+57315 nt in 62 seqs, min 568, max 984, avg 924
 
     0.28  minh
     8.00  xn
@@ -11,8 +11,8 @@ Started  Fri Jan 22 16:02:09 2021
     0.55  id
        2  maxp
 
-C_fra_8049_SlC1_0.997.fa: 0/40 chimeras (0.0%)
+C_fra_8049_SlC1_0.997.fa: 2/62 chimeras (3.2%)
 
-Finished Fri Jan 22 16:02:09 2021
+Finished Tue Jun 15 13:45:42 2021
 Elapsed time 00:00
-Max memory 8.6MB
+Max memory 167.3MB

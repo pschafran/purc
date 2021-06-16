@@ -1,4 +1,4 @@
-S	0	564	*	*	*	*	*	C_mil_6761_Cluster5;size=8;	*
-S	1	562	*	*	*	*	*	C_mil_6761_Cluster6;size=4;	*
-C	0	8	*	*	*	*	*	C_mil_6761_Cluster5;size=8;	*
-C	1	4	*	*	*	*	*	C_mil_6761_Cluster6;size=4;	*
+S	0	937	*	*	*	*	*	C_mil_6761_Cluster3;size=8;	*
+S	1	935	*	*	*	*	*	C_mil_6761_Cluster4;size=5;	*
+C	0	8	*	*	*	*	*	C_mil_6761_Cluster3;size=8;	*
+C	1	5	*	*	*	*	*	C_mil_6761_Cluster4;size=5;	*

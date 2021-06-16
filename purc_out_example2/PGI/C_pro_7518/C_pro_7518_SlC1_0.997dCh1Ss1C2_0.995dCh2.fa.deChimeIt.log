@@ -1,7 +1,7 @@
-vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
-/Users/peter/PURC/Dependencies/vsearch --uchime_denovo C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995.fa --abskew 1.9 --nonchimeras C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa --uchimeout C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2.uchime --log C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa.deChimeIt.log
-Started  Fri Jan 22 16:03:27 2021
-6004 nt in 10 seqs, min 592, max 625, avg 600
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --uchime_denovo C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995.fa --abskew 1.9 --nonchimeras C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa --uchimeout C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2.uchime --log C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa.deChimeIt.log
+Started  Tue Jun 15 13:52:11 2021
+9693 nt in 10 seqs, min 961, max 982, avg 969
 
     0.28  minh
     8.00  xn
@@ -13,6 +13,6 @@ Started  Fri Jan 22 16:03:27 2021
 
 C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995.fa: 0/10 chimeras (0.0%)
 
-Finished Fri Jan 22 16:03:27 2021
+Finished Tue Jun 15 13:52:11 2021
 Elapsed time 00:00
-Max memory 21.5MB
+Max memory 183.8MB

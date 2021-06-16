@@ -1,4 +1,4 @@
-S	0	407	*	*	*	*	*	C_pro_7518_Cluster0;size=17;	*
-S	1	397	*	*	*	*	*	C_pro_7518_Cluster6;size=20;	*
-C	0	17	*	*	*	*	*	C_pro_7518_Cluster0;size=17;	*
-C	1	20	*	*	*	*	*	C_pro_7518_Cluster6;size=20;	*
+S	0	945	*	*	*	*	*	C_pro_7518_Cluster0;size=16;	*
+S	1	935	*	*	*	*	*	C_pro_7518_Cluster6;size=16;	*
+C	0	16	*	*	*	*	*	C_pro_7518_Cluster0;size=16;	*
+C	1	16	*	*	*	*	*	C_pro_7518_Cluster6;size=16;	*

@@ -1,7 +1,7 @@
-vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
-/Users/peter/PURC/Dependencies/vsearch --uchime_denovo G_xbr_7806_SlC1_0.997dCh1Ss1C2_0.995.fa --abskew 1.9 --nonchimeras G_xbr_7806_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa --uchimeout G_xbr_7806_SlC1_0.997dCh1Ss1C2_0.995dCh2.uchime --log G_xbr_7806_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa.deChimeIt.log
-Started  Fri Jan 22 16:03:30 2021
-16966 nt in 28 seqs, min 597, max 633, avg 606
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --uchime_denovo G_xbr_7806_SlC1_0.997dCh1Ss1C2_0.995.fa --abskew 1.9 --nonchimeras G_xbr_7806_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa --uchimeout G_xbr_7806_SlC1_0.997dCh1Ss1C2_0.995dCh2.uchime --log G_xbr_7806_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa.deChimeIt.log
+Started  Tue Jun 15 13:52:17 2021
+27148 nt in 28 seqs, min 931, max 1000, avg 970
 
     0.28  minh
     8.00  xn
@@ -13,6 +13,6 @@ Started  Fri Jan 22 16:03:30 2021
 
 G_xbr_7806_SlC1_0.997dCh1Ss1C2_0.995.fa: 0/28 chimeras (0.0%)
 
-Finished Fri Jan 22 16:03:30 2021
+Finished Tue Jun 15 13:52:17 2021
 Elapsed time 00:00
-Max memory 23.2MB
+Max memory 351.0MB

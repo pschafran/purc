@@ -1,10 +1,10 @@
-vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
-/Users/peter/PURC/Dependencies/vsearch --sortbysize A_jap_8740_SlC1_0.997dCh1.fa --output A_jap_8740_SlC1_0.997dCh1Ss1.fa --minsize 1 --log A_jap_8740_SlC1_0.997dCh1Ss1.fa.sortIt_size.log
-Started  Fri Jan 22 16:02:24 2021
-8842 nt in 22 seqs, min 396, max 408, avg 402
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --sortbysize A_jap_8740_SlC1_0.997dCh1.fa --output A_jap_8740_SlC1_0.997dCh1Ss1.fa --minsize 1 --log A_jap_8740_SlC1_0.997dCh1Ss1.fa.sortIt_size.log
+Started  Tue Jun 15 13:47:16 2021
+48933 nt in 53 seqs, min 626, max 983, avg 923
 
 Median abundance: 1
 
-Finished Fri Jan 22 16:02:24 2021
+Finished Tue Jun 15 13:47:16 2021
 Elapsed time 00:00
-Max memory 1.0MB
+Max memory 9.7MB

@@ -1,7 +1,7 @@
-vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
-/Users/peter/PURC/Dependencies/vsearch --cluster_fast G_dry_8034_SlC1_0.997dCh1Ss1.fa --id 0.995000 --gapopen 3I/1E --consout G_dry_8034_SlC1_0.997dCh1Ss1C2_0.995.fa --uc G_dry_8034_SlC1_0.997dCh1Ss1clusts2.uc --sizein --sizeout --threads 8 --log G_dry_8034_SlC1_0.997dCh1Ss1C2_0.995.fa.clusterIt.log
-Started  Fri Jan 22 16:02:51 2021
-23240 nt in 50 seqs, min 460, max 489, avg 465
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --cluster_fast G_dry_8034_SlC1_0.997dCh1Ss1.fa --id 0.995000 --gapopen 3I/1E --consout G_dry_8034_SlC1_0.997dCh1Ss1C2_0.995.fa --uc G_dry_8034_SlC1_0.997dCh1Ss1clusts2.uc --sizein --sizeout --threads 8 --log G_dry_8034_SlC1_0.997dCh1Ss1C2_0.995.fa.clusterIt.log
+Started  Tue Jun 15 13:49:47 2021
+51439 nt in 51 seqs, min 561, max 1047, avg 1009
 
 
       Alphabet  nt
@@ -14,10 +14,10 @@ Started  Fri Jan 22 16:02:51 2021
          Slots  65536 (65.5k)
        DBAccel  100%
 
-Clusters: 41 Size min 1, max 18, avg 1.2
-Singletons: 37, 74.0% of seqs, 90.2% of clusters
+Clusters: 44 Size min 1, max 9, avg 1.2
+Singletons: 40, 78.4% of seqs, 90.9% of clusters
 
 
-Finished Fri Jan 22 16:02:51 2021
-Elapsed time 00:00
-Max memory 20.8MB
+Finished Tue Jun 15 13:49:48 2021
+Elapsed time 00:01
+Max memory 380.8MB

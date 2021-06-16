@@ -1,4 +1,4 @@
-S	0	548	*	*	*	*	*	G_con_8053_Cluster5;size=7;	*
-S	1	516	*	*	*	*	*	G_con_8053_Cluster13;size=11;	*
-C	0	7	*	*	*	*	*	G_con_8053_Cluster5;size=7;	*
-C	1	11	*	*	*	*	*	G_con_8053_Cluster13;size=11;	*
+S	0	914	*	*	*	*	*	G_con_8053_Cluster4;size=9;	*
+S	1	878	*	*	*	*	*	G_con_8053_Cluster11;size=11;	*
+C	0	9	*	*	*	*	*	G_con_8053_Cluster4;size=9;	*
+C	1	11	*	*	*	*	*	G_con_8053_Cluster11;size=11;	*

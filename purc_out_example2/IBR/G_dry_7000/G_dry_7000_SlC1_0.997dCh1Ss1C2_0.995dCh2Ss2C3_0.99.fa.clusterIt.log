@@ -1,7 +1,7 @@
-vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
-/Users/peter/PURC/Dependencies/vsearch --cluster_fast G_dry_7000_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2.fa --id 0.990000 --gapopen 3I/1E --consout G_dry_7000_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa --uc G_dry_7000_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2clusts3.uc --sizein --sizeout --threads 8 --log G_dry_7000_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa.clusterIt.log
-Started  Fri Jan 22 16:03:56 2021
-1409 nt in 3 seqs, min 466, max 472, avg 470
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --cluster_fast G_dry_7000_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2.fa --id 0.990000 --gapopen 3I/1E --consout G_dry_7000_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa --uc G_dry_7000_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2clusts3.uc --sizein --sizeout --threads 8 --log G_dry_7000_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa.clusterIt.log
+Started  Tue Jun 15 13:53:56 2021
+2330 nt in 3 seqs, min 652, max 861, avg 777
 
 
       Alphabet  nt
@@ -18,6 +18,6 @@ Clusters: 3 Size min 1, max 8, avg 1.0
 Singletons: 2, 66.7% of seqs, 66.7% of clusters
 
 
-Finished Fri Jan 22 16:03:56 2021
+Finished Tue Jun 15 13:53:56 2021
 Elapsed time 00:00
-Max memory 9.1MB
+Max memory 84.4MB

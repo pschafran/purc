@@ -1,4 +1,2 @@
-S	0	577	*	*	*	*	*	C_mon_7941_Cluster3;size=48;	*
-S	1	576	*	*	*	*	*	C_mon_7941_Cluster4;size=21;	*
-C	0	48	*	*	*	*	*	C_mon_7941_Cluster3;size=48;	*
-C	1	21	*	*	*	*	*	C_mon_7941_Cluster4;size=21;	*
+S	0	915	*	*	*	*	*	C_mon_7941_Cluster0;size=8;	*
+C	0	8	*	*	*	*	*	C_mon_7941_Cluster0;size=8;	*

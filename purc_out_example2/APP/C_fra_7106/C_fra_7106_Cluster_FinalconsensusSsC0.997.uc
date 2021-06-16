@@ -1,10 +1,5 @@
-S	0	407	*	*	*	*	*	C_fra_7106_Cluster3;size=46;	*
-S	1	407	*	*	*	*	*	C_fra_7106_Cluster25;size=31;	*
-S	2	404	*	*	*	*	*	C_fra_7106_Cluster24;size=78;	*
-S	3	403	*	*	*	*	*	C_fra_7106_Cluster45;size=25;	*
-S	4	403	*	*	*	*	*	C_fra_7106_Cluster47;size=4;	*
-C	0	46	*	*	*	*	*	C_fra_7106_Cluster3;size=46;	*
-C	1	31	*	*	*	*	*	C_fra_7106_Cluster25;size=31;	*
-C	2	78	*	*	*	*	*	C_fra_7106_Cluster24;size=78;	*
-C	3	25	*	*	*	*	*	C_fra_7106_Cluster45;size=25;	*
-C	4	4	*	*	*	*	*	C_fra_7106_Cluster47;size=4;	*
+S	0	955	*	*	*	*	*	C_fra_7106_Cluster2;size=27;	*
+H	0	955	99.8	+	0	0	442MI20MD492M	C_fra_7106_Cluster7;size=4;	C_fra_7106_Cluster2;size=27;
+S	1	928	*	*	*	*	*	C_fra_7106_Cluster9;size=44;	*
+C	0	31	*	*	*	*	*	C_fra_7106_Cluster2;size=27;	*
+C	1	44	*	*	*	*	*	C_fra_7106_Cluster9;size=44;	*

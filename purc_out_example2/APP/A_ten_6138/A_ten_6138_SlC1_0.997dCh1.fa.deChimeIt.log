@@ -1,7 +1,7 @@
-vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
-/Users/peter/PURC/Dependencies/vsearch --uchime_denovo A_ten_6138_SlC1_0.997.fa --abskew 1.9 --nonchimeras A_ten_6138_SlC1_0.997dCh1.fa --uchimeout A_ten_6138_SlC1_0.997dCh1.uchime --log A_ten_6138_SlC1_0.997dCh1.fa.deChimeIt.log
-Started  Fri Jan 22 16:02:11 2021
-40150 nt in 100 seqs, min 386, max 427, avg 402
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --uchime_denovo A_ten_6138_SlC1_0.997.fa --abskew 1.9 --nonchimeras A_ten_6138_SlC1_0.997dCh1.fa --uchimeout A_ten_6138_SlC1_0.997dCh1.uchime --log A_ten_6138_SlC1_0.997dCh1.fa.deChimeIt.log
+Started  Tue Jun 15 13:45:56 2021
+233464 nt in 248 seqs, min 603, max 986, avg 941
 
     0.28  minh
     8.00  xn
@@ -11,8 +11,8 @@ Started  Fri Jan 22 16:02:11 2021
     0.55  id
        2  maxp
 
-A_ten_6138_SlC1_0.997.fa: 0/100 chimeras (0.0%)
+A_ten_6138_SlC1_0.997.fa: 0/248 chimeras (0.0%)
 
-Finished Fri Jan 22 16:02:11 2021
-Elapsed time 00:00
-Max memory 12.4MB
+Finished Tue Jun 15 13:45:57 2021
+Elapsed time 00:01
+Max memory 330.8MB

@@ -1,2 +1,2 @@
-S	0	602	*	*	*	*	*	G_dry_8034_Cluster1;size=75;	*
-C	0	75	*	*	*	*	*	G_dry_8034_Cluster1;size=75;	*
+S	0	968	*	*	*	*	*	G_dry_8034_Cluster0;size=77;	*
+C	0	77	*	*	*	*	*	G_dry_8034_Cluster0;size=77;	*

@@ -1,5 +1,5 @@
-0.0000	centroid=C_tenu_7648_Cluster31;seqs=1;size=23	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
-0.0000	centroid=C_tenu_7648_Cluster9;seqs=1;size=23	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
-0.0000	centroid=C_tenu_7648_Cluster16;seqs=2;size=22	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
-0.0000	centroid=C_tenu_7648_Cluster27;seqs=1;size=18	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
-0.0093	centroid=C_tenu_7648_Cluster7;seqs=1;size=5	centroid=C_tenu_7648_Cluster9;seqs=1;size=23	centroid=C_tenu_7648_Cluster16;seqs=2;size=22	centroid=C_tenu_7648_Cluster9;seqs=1;size=23	99.8	99.6	99.6	99.1	99.6	1	0	0	2	1	0	0.2	N
+0.0000	centroid=C_tenu_7648_Cluster3;seqs=2;size=23	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	centroid=C_tenu_7648_Cluster14;seqs=1;size=17	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	centroid=C_tenu_7648_Cluster16;seqs=1;size=17	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	centroid=C_tenu_7648_Cluster23;seqs=1;size=16	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	centroid=C_tenu_7648_Cluster8;seqs=1;size=4	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N

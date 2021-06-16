@@ -1,10 +1,10 @@
-vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
-/Users/peter/PURC/Dependencies/vsearch --sortbysize C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa --output C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2.fa --minsize 1 --log C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2.fa.sortIt_size.log
-Started  Fri Jan 22 17:00:46 2021
-6447 nt in 14 seqs, min 451, max 484, avg 460
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --sortbysize C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa --output C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2.fa --minsize 1 --log C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2.fa.sortIt_size.log
+Started  Tue Jun 15 13:02:43 2021
+17927 nt in 18 seqs, min 580, max 1047, avg 996
 
 Median abundance: 1
 
-Finished Fri Jan 22 17:00:46 2021
+Finished Tue Jun 15 13:02:43 2021
 Elapsed time 00:00
-Max memory 1.0MB
+Max memory 9.6MB

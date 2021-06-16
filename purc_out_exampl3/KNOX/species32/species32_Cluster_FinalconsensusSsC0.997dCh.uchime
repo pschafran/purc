@@ -1,6 +1,0 @@
-0.0000	centroid=species32_Cluster56;seqs=1;size=26	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
-0.0000	centroid=species32_Cluster113;seqs=1;size=10	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
-0.0000	centroid=species32_Cluster57;seqs=1;size=10	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
-0.0000	centroid=species32_Cluster36;seqs=1;size=7	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
-0.1583	centroid=species32_Cluster37;seqs=1;size=4	centroid=species32_Cluster57;seqs=1;size=10	centroid=species32_Cluster113;seqs=1;size=10	centroid=species32_Cluster57;seqs=1;size=10	99.3	98.5	96.8	95.8	98.5	10	0	0	5	2	1	0.7	N
-0.0864	centroid=species32_Cluster38;seqs=1;size=4	centroid=species32_Cluster56;seqs=1;size=26	centroid=species32_Cluster113;seqs=1;size=10	centroid=species32_Cluster56;seqs=1;size=26	98.8	98.5	96.6	96.1	98.5	9	0	0	4	3	2	0.2	N

@@ -1,6 +1,5 @@
-0.0000	centroid=C_mon_8672_Cluster14;seqs=1;size=47	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
-0.0000	centroid=C_mon_8672_Cluster15;seqs=1;size=25	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
-0.0000	centroid=C_mon_8672_Cluster2;seqs=1;size=21	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
-0.0000	centroid=C_mon_8672_Cluster10;seqs=1;size=15	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
-0.0000	centroid=C_mon_8672_Cluster17;seqs=1;size=7	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
-0.0000	centroid=C_mon_8672_Cluster9;seqs=1;size=4	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	centroid=C_mon_8672_Cluster11;seqs=2;size=62	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	centroid=C_mon_8672_Cluster5;seqs=1;size=27	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	centroid=C_mon_8672_Cluster13;seqs=1;size=17	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	centroid=C_mon_8672_Cluster0;seqs=1;size=10	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0512	centroid=C_mon_8672_Cluster4;seqs=1;size=4	centroid=C_mon_8672_Cluster5;seqs=1;size=27	centroid=C_mon_8672_Cluster0;seqs=1;size=10	centroid=C_mon_8672_Cluster5;seqs=1;size=27	99.8	99.5	99.3	99.0	99.5	4	0	1	3	1	0	0.2	N

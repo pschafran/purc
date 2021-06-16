@@ -1,2 +1,2 @@
-S	0	600	*	*	*	*	*	G_dry_6457_Cluster4;size=68;	*
-C	0	68	*	*	*	*	*	G_dry_6457_Cluster4;size=68;	*
+S	0	966	*	*	*	*	*	G_dry_6457_Cluster1;size=73;	*
+C	0	73	*	*	*	*	*	G_dry_6457_Cluster1;size=73;	*

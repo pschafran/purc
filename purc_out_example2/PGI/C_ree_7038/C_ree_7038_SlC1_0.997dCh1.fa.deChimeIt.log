@@ -1,7 +1,7 @@
-vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
-/Users/peter/PURC/Dependencies/vsearch --uchime_denovo C_ree_7038_SlC1_0.997.fa --abskew 1.9 --nonchimeras C_ree_7038_SlC1_0.997dCh1.fa --uchimeout C_ree_7038_SlC1_0.997dCh1.uchime --log C_ree_7038_SlC1_0.997dCh1.fa.deChimeIt.log
-Started  Fri Jan 22 16:03:28 2021
-9136 nt in 16 seqs, min 531, max 606, avg 571
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --uchime_denovo C_ree_7038_SlC1_0.997.fa --abskew 1.9 --nonchimeras C_ree_7038_SlC1_0.997dCh1.fa --uchimeout C_ree_7038_SlC1_0.997dCh1.uchime --log C_ree_7038_SlC1_0.997dCh1.fa.deChimeIt.log
+Started  Tue Jun 15 13:50:42 2021
+15442 nt in 16 seqs, min 948, max 981, avg 965
 
     0.28  minh
     8.00  xn
@@ -13,6 +13,6 @@ Started  Fri Jan 22 16:03:28 2021
 
 C_ree_7038_SlC1_0.997.fa: 0/16 chimeras (0.0%)
 
-Finished Fri Jan 22 16:03:28 2021
+Finished Tue Jun 15 13:50:42 2021
 Elapsed time 00:00
-Max memory 11.9MB
+Max memory 254.5MB

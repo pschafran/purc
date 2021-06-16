@@ -1,2 +1,2 @@
-S	0	602	*	*	*	*	*	G_dry_8116_Cluster1;size=67;	*
-C	0	67	*	*	*	*	*	G_dry_8116_Cluster1;size=67;	*
+S	0	968	*	*	*	*	*	G_dry_8116_Cluster1;size=63;	*
+C	0	63	*	*	*	*	*	G_dry_8116_Cluster1;size=63;	*

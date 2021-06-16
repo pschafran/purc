@@ -1,4 +1,4 @@
-S	0	425	*	*	*	*	*	G_oya_8739_Cluster3;size=14;	*
-S	1	423	*	*	*	*	*	G_oya_8739_Cluster4;size=18;	*
-C	0	14	*	*	*	*	*	G_oya_8739_Cluster3;size=14;	*
-C	1	18	*	*	*	*	*	G_oya_8739_Cluster4;size=18;	*
+S	0	961	*	*	*	*	*	G_oya_8739_Cluster4;size=15;	*
+S	1	959	*	*	*	*	*	G_oya_8739_Cluster3;size=15;	*
+C	0	15	*	*	*	*	*	G_oya_8739_Cluster4;size=15;	*
+C	1	15	*	*	*	*	*	G_oya_8739_Cluster3;size=15;	*

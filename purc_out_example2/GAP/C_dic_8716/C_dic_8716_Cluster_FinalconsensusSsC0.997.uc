@@ -1,3 +1,3 @@
-S	0	443	*	*	*	*	*	C_dic_8716_Cluster3;size=33;	*
-H	0	443	99.8	+	0	0	443M	C_dic_8716_Cluster4;size=25;	C_dic_8716_Cluster3;size=33;
-C	0	58	*	*	*	*	*	C_dic_8716_Cluster3;size=33;	*
+S	0	941	*	*	*	*	*	C_dic_8716_Cluster3;size=49;	*
+H	0	941	100.0	+	0	0	=	C_dic_8716_Cluster2;size=12;	C_dic_8716_Cluster3;size=49;
+C	0	61	*	*	*	*	*	C_dic_8716_Cluster3;size=49;	*

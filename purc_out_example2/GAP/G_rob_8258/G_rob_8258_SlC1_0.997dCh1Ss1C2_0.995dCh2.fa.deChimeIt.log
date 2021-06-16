@@ -1,7 +1,7 @@
-vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
-/Users/peter/PURC/Dependencies/vsearch --uchime_denovo G_rob_8258_SlC1_0.997dCh1Ss1C2_0.995.fa --abskew 1.9 --nonchimeras G_rob_8258_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa --uchimeout G_rob_8258_SlC1_0.997dCh1Ss1C2_0.995dCh2.uchime --log G_rob_8258_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa.deChimeIt.log
-Started  Fri Jan 22 16:02:54 2021
-11387 nt in 24 seqs, min 454, max 506, avg 474
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --uchime_denovo G_rob_8258_SlC1_0.997dCh1Ss1C2_0.995.fa --abskew 1.9 --nonchimeras G_rob_8258_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa --uchimeout G_rob_8258_SlC1_0.997dCh1Ss1C2_0.995dCh2.uchime --log G_rob_8258_SlC1_0.997dCh1Ss1C2_0.995dCh2.fa.deChimeIt.log
+Started  Tue Jun 15 13:49:58 2021
+29591 nt in 29 seqs, min 901, max 1055, avg 1020
 
     0.28  minh
     8.00  xn
@@ -11,8 +11,8 @@ Started  Fri Jan 22 16:02:54 2021
     0.55  id
        2  maxp
 
-G_rob_8258_SlC1_0.997dCh1Ss1C2_0.995.fa: 0/24 chimeras (0.0%)
+G_rob_8258_SlC1_0.997dCh1Ss1C2_0.995.fa: 0/29 chimeras (0.0%)
 
-Finished Fri Jan 22 16:02:54 2021
-Elapsed time 00:00
-Max memory 14.5MB
+Finished Tue Jun 15 13:49:59 2021
+Elapsed time 00:01
+Max memory 261.6MB

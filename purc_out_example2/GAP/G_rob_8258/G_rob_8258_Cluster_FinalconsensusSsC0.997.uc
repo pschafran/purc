@@ -1,4 +1,4 @@
-S	0	479	*	*	*	*	*	G_rob_8258_Cluster0;size=12;	*
-S	1	463	*	*	*	*	*	G_rob_8258_Cluster12;size=14;	*
-C	0	12	*	*	*	*	*	G_rob_8258_Cluster0;size=12;	*
-C	1	14	*	*	*	*	*	G_rob_8258_Cluster12;size=14;	*
+S	0	1028	*	*	*	*	*	G_rob_8258_Cluster5;size=9;	*
+S	1	1015	*	*	*	*	*	G_rob_8258_Cluster10;size=15;	*
+C	0	9	*	*	*	*	*	G_rob_8258_Cluster5;size=9;	*
+C	1	15	*	*	*	*	*	G_rob_8258_Cluster10;size=15;	*

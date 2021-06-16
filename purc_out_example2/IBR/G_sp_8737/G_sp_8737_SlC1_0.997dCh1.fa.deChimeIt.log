@@ -1,7 +1,7 @@
-vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
-/Users/peter/PURC/Dependencies/vsearch --uchime_denovo G_sp_8737_SlC1_0.997.fa --abskew 1.9 --nonchimeras G_sp_8737_SlC1_0.997dCh1.fa --uchimeout G_sp_8737_SlC1_0.997dCh1.uchime --log G_sp_8737_SlC1_0.997dCh1.fa.deChimeIt.log
-Started  Fri Jan 22 16:03:45 2021
-11750 nt in 25 seqs, min 465, max 478, avg 470
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --uchime_denovo G_sp_8737_SlC1_0.997.fa --abskew 1.9 --nonchimeras G_sp_8737_SlC1_0.997dCh1.fa --uchimeout G_sp_8737_SlC1_0.997dCh1.uchime --log G_sp_8737_SlC1_0.997dCh1.fa.deChimeIt.log
+Started  Tue Jun 15 13:53:13 2021
+22204 nt in 27 seqs, min 815, max 844, avg 822
 
     0.28  minh
     8.00  xn
@@ -11,8 +11,8 @@ Started  Fri Jan 22 16:03:45 2021
     0.55  id
        2  maxp
 
-G_sp_8737_SlC1_0.997.fa: 1/25 chimeras (4.0%)
+G_sp_8737_SlC1_0.997.fa: 1/27 chimeras (3.7%)
 
-Finished Fri Jan 22 16:03:45 2021
+Finished Tue Jun 15 13:53:13 2021
 Elapsed time 00:00
-Max memory 9.6MB
+Max memory 122.0MB

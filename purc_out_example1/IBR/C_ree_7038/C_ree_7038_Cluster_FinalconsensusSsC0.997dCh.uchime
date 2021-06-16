@@ -1,1 +1,3 @@
-0.0000	centroid=C_ree_7038_Cluster12;seqs=1;size=58	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	centroid=C_ree_7038_Cluster10;seqs=2;size=40	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0000	centroid=C_ree_7038_Cluster7;seqs=1;size=20	*	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
+0.0201	centroid=C_ree_7038_Cluster3;seqs=1;size=7	centroid=C_ree_7038_Cluster10;seqs=2;size=40	centroid=C_ree_7038_Cluster7;seqs=1;size=20	centroid=C_ree_7038_Cluster7;seqs=1;size=20	97.6	97.1	97.4	99.3	97.4	2	0	4	4	0	15	0.2	N

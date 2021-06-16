@@ -1,7 +1,7 @@
-vsearch v2.15.1_macos_x86_64, 128.0GB RAM, 16 cores
-/Users/peter/PURC/Dependencies/vsearch --uchime_denovo A_jap_8703_SlC1_0.997.fa --abskew 1.9 --nonchimeras A_jap_8703_SlC1_0.997dCh1.fa --uchimeout A_jap_8703_SlC1_0.997dCh1.uchime --log A_jap_8703_SlC1_0.997dCh1.fa.deChimeIt.log
-Started  Fri Jan 22 16:02:40 2021
-17104 nt in 39 seqs, min 432, max 456, avg 439
+vsearch v2.15.1_macos_x86_64, 16.0GB RAM, 8 cores
+/Users/peter/purc/Dependencies/vsearch --uchime_denovo A_jap_8703_SlC1_0.997.fa --abskew 1.9 --nonchimeras A_jap_8703_SlC1_0.997dCh1.fa --uchimeout A_jap_8703_SlC1_0.997dCh1.uchime --log A_jap_8703_SlC1_0.997dCh1.fa.deChimeIt.log
+Started  Tue Jun 15 13:48:47 2021
+43981 nt in 46 seqs, min 677, max 984, avg 956
 
     0.28  minh
     8.00  xn
@@ -11,8 +11,8 @@ Started  Fri Jan 22 16:02:40 2021
     0.55  id
        2  maxp
 
-A_jap_8703_SlC1_0.997.fa: 0/39 chimeras (0.0%)
+A_jap_8703_SlC1_0.997.fa: 1/46 chimeras (2.2%)
 
-Finished Fri Jan 22 16:02:40 2021
-Elapsed time 00:00
-Max memory 10.4MB
+Finished Tue Jun 15 13:48:48 2021
+Elapsed time 00:01
+Max memory 163.7MB
