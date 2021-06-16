@@ -925,7 +925,6 @@ def deChimeIt(file, round, abskew=1.9, verbose_level=0):
 	# usearch_cline = "%s -uchime_denovo %s -abskew 1.1 -minh 0.2 -xn 3 -dn 0.5 -nonchimeras %s -uchimeout %s" % (Usearch, file, outFile, outFile_uchime)
 
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
-	process.wait()
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout
 	if verbose_level in [1, 2]:
@@ -943,10 +942,9 @@ def deChimeIt(file, round, abskew=1.9, verbose_level=0):
 
 def muscleIt(file, verbose_level=0):
 	"""Aligns the sequences using MUSCLE"""
-	outFile = re.sub(r"(.*)\..*", r"\1.aligned.fa", file)
+	outFile = ".".join(file.split(".")[:-1]) + ".aligned.fa"
 	muscle_cline = '%s -in %s -out %s' % (Muscle, file, outFile)
 	process = subprocess.Popen(muscle_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
-	process.wait()
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout
 	if verbose_level == 2:
@@ -1296,7 +1294,11 @@ dd2 <- dada(drp, err=err, BAND_SIZE=32, multithread=TRUE)
 st <- makeSequenceTable(dd2)
 
 # Identify chimeras
+st.chim <- isBimeraDenovo(st, multithread=TRUE, verbose=TRUE)
+st.chim.seq <- which(st.chim == TRUE)
 st.nochim <- removeBimeraDenovo(st, method="consensus", multithread=TRUE, verbose=TRUE)
+print("Chimeric Reads:")
+print(sum(st.chim, na.rm = TRUE))
 print("Non-chimeric reads:")
 print(dim(st.nochim))
 print("Percent non-chimeric reads:")
@@ -1306,15 +1308,28 @@ print("SUMMARY")
 print(cbind(ccs=prim[,1], primers=prim[,2], filtered=track[,2], denoised=sum(dd2$denoised), ASVs=dim(st.nochim)[2]))
 
 # Output final ASV seqs
-outputNames <- vector()
-for (i in 1:dim(st.nochim)[2]){
-  newName <- paste("%s_ASV", i, sep = "")
-  outputNames <- c(outputNames, newName)
-}
-uniquesToFasta(st.nochim, "%s_ASVs.fasta", ids=outputNames)
+if (length(st.nochim) > 0){
+	outputNames <- vector()
+	for (i in 1:dim(st.nochim)[2]){
+		newName <- paste("%s_ASV", i, sep = "")
+		outputNames <- c(outputNames, newName)
+	}
+	uniquesToFasta(st.nochim, "%s_ASVs.fasta", ids=outputNames)
+} else { print("WARNING: No ASVs found!")}
+
+# Output chimeras if any
+if (length(st.chim.seq) > 0){
+	chimeraNames <- vector()
+	for (i in 1:dim(st.chim.seq)[2]){
+		newName <- paste("%s_chimera", i, sep = "")
+		chimeraNames <- c(chimeraNames, newName)
+	}
+	uniquesToFasta(st.chim.seq, "%s_chimeras.fasta", ids=chimeraNames)
+} else { print("No chimeras detected")}
+
 print(format(Sys.time()))
 quit()
-''' % (Fprimer, Rprimer, minLen, maxLen, maxEE, sample, sample, sample, sample, sample))
+''' % (Fprimer, Rprimer, minLen, maxLen, maxEE, sample, sample, sample, sample, sample, sample, sample))
 
 def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath, verbose_level = 1):
 	log.write("IterativeClusterDechimera\n")
@@ -1352,7 +1367,7 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
 					dadaCMD = "%s ASV.R" % RscriptPath
 					process = subprocess.Popen(dadaCMD, stdout=logfile, stderr=logfile, shell=True, text=True)
 					process.wait()
-				## Count clustered seq and store in LocusTaxonCountDict_clustd as {('C_dia_5316', 'ApP'): 28} for example ##
+				## Count ASVs and store in LocusTaxonCountDict_clustd as {('C_dia_5316', 'ApP'): 28} for example ##
 				try:
 					clustered_seq_file = parse_fasta(taxon_folder + '_ASVs.fasta')
 					for each_seq in clustered_seq_file:
@@ -1361,8 +1376,22 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
 						except:
 							LocusTaxonCountDict_clustd[taxon_folder, locus_folder] = 1
 				except:
+					print("WARNING: No ASVs found for %s" % taxon_folder)
 					if verbose_level in [1,2]:
-						log.write(str(all_consensus_seq) + 'is an empty file\n')
+						log.write(str(taxon_folder + '_ASVs.fasta') + 'is an empty file\n')
+
+				## Count chimeras
+				try:
+					chimera_seq_file = parse_fasta(taxon_folder + '_chimeras.fasta')
+					for each_seq in chimera_seq_file:
+						try:
+							LocusTaxonCountDict_chimera[taxon_folder, locus_folder] += 1  # {('C_dia_5316', 'ApP'): 28} for example
+						except:
+							LocusTaxonCountDict_chimera[taxon_folder, locus_folder] = 1
+				except:
+					if verbose_level in [1,2]:
+						log.write(str(taxon_folder + '_chimeras.fasta') + 'is an empty file\n')
+					LocusTaxonCountDict_chimera[taxon_folder, locus_folder] = 0
 				os.chdir("..")
 		locusCount += 1
 		os.chdir("..")
