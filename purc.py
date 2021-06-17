@@ -1260,12 +1260,12 @@ maxEE <- %s
 if (minLen == 0){
 iqr <- IQR(lens)
 q25 <- quantile(lens, 0.25)
-minLen <- q25-(1.5*iqr)
+minLen <- round(q25-(1.5*iqr),0)
 }
 if (maxLen == 0){
 iqr <- IQR(lens)
 q75 <- quantile(lens, 0.75)
-maxLen <- q75+(1.5*iqr)
+maxLen <- round(q75+(1.5*iqr),0)
 }
 
 print("Minimum length:")
@@ -1278,8 +1278,18 @@ print(maxEE)
 lowerBound <- min(c(minLen, min(lens)))
 upperBound <- max(c(maxLen, max(lens)))
 
+# round down to nearest 10 base number
+while ((lowerBound %s 10) != 0){
+	lowerBound <- lowerBound-1
+}
+# round up to nearest 10 base number
+while ((upperBound %s 10) != 0){
+	upperBound <- upperBound+1
+}
+
 pdf("%s_read_lengths.pdf")
-hist(lens, 100, xlim = c(lowerBound, upperBound), xlab = "Length (bp)", main = "%s")
+hist(lens, 100, xlim = c(lowerBound, upperBound), xlab = "Length (bp)", main = "%s", xaxt="n")
+axis(1, at=seq(lowerBound , upperBound, by=10))
 abline(v= c(minLen, maxLen), lty=c(2,2))
 dev.off()
 
@@ -1333,7 +1343,7 @@ if (length(st.chim.seq) > 0){
 
 print(format(Sys.time()))
 quit()
-''' % (Fprimer, Rprimer, minLen, maxLen, maxEE, sample, sample, sample, sample, sample, sample, sample))
+''' % (Fprimer, Rprimer, minLen, maxLen, maxEE, "%%", "%%", sample, sample, sample, sample, sample, sample, sample))
 
 def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath, verbose_level = 1):
 	log.write("IterativeClusterDechimera\n")
@@ -2171,7 +2181,7 @@ if fileExt == "gz":
 		gunzipCmd = "gunzip -c -k %s > tmp_sequences.%s" %(raw_sequences, fileType)
 		process = subprocess.Popen(gunzipCmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 		process.wait()
-		raw_sequences = "tmp_sequences.%s" % fileType
+		raw_sequences = os.path.abspath("tmp_sequences.%s" % fileType)
 	else:
 		gunzipCmd = "gunzip -k %s" % raw_sequences
 		process = subprocess.Popen(gunzipCmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
