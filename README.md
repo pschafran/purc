@@ -1,6 +1,6 @@
 # PURC: Pipeline for Untangling Reticulate Complexes
 # v2.0
-#### Last updated 2021 June 16
+#### Last updated 2021 June 17
 
 ## Changes from v1 ##
 * PURC updated for compatibility with Python3 and macOS 10+
