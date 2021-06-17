@@ -1,9 +1,0 @@
-S	0	486	*	.	*	*	*	species12_Cluster8;size=7;	*
-H	0	486	100.0	.	0	486	=	species12_Cluster79;size=4;	species12_Cluster8;size=7;
-S	1	485	*	.	*	*	*	species12_Cluster9;size=6;	*
-S	2	486	*	.	*	*	*	species12_Cluster55;size=7;	*
-S	3	476	*	.	*	*	*	species12_Cluster24;size=4;	*
-C	0	11	*	*	*	*	*	species12_Cluster8;size=7;	*
-C	1	6	*	*	*	*	*	species12_Cluster9;size=6;	*
-C	2	7	*	*	*	*	*	species12_Cluster55;size=7;	*
-C	3	4	*	*	*	*	*	species12_Cluster24;size=4;	*

@@ -1,9 +1,0 @@
-S	0	486	*	.	*	*	*	species6_Cluster18;size=5;	*
-S	1	522	*	.	*	*	*	species6_Cluster23;size=4;	*
-S	2	486	*	.	*	*	*	species6_Cluster0;size=6;	*
-S	3	476	*	.	*	*	*	species6_Cluster1;size=110;	*
-H	3	476	100.0	.	0	476	=	species6_Cluster14;size=21;	species6_Cluster1;size=110;
-C	0	5	*	*	*	*	*	species6_Cluster18;size=5;	*
-C	1	4	*	*	*	*	*	species6_Cluster23;size=4;	*
-C	2	6	*	*	*	*	*	species6_Cluster0;size=6;	*
-C	3	131	*	*	*	*	*	species6_Cluster1;size=110;	*
