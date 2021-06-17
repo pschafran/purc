@@ -1275,8 +1275,11 @@ print(maxLen)
 print("Maximum expected errors:")
 print(maxEE)
 
+lowerBound <- min(c(minLen, min(lens)))
+upperBound <- max(c(maxLen, max(lens)))
+
 pdf("%s_read_lengths.pdf")
-hist(lens, 100, xlim = c(min(lens)-10, max(lens)+10), xlab = "Length (bp)", main = "%s")
+hist(lens, 100, xlim = c(lowerBound, upperBound), xlab = "Length (bp)", main = "%s")
 abline(v= c(minLen, maxLen), lty=c(2,2))
 dev.off()
 
@@ -2310,9 +2313,9 @@ if mode == 2:
 ## Iterative clustering and chimera-killing ##
 os.chdir(Output_folder) # move into the designated output folder
 if Clustering_method == "OTU":
-	LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera = IterativeClusterDechimera('../'+annoFileName, clustID, clustID2, clustID3, sizeThreshold, sizeThreshold2)
+	LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera = IterativeClusterDechimera(annoFileName, clustID, clustID2, clustID3, sizeThreshold, sizeThreshold2)
 elif Clustering_method == "ASV":
-	LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera = dada( ppp_location + "/" + annoFileName, ppp_location + "/" + fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
+	LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
 ## Producing a summary ##
 log.write('#Run Summary#\n\n')
 count_output = open(Output_prefix + '_5_counts.xls', 'w')
