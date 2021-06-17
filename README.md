@@ -10,6 +10,7 @@
 * Input file path handling. Files no longer have to be in the working directory
 * Input sequence file can be gzip compressed
 * Primer order in config now must match locus order
+* Dependencies expected to be in PATH by default
 
 ## **Overview** ##
 PURC is a pipeline for inferring the underlying biological sequences (alleles, paralogs, or homeologs) from amplicon sequencing data (PacBio, Illumina, etc), de-multiplexing them (labeling each sequence with its locus and source sample), and cleaning them (removing PCR errors, sequencing errors, and chimeras). It is geared toward analyzing polyploid species complexes but is also effective for other applications; the final output of a full run includes an alignment for each locus with each homeolog or allele sequence in the amplicon data labeled with the source sample information and amount of coverage.
