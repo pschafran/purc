@@ -55,7 +55,7 @@ Once R is installed and accessible from the command line, open `R` and run these
 ### Install ###
 if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager", quiet = TRUE)
 BiocManager::install(version = '3.13', ask = FALSE)
-if (!require("dada2", quietly = TRUE)) BiocManager::install("dada2", version = "3.12", ask = FALSE)
+if (!require("dada2", quietly = TRUE)) BiocManager::install("dada2", ask = FALSE)
 if (!require("gridExtra", quietly = TRUE)) install.packages("gridExtra", quiet = TRUE)
 if (!require("ggplot2", quietly = TRUE)) install.packages("ggplot2", quiet = TRUE)
 if (!require("reshape2", quietly = TRUE)) install.packages("reshape2", quiet = TRUE)
