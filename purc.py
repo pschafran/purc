@@ -1881,11 +1881,6 @@ class Alignment(object):
 
 
 ################################################ Setup ################################################
-SYSOS="Darwin"
-detected_operating_system = platform.system()
-if SYSOS != detected_operating_system:
-	print("WARNING: PURC appears to be installed for a different operatiing system than the current. Some dependencies may fail to run.")
-
 ts = time.time()
 time_stamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
 
