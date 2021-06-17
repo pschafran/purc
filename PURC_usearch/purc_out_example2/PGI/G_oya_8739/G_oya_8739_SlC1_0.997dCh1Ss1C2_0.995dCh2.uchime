@@ -1,8 +1,0 @@
-0.0000	Cluster5;size=12;	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
-0.0000	Cluster0;size=11;	*	*	*	*	*	*	*	0	0	0	0	0	0	*	N
-0.0516	Cluster6;size=1;	Cluster5;size=12;	Cluster0;size=11;	99.7	99.2	99.3	98.8	98.8	5	1	1	4	1	0	0.8	N
-0.0345	Cluster7;size=1;	Cluster0;size=11;	Cluster5;size=12;	99.5	99.0	99.5	99.2	98.5	6	3	1	4	1	0	1.0	N
-0.0127	Cluster4;size=1;	Cluster5;size=12;	Cluster0;size=11;	99.7	99.7	99.3	99.0	97.8	3	2	3	4	2	4	1.8	N
-0.0000	Cluster1;size=1;	*	*	*	*	*	*	99.0	0	0	0	0	0	0	*	N
-0.0043	Cluster2;size=1;	Cluster5;size=12;	Cluster0;size=11;	99.7	99.7	99.5	99.5	98.8	1	0	0	3	6	3	0.8	N
-0.0000	Cluster3;size=1;	*	*	*	*	*	*	99.3	0	0	0	0	0	0	*	N
