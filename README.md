@@ -6,8 +6,9 @@
 * PURC updated for compatibility with Python3 and macOS 10+
 * Usearch replaced with [vsearch](https://github.com/torognes/vsearch) for Linux and macOS
 * Amplicon sequence variant (ASVs) identification using [DADA2](https://benjjneb.github.io/dada2/index.html) introduced
-* Linux only: PacBio's [lima](https://github.com/pacificbiosciences/barcoding/) and [IsoSeq](https://github.com/PacificBiosciences/IsoSeq) replace BLAST methods for demultiplexing and concatemer detection, respectively
-* General usability improvements
+* //TODO Linux only: PacBio's [lima](https://github.com/pacificbiosciences/barcoding/) and [IsoSeq](https://github.com/PacificBiosciences/IsoSeq) replace BLAST methods for demultiplexing and concatemer detection, respectively
+* Input file path handling. Files no longer have to be in the working directory
+* Input sequence file can be gzip compressed
 
 ## **Overview** ##
 PURC is a pipeline for inferring the underlying biological sequences (alleles, paralogs, or homeologs) from amplicon sequencing data (PacBio, Illumina, etc), de-multiplexing them (labeling each sequence with its locus and source sample), and cleaning them (removing PCR errors, sequencing errors, and chimeras). It is geared toward analyzing polyploid species complexes but is also effective for other applications; the final output of a full run includes an alignment for each locus with each homeolog or allele sequence in the amplicon data labeled with the source sample information and amount of coverage.
@@ -28,8 +29,8 @@ PURC allows users to extract and analyze all the copies of a given locus present
 PURC should run on most recent versions of macOS and Linux. Windows support is deprecated, instead on PCs we recommend running an Ubuntu virtual machine (see tutorial [here](https://itsfoss.com/install-linux-in-virtualbox/)).
 
 ## **Quick Start** ##
-### Step 1: setup ###
-PURC consists of purc.py (and another variation--purc_recluster.py--that we describe below) and a number of dependencies. We recommend using the [Miniconda](https://conda.io/en/latest/miniconda.html) package manager for installing dependencies. Once installed (and the terminal rebooted), you should be able to run these commands:
+### Step 1: Setup ###
+PURC consists of purc.py (and another variation--purc_recluster.py--that we describe below) and relies on a number of dependencies. We recommend using the [Miniconda](https://conda.io/en/latest/miniconda.html) package manager for installing dependencies. Once installed (and the terminal rebooted), you should be able to run these commands:
 ```
 pip install biopython
 conda install -c bioconda -c conda-forge cutadapt blast muscle vsearch r-base r-essentials
@@ -38,9 +39,8 @@ If R is already installed, it is best not to install multiple instances. Omit `r
 ```
 PATH="/Library/Frameworks/R.framework/Versions/4.0/Resources/:$PATH"
 ```
-
+Once R is installed and accessible from the command line, open `R` and run these commands to install required packages.
 ```
-R
 # If install fails, try changing BiocManager version based on your R version:
 # R version = BiocManager Version
 # 4.0.2+ = 3.12
@@ -63,7 +63,7 @@ if (!require("RColorBrewer", quietly = TRUE)) install.packages("RColorBrewer", q
 
 If you get an error message like "ERROR: Cython is not installed", install/update [Cython](http://docs.cython.org/src/quickstart/install.html) and try again.
 
-### Step 2: get files ready ###
+### Step 2: Get files ready ###
 PURC requires the following files:
 
 * **Configuration file** - This contains the file names and parameters that PURC needs. There are several examples provided with the PURC distribution (open and edit them in TextWrangler or similar text editor).
@@ -121,7 +121,7 @@ PURC requires the following files:
 
     Again that if you are using the dual barcode function, the names have to be BCF1, BCF2, ..., BCF9, and BCR1, BCR2, ..., BCR9, where         the F and R denote the barcodes on forward and reverse primers respectively. This is used to check whether there are invalid F-F or R-R situation; only F-R or R-F are kept.
 
-### Step 3: run ###
+### Step 3: Run ###
 PURC can be run by navigating to the directory that contains the configuration, barcode, reference sequence, and map files, and calling the program from there:
 ```
 #!shell
@@ -133,7 +133,7 @@ This assumes that the purc script (and Dependencies directory) is in /Users/fayw
 purc.py purc_configuration.txt
 ```
 
-After PURC finishes successfully, you should find the final clustered sequences in ```[prefix]_4_[locus]_clustered_reconsensus.fa```, and the aligned sequences in ```[prefix]_4_[locus]_clustered_reconsensus.afa```
+After PURC finishes successfully, you should find the final clustered sequences in ```[prefix]_4_[locus]_clustered_reconsensus.fa```, and the aligned sequences in ```[prefix]_4_[locus]_clustered_reconsensus.aligned.fa```
 
 ### Step 4: recluster ###
 If you want to adjust clustering parameters, instead of re-running the whole thing, you can start from the annotated fasta file by using ```purc_recluster.py.```
@@ -223,38 +223,49 @@ BCF3	BCR1	species3
 ...
 ```
 
-
 Again that if you are using the dual barcode function, the names have to be BCF1, BCF2, ..., BCF9, and BCR1, BCR2, ..., BCR9, where         the F and R denote the barcodes on forward and reverse primers respectively. This is used to check whether there are invalid F-F or R-R situation; only F-R or R-F are kept.
 
-### Citation ###
-This script relies heavily on USEARCH, MUSCLE, and BLAST.
-If this script assisted with a publication, please cite the following papers
-(or updated citations, depending on the versions of USEARCH, etc., used).
+### Example 4 - PacBio with ASV (FASTQ only) ###
+Newer PacBio CCS (HiFi) sequencing data is produced with quality scores in FASTQ format. This type of data can be processed by the 'DADA2' R package to reduce reads into amplicon sequence variants (ASVs), which tend to more accurately represent the source compared to OTU clustering. To turn on ASV inference, change to `Clustering_method = 0` in your config file. Some settings, such as minimum/maximum length of reads to keep, and maximum number of expected errors to allow, can be set with `minLen`, `maxLen`, and `maxEE`, respectively.
 
-PURC:
--Rothfels, C.J., K.M. Pryer, and F-W. Li. 2016. Next-generation polyploid
+
+
+### Citation ###
+This script relies heavily on VSEARCH, MUSCLE, DADA2, and BLAST.
+If this script assisted with a publication, please cite the following papers
+(or updated citations, depending on the versions of VSEARCH, etc., used).
+
+PURC:  
+Rothfels, C.J., K.M. Pryer, and F-W. Li. 2016. Next-generation polyploid
 phylogenetics: rapid resolution of hybrid polyploid complexes using PacBio
 single-molecule sequencing. New Phytologist
 
-USEARCH/UCLUST:
--Edgar, R.C. 2010. Search and clustering orders of magnitude faster than BLAST.
-Bioinformatics 26(19), 2460-2461.
+VSEARCH:  
+Rognes T, T. Flouri, B. Nichols, C. Quince, and F. Mahé. 2016. VSEARCH: a versatile open source tool for metagenomics. PeerJ 4:e2584 [https://doi.org/10.7717/peerj.2584](https://doi.org/10.7717/peerj.2584)
 
-UCHIME:
--Edgar, R.C., B.J. Haas, J.C. Clemente, C. Quince, R. Knight. 2011.
-UCHIME improves sensitivity and speed of chimera detection, Bioinformatics 27(16), 2194-2200.
-
-Cutadapt:
--Martin, M. 2011. Cutadapt removes adapter sequences from high-throughput sequencing reads.
+Cutadapt:  
+Martin, M. 2011. Cutadapt removes adapter sequences from high-throughput sequencing reads.
 EMBnet.journal 17:10-12.
 
-MUSCLE:
--Edgar, R.C. 2004. MUSCLE: Multiple sequence alignment with high accuracy and high throughput.
+MUSCLE:  
+Edgar, R.C. 2004. MUSCLE: Multiple sequence alignment with high accuracy and high throughput.
 Nucleic Acids Research 32:1792-1797.
 
-BLAST:
--Camacho, C., G. Coulouris, V. Avagyan, N. Ma, J. Papadopoulos, et al. 2009.
+BLAST:  
+Camacho, C., G. Coulouris, V. Avagyan, N. Ma, J. Papadopoulos, et al. 2009.
 BLAST+: Architecture and applications. BMC Bioinformatics 10: 421.
+
+DADA2:  
+Callahan, B., McMurdie, P., Rosen, M. et al. 2016. DADA2: High-resolution sample inference from Illumina amplicon data. Nat Methods 13, 581–583. [https://doi.org/10.1038/nmeth.3869](https://doi.org/10.1038/nmeth.3869)
+
+**Deprecated dependencies**  
+USEARCH/UCLUST:  
+Edgar, R.C. 2010. Search and clustering orders of magnitude faster than BLAST.
+Bioinformatics 26(19), 2460-2461.
+
+UCHIME:  
+Edgar, R.C., B.J. Haas, J.C. Clemente, C. Quince, R. Knight. 2011.
+UCHIME improves sensitivity and speed of chimera detection, Bioinformatics 27(16), 2194-2200.
 
 
 ### FAQ ###
@@ -281,6 +292,8 @@ settings are too lax, and thus primers are being "found" in the middle of the se
 
 
 ### Who do I talk to? ###
-Fay-Wei Li ([fl329@cornell.edu](fl329@cornell.edu))
+Peter Schafran ([ps997@cornell.edu](mailto:ps997@cornell.edu))
 
-Carl Rothfels ([crothfels@berkeley.edu](crothfels@berkeley.edu))
+Fay-Wei Li ([fl329@cornell.edu](mailto:fl329@cornell.edu))
+
+Carl Rothfels ([crothfels@berkeley.edu](mailto:crothfels@berkeley.edu))
