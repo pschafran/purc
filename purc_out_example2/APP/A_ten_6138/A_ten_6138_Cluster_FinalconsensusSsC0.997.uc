@@ -1,9 +1,0 @@
-S	0	955	*	*	*	*	*	A_ten_6138_Cluster9;size=24;	*
-S	1	954	*	*	*	*	*	A_ten_6138_Cluster8;size=32;	*
-S	2	948	*	*	*	*	*	A_ten_6138_Cluster31;size=186;	*
-H	2	948	100.0	+	0	0	=	A_ten_6138_Cluster17;size=20;	A_ten_6138_Cluster31;size=186;
-S	3	943	*	*	*	*	*	A_ten_6138_Cluster27;size=7;	*
-C	0	24	*	*	*	*	*	A_ten_6138_Cluster9;size=24;	*
-C	1	32	*	*	*	*	*	A_ten_6138_Cluster8;size=32;	*
-C	2	206	*	*	*	*	*	A_ten_6138_Cluster31;size=186;	*
-C	3	7	*	*	*	*	*	A_ten_6138_Cluster27;size=7;	*
