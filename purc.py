@@ -162,7 +162,7 @@ def makeBlastDB(inFileName, outDBname):
 
 	# remove any '-' in the sequence, so that BLAST won't freak out
 	seq_no_hyphen = open(inFileName + '.nohyphen.fasta', 'w')
-	for i in parse_fasta('../' + inFileName):
+	for i in parse_fasta(inFileName):
 		new_seq = str(i.seq).replace('-','')
 		seq_no_hyphen.write('>' + str(i.id) + '\n' + new_seq + '\n')
 		if len(i.id) > 50:
@@ -1888,7 +1888,7 @@ else:
 	except:
 		sys.stderr.write('Error: Cannot open the configuration file\n')
 		sys.exit(usage)
-	ppp_location = os.path.dirname(os.path.abspath( __file__ ))
+	ppp_location = os.getcwd()
 
 	## Setting up defaults ##
 	mode = 1
@@ -1913,9 +1913,9 @@ else:
 	barcode_databasefile = 'barcode_blastdb'
 	refseq_databasefile = 'refseq_blastdb'
 	seq_name_toErase = ''
-	Usearch = ppp_location + '/' + 'Dependencies/vsearch'
-	Cutadapt = ppp_location + '/' + 'Dependencies/cutadapt_source/bin/cutadapt'
-	Muscle = ppp_location + '/' + 'Dependencies/muscle3.8.31'
+	Usearch = 'vsearch'
+	Cutadapt = 'cutadapt'
+	Muscle = 'muscle'
 	RscriptPath = 'Rscript'
 	log_file = 'purc_log_' + time_stamp + '.txt'
 
@@ -1933,12 +1933,16 @@ else:
 				raw_sequences = setting_argument
 				if not os.path.isfile(raw_sequences):
 					sys.exit("Error: could not find " + raw_sequences)
+				else:
+					raw_sequences = os.path.abspath(raw_sequences)
+					print("Input sequence file: %s" % raw_sequences)
 			elif setting_name == "Align":
 				Align = int(setting_argument)
 			elif setting_name == 'Output_prefix':
 				Output_prefix = setting_argument
 			elif setting_name == 'Output_folder':
-				Output_folder = setting_argument
+				Output_folder = os.path.abspath(setting_argument)
+				print("Output folder: %s" % Output_folder)
 				BLAST_DBs_folder = Output_folder + '_BlastDBs'
 			elif setting_name == 'Barcode_blastDB':
 				barcode_databasefile = setting_argument
@@ -1952,10 +1956,14 @@ else:
 			elif setting_name == 'Locus_name':
 				locus_list = setting_argument.upper().replace(' ', '').replace('\t', '').split(',') #needs the upper() now that LocusTaxonCountDict_unclustd has the loci in uppercase
 			elif setting_name == 'Locus-barcode-taxon_map':
-				mapping_file_list = setting_argument.replace(' ', '').replace('\t', '').split(',')
-				for mapfile in mapping_file_list:
+				mapping_file_list_tmp = setting_argument.replace(' ', '').replace('\t', '').split(',')
+				mapping_file_list = []
+				for mapfile in mapping_file_list_tmp:
+					mapfile = os.path.abspath(mapfile)
 					if not os.path.isfile(mapfile):
 						sys.exit("Error: could not find " + mapfile)
+					else:
+						mapping_file_list.append(mapfile)
 			elif setting_name == 'Usearch':
 				if setting_argument.startswith('Dependencies/'):
 					Usearch = ppp_location + '/' + setting_argument
@@ -2008,11 +2016,11 @@ else:
 			elif setting_name == 'Remove_intermediates':
 				remove_intermediates = int(setting_argument)
 			elif setting_name == 'in_Barcode_seq_file':
-				barcode_seq_filename = setting_argument
+				barcode_seq_filename = os.path.abspath(setting_argument)
 				if not os.path.isfile(barcode_seq_filename):
 					sys.exit("Error: could not find " + barcode_seq_filename)
 			elif setting_name == 'in_RefSeq_seq_file':
-				refseq_filename = setting_argument
+				refseq_filename = os.path.abspath(setting_argument)
 				if not os.path.isfile(refseq_filename):
 					sys.exit("Error: could not find " + refseq_filename)
 			elif setting_name == 'Dual_barcode':
