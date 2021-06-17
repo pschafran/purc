@@ -299,3 +299,7 @@ Peter Schafran ([ps997@cornell.edu](mailto:ps997@cornell.edu))
 Fay-Wei Li ([fl329@cornell.edu](mailto:fl329@cornell.edu))
 
 Carl Rothfels ([crothfels@berkeley.edu](mailto:crothfels@berkeley.edu))
+
+
+### Known Bugs ###
+* Inconsistent number of sequences reported during barcode removal (does not equal total number of sequences)
