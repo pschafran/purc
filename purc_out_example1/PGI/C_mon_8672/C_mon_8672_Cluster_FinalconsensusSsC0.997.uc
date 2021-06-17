@@ -1,9 +1,0 @@
-S	0	984	*	*	*	*	*	C_mon_8672_Cluster2;size=10;	*
-S	1	974	*	*	*	*	*	C_mon_8672_Cluster5;size=5;	*
-S	2	950	*	*	*	*	*	C_mon_8672_Cluster12;size=10;	*
-H	2	949	99.8	+	0	0	540MI409M	C_mon_8672_Cluster11;size=22;	C_mon_8672_Cluster12;size=10;
-S	3	937	*	*	*	*	*	C_mon_8672_Cluster20;size=18;	*
-C	0	10	*	*	*	*	*	C_mon_8672_Cluster2;size=10;	*
-C	1	5	*	*	*	*	*	C_mon_8672_Cluster5;size=5;	*
-C	2	32	*	*	*	*	*	C_mon_8672_Cluster12;size=10;	*
-C	3	18	*	*	*	*	*	C_mon_8672_Cluster20;size=18;	*

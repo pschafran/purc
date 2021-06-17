@@ -1,9 +1,0 @@
-S	0	954	*	*	*	*	*	C_tenu_7648_Cluster8;size=15;	*
-S	1	953	*	*	*	*	*	C_tenu_7648_Cluster1;size=26;	*
-H	1	953	100.0	+	0	0	=	C_tenu_7648_Cluster9;size=7;	C_tenu_7648_Cluster1;size=26;
-S	2	946	*	*	*	*	*	C_tenu_7648_Cluster12;size=10;	*
-S	3	907	*	*	*	*	*	C_tenu_7648_Cluster22;size=37;	*
-C	0	15	*	*	*	*	*	C_tenu_7648_Cluster8;size=15;	*
-C	1	33	*	*	*	*	*	C_tenu_7648_Cluster1;size=26;	*
-C	2	10	*	*	*	*	*	C_tenu_7648_Cluster12;size=10;	*
-C	3	37	*	*	*	*	*	C_tenu_7648_Cluster22;size=37;	*
