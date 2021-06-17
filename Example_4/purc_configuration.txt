@@ -5,7 +5,7 @@ in_Barcode_seq_file		= LFY_barcodes.fasta		# Fasta file containing barcode names
 in_RefSeq_seq_file		= LFY_refs_diploids.fasta	# Fasta file containing reference names and sequences; the input for making blast database
 Output_prefix			= purc				# The prefix for output files
 Output_folder			= purc_out_example4				# The folder in where all purc output will be saved
-Log_file				= log					# If left empty, default time-stamped log file name will be used
+Log_file				= log_example4					# If left empty, default time-stamped log file name will be used
 
 [Loci]
 Locus_name				= LFY	# The order must be identical to that in Locus-barcode-taxon_map
@@ -21,8 +21,9 @@ Mode					= 1		# 0: Check concatemers and then full run
 								# 1: Skip concatemer-checking
 Multiplex_per_barcode	= 0		# 0: Each barcode contains only one sample
 								# 1: Each barcode contains multiple samples
-Dual_barcode			= 1		# 0: Barcodes only on one primer
-								# 1: Barcodes on both primers
+Dual_barcode			= 0		# 0: Barcodes only on one primer
+								# 1: Unique barcodes on both primers
+								# 2: Same barcode on both primers
 Barcode_detection		= 1		# 0: Search barcode in entire sequences; will produce "ErrMidBC" flag if barcodes are not at the ends of the sequence
 								# 1: Search barcode only at the ends of sequences
 Recycle_chimeric_seq	= 0		# 0: Do not recycle
@@ -52,11 +53,15 @@ dynamicThreshold		= 10		# Threshold limit as percentage of largest cluster for e
 [Chimera-killing Parameters]
 abundance_skew			= 1.9
 
+[Lima Override]
+Lima_override = 0 # Set to 1 to use BLAST-based demultiplexing instead of Lima (Linux only)
+
 [Dependencies]
-Usearch 				= Dependencies/vsearch							# The name of (or path to) Usearch executable; Here use the executables come together with PURC
-Cutadapt				= /Users/peter/opt/miniconda3/bin/cutadapt				# The name of (or path to) Cutadapt executable; Here use the executables come together with PURC
-Muscle 					= Dependencies/muscle3.8.31								# The name of (or path to) Muscle executable; Here use the executables come together with PURC
+Usearch 				= vsearch								# The name of (or path to) Usearch executable; Here assumed to be accessible through the shell's PATH
+Cutadapt				= cutadapt							# The name of (or path to) Cutadapt executable; Here assumed to be accessible through the shell's PATH
+Muscle 					= muscle								# The name of (or path to) Muscle executable; Here assumed to be accessible through the shell's PATH
 Rscript					= Rscript								# The name of (or path to) Rscript executable; Here assumed to be accessible through the shell's PATH
+blastn 					= blastn								# The name of (or path to) Rscript executable; Here assumed to be accessible through the shell's PATH
 
 [Miscellaneous]
 Threads					= 8						# The number of threads for running BLAST

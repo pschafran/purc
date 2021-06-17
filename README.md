@@ -1,15 +1,16 @@
 # PURC: Pipeline for Untangling Reticulate Complexes
-# v2.0 updated 2021 Jan 23
+# v2.0
+#### Last updated 2021 June 16
 
 ## Changes from v1 ##
-* PURC updated for compatibility with Python3 and macOS Catalina and Big Sur
+* PURC updated for compatibility with Python3 and macOS 10+
 * Usearch replaced with [vsearch](https://github.com/torognes/vsearch) for Linux and macOS
 * Amplicon sequence variant (ASVs) identification using [DADA2](https://benjjneb.github.io/dada2/index.html) introduced
 * Linux only: PacBio's [lima](https://github.com/pacificbiosciences/barcoding/) and [IsoSeq](https://github.com/PacificBiosciences/IsoSeq) replace BLAST methods for demultiplexing and concatemer detection, respectively
 * General usability improvements
 
 ## **Overview** ##
-PURC is a pipeline for inferring the underlying biological sequences (alleles, paralogs, or homeologs) from amplicon sequencing data (PacBio, Illumina, etc), de-multiplexing them (labeling each sequence with its locus and source sample), and cleaning them (removing PCR errors, sequencing errors, and chimeras). It is geared toward analyzing polyploid species complexes but is also effective for other applications; the final output of a full run includes an alignment for each locus with each homeolog or allele sequence in the amplicon data labeled with the source sample information and amount of coverage. 
+PURC is a pipeline for inferring the underlying biological sequences (alleles, paralogs, or homeologs) from amplicon sequencing data (PacBio, Illumina, etc), de-multiplexing them (labeling each sequence with its locus and source sample), and cleaning them (removing PCR errors, sequencing errors, and chimeras). It is geared toward analyzing polyploid species complexes but is also effective for other applications; the final output of a full run includes an alignment for each locus with each homeolog or allele sequence in the amplicon data labeled with the source sample information and amount of coverage.
 
 PURC allows users to extract and analyze all the copies of a given locus present in an amplicon pool, so is particularly useful in cases such as the study of polyploid complexes or large gene families, which were historically tractable only via time- and expense-intensive cloning approaches. Within a single run users can analyze as many accessions as they like, limited only by the desired coverage/allele and the number of sequences that can be uniquely linked back to their source samples. PURC can perform this linking using barcode sequences, locus identity, or phylogenetic information. For example, within a single run an individual barcode can be used multiple times if the locus is different, or if the accessions can be distinguished phylogenetically (i.e., of different genera or other clades that can be distinguished using BLAST). While it is most useful in cases where multiple copies of fairly long sequences have been amplified from individual accessions, it also (when used on PacBio sequencing data) provides considerable cost- and time savings for sequencing plastid or mitochondrial markers.
 
@@ -24,32 +25,43 @@ PURC allows users to extract and analyze all the copies of a given locus present
 * Compute consensus sequence for each cluster
 * Produce sequence alignments ready for downstream phylogenetic analyses
 
-PURC can be ran on Mac OSX and Linux machines. For PCs, you need to additionally install cygwin and Microsoft Visual C++ 2008 (use the 32-bit version). 
+PURC should run on most recent versions of macOS and Linux. Windows support is deprecated, instead on PCs we recommend running an Ubuntu virtual machine (see tutorial [here](https://itsfoss.com/install-linux-in-virtualbox/)).
 
 ## **Quick Start** ##
 ### Step 1: setup ###
-PURC consists of purc.py (and another variation--purc_recluster.py--that we describe below) and a number of dependencies. We bundled most of the dependencies (cutadapt, muscle and usearch) together in the distribution. To get the dependencies in place, cd to the purc directory, and type: 
+PURC consists of purc.py (and another variation--purc_recluster.py--that we describe below) and a number of dependencies. We recommend using the [Miniconda](https://conda.io/en/latest/miniconda.html) package manager for installing dependencies. Once installed (and the terminal rebooted), you should be able to run these commands:
 ```
-#!shell
-./install_dependencies.sh
+pip install biopython
+conda install -c bioconda -c conda-forge cutadapt blast muscle vsearch r-base r-essentials
 ```
-For Linux machines, use:
+If R is already installed, it is best not to install multiple instances. Omit `r-base r-essentials` from the command above. Make sure `R` and `Rscript` are in your PATH (type the command and it runs from anywhere). E.g. if installed with installer on macOS, you may need to add `/Library/Frameworks/R.framework/Versions/4.0/Resources/`. Note this will need be redone each time your open a new Terminal.
 ```
-#!shell
-./install_dependencies_linux.sh
+PATH="/Library/Frameworks/R.framework/Versions/4.0/Resources/:$PATH"
 ```
-If you get "permission denied" error, then try this first:
-```
-#!shell
-chmod +x install_dependencies.sh
-```
-If you get an error message like "ERROR: Cython is not installed", install/update [Cython](http://docs.cython.org/src/quickstart/install.html) and try again. 
 
-There are three other dependencies that you have to install yourself:
+```
+R
+# If install fails, try changing BiocManager version based on your R version:
+# R version = BiocManager Version
+# 4.0.2+ = 3.12
+# 4.0 = 3.11
+# 3.6 = 3.10
+# 3.5 = 3.8
+# 3.4 = 3.6
+# 3.3 = 3.4
+# 3.2 = 3.2
 
-* [Python](https://www.python.org) - Version 2.7 or later (within Python 2--we have not tested purc on Python 3, and it will probably not work).
-* [BioPython](http://biopython.org/wiki/Biopython) - Version 1.6 or later. You need to have [Numpy](http://www.numpy.org) in place before installing BioPython. Please refer to BioPython [manual](http://biopython.org/wiki/Download) for installation instructions.
-* [BLAST+](http://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download) - Version 2.2.30 or later. Place the executables in your PATH. Provided that you're are using a Mac, the easiest way is to download the .dmg file and follow the installer's instructions. To test if BLAST is installed correctly, open Terminal and type "blastn -h" (without quotation marks). If you see a bunch of stuff pooped out (i.e., "USAGE: ...blah blah blah"), then you are good to go. However, if you get "command not found" error, then BLAST is not installed correctly.  
+### Install ###
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager", quiet = TRUE)
+BiocManager::install(version = '3.12', ask = FALSE)
+if (!require("dada2", quietly = TRUE)) BiocManager::install("dada2", version = "3.12", ask = FALSE)
+if (!require("gridExtra", quietly = TRUE)) install.packages("gridExtra", quiet = TRUE)
+if (!require("ggplot2", quietly = TRUE)) install.packages("ggplot2", quiet = TRUE)
+if (!require("reshape2", quietly = TRUE)) install.packages("reshape2", quiet = TRUE)
+if (!require("RColorBrewer", quietly = TRUE)) install.packages("RColorBrewer", quiet = TRUE)
+```
+
+If you get an error message like "ERROR: Cython is not installed", install/update [Cython](http://docs.cython.org/src/quickstart/install.html) and try again.
 
 ### Step 2: get files ready ###
 PURC requires the following files:
@@ -57,7 +69,7 @@ PURC requires the following files:
 * **Configuration file** - This contains the file names and parameters that PURC needs. There are several examples provided with the PURC distribution (open and edit them in TextWrangler or similar text editor).
 
 * **Barcode sequence file** - In fasta format. PURC uses this file to identify barcodes in the sequence reads. The sequence name is the barcode name. E.g.:
-         
+
         >BC01
         ACTACATATGAGATG
         >BC02
@@ -74,7 +86,7 @@ PURC requires the following files:
         TGCCACACTGGTGAGTATTATCTTACTCTTTTTCTTGGTGAGAAAGGGTAGTGTGCATGGCATATTCATGTCAACCCCCGCTTGGGACCGGGGGCGACAAGGATGTTACTGTTGGGTGATACCTGTGATGCCCAATTGGAGCAAGAGTAAAATCAACTTTGTAAATATCATCTATTTGAAGGATTAACAGACATGGTATTTAAATTCCTCTCACATTTAAAACAGGGTGGTTGCAGAACTGGTATGGCCAAAGTAACGAACGCTTACGATTTGCCTGCAAGGTAAAAGTTGAACAATGCTCAAGGTGGGGCTAGTTCTTTTGTCACTTAAGCAAGGATCTTCAAGCATGTAAAATTATTCTCCCTCAACTTTGCTTTACAAAAGAAATTTAACATATTGACTACTTTATCAATGGAATTTGAGCAGCTATCACATGTCGATGTTTATTTTGAGGCAAGGGGTTCTTGTTTGCATGCGGTTGTAGAAATGTCTTATCACATTTCTATTTGGGTTTTTTGACATTGCTATTTTTGCATAAATGCTAAGTTACAAATTAGAATTGTTTACTTGTTTGTTTGGAGGAAATCTCAAACGACTGTCTTTTGCTCTTGTATGCTCATTTGATGATTGCATGCGTACACCTTTATGTTCATTTAGGCTATGTTTTGTCAGCTCACAAATTTTTGATGTTAAACCTAACATGACAGGAAAGTTATACATACTGTTGGTCCAAGATATGCTGTTAAATATCATACAGCTGCAGAAAATGCTCTAAGTCATTGTTACCGATCTTGTTTAGAGGCTTTGATTGACTTAGGCCTTCAAAGGTACCAGCTGCTTGTTTAAACAGCTCAAAATTAAAGGAGAGTTTTTTCCTTTTGGATTAAAGTTTATCTCCCTTGTAATTCTTGCAGCATTGCCCTGGGGTGTATTTACACAGAGTCTAAAGGCTAT
         >locus=GAP/ref_taxon=Cystopteris_bulbifera
         AAAGTAATTTGATGCGTTTTTTTGGTGAAGTCAGTGCATTTTATTCTTTGAAATGGTGAGATCTTATGTTTGCAATCCACTGTTTACCAGGTAGTCCACCAGGAGTTTGGAATTGCCGAGGCCCTCATGACAACTGTGCATGCTACCACTGGTACCGTATTGTCTCCAGCCTCTTTGATTCTGATGTGCTGTAGTTTATACAGAGGCTGGAATTGAATACCCTTGTCATGACTAGCTCTTATATGTCGGTATTTGTGCTTCCAGCTACTCAAAAGACTGTGGATGGTCCCTCTGGCAAAGATTGGCGGGGTGGCCGAGGTGCTGGGCAGAATATCATTCCGAGCTCAACCGGTGCTGCCAAGGTACACTGCTAACTTAACCAAAACCTAAAACATCCTACTAATGTGGTGGCTATTTTATTGCCTTGTAAACATGTTGGTCTTTGTGGTAAACTGCAGGCAGTAGGAAAGGTGCTTCCAGAGTTAAATGGAAAGCTCACTGGAATGGCATTCCGAGTGCCTACCCCCAATGTCTCAGTTGTGGACTTGACTTGCCGCCTAGAGAAAGGGGCATCATACGATACCATCAAAGCAGCTGTGAAGTATGAACATTACATGCTCTAGTCATTGAAACAATTTTTTTTGTCTAAATTAATTTATTCTACTGATGCTGTCTAATTTTTAGCCTACCTGAAAGCTACATCTAATGTGATTTATTACACTTTTTGTAGGGCTGCATCTGAAGGTCCCATGAAAGGAATTCTGGGATACACTGAAGATGATGTTGTATCCACGGACTTTGTCGGTGATGAAAGGTAACTTCCACTTTAGAATTGCAGAAGGTAGTTTCAGTCATGCTCGCTCAAATTCCTCTAACGGTGGACTGGGTTGTTTGCAGATCAAGCATATTTGATGCTAAAGCAGGCATTGCCCTCAGTGATCGGTTTGTAAAGCTTGTTTCGT
-	
+
 
 	When sequences from multiple specimens are pooled together and share the same barcode, PURC can demultiplex them using user-provided "group" information. A reference sequence must be provided for each group, and the groups must be sufficiently phylogenetically distinct that BLAST can match each sequences to a reference sequences from the appropriate group. You need to supply the group information in the reference sequences ('group='). In this example, group "A" is the genus *Cystopteris*, group "B" is the genus *Acystopteris*, and group "C" is *Gymnocarpium*:
 
@@ -90,14 +102,14 @@ PURC requires the following files:
         BC01	Cystopteris_fragilis_Utah
         BC02	Cystopteris_fragilis_Arizona
         BC03	Cystopteris_fragilis_Taiwan
-        
+
 	When one barcode is used for multiple specimens, you need to add the group designation in the second column. In this case, one *Acystopteris* and one *Cystopteris* specimen were labeled with barcode 1, but they are divergent enough that PURC can pull them apart (based on the reference sequence file):
-	        
+
         BC01	A	Acystopteris_japonica_Taiwan
         BC01	B	Cystopteris_fragilis_Utah
         BC02	A	Acystopteris_japonica_Japan
 
-    Again, in this case PURC will go through each sequence, find out what barcode it has, and what "group" it matches to (based on the reference sequence file described above). And it will then use that barcode and group information to find the corresponding taxon name using the map, above. 
+    Again, in this case PURC will go through each sequence, find out what barcode it has, and what "group" it matches to (based on the reference sequence file described above). And it will then use that barcode and group information to find the corresponding taxon name using the map, above.
 
     If two barcodes are used (one on each primer), then the first two columns in the map files are the barcodes and the third the specimen names:
 
@@ -110,12 +122,12 @@ PURC requires the following files:
     Again that if you are using the dual barcode function, the names have to be BCF1, BCF2, ..., BCF9, and BCR1, BCR2, ..., BCR9, where         the F and R denote the barcodes on forward and reverse primers respectively. This is used to check whether there are invalid F-F or R-R situation; only F-R or R-F are kept.
 
 ### Step 3: run ###
-PURC can be run by navigating to the directory that contains the configuration, barcode, reference sequence, and map files, and calling the program from there: 
+PURC can be run by navigating to the directory that contains the configuration, barcode, reference sequence, and map files, and calling the program from there:
 ```
 #!shell
 /Users/fayweili/Programs/purc/purc.py purc_configuration.txt
 ```
-This assumes that the purc script (and Dependencies directory) is in /Users/fayweili/Programs/purc. **DO NOT** copy purc.py to your working directory; instead, call purc.py from there. Alternative, you can add the purc directory into your PATH, and in this case, you can run by: 
+This assumes that the purc script (and Dependencies directory) is in /Users/fayweili/Programs/purc. **DO NOT** copy purc.py to your working directory; instead, call purc.py from there. Alternative, you can add the purc directory into your PATH, and in this case, you can run by:
 ```
 #!shell
 purc.py purc_configuration.txt
@@ -124,14 +136,14 @@ purc.py purc_configuration.txt
 After PURC finishes successfully, you should find the final clustered sequences in ```[prefix]_4_[locus]_clustered_reconsensus.fa```, and the aligned sequences in ```[prefix]_4_[locus]_clustered_reconsensus.afa```
 
 ### Step 4: recluster ###
-If you want to adjust clustering parameters, instead of re-running the whole thing, you can start from the annotated fasta file by using ```purc_recluster.py.``` 
+If you want to adjust clustering parameters, instead of re-running the whole thing, you can start from the annotated fasta file by using ```purc_recluster.py.```
 
-Usage: 
+Usage:
 ```
 ./purc_recluster.py -f annotated_seq_file -o output_folder -c clustID1 clustID2 clustID3 clustID4 -s sizeThreshold1 sizeThreshold2 -a abundance_skew --clean
 ```
 
-Example: 
+Example:
 ```
 ./purc_recluster.py -f purc_3_annotated.fa -o recluster -c 0.997 0.995 0.99 0.997 -s 1 4 --clean
 ```
@@ -168,14 +180,14 @@ cd /Users/fayweili/Programs/purc/Example_1
 
 
 ### Example 1 - PacBio ###
-In this dataset, four loci were amplified from 30 *Cystopteris* specimens. Each specimen was labeled with a unique barcode, and all the PCR reactions were pooled together and sequenced in one PacBio SMRT cell. Because each barcode corresponds to a single specimen, in the configuration file we specify: 
+In this dataset, four loci were amplified from 30 *Cystopteris* specimens. Each specimen was labeled with a unique barcode, and all the PCR reactions were pooled together and sequenced in one PacBio SMRT cell. Because each barcode corresponds to a single specimen, in the configuration file we specify:
 ```
 Multiplex_per_barcode	= 0
 ```
 
 
 ### Example 2 - PacBio ###
-In this dataset, four loci were amplified from 28 *Cystopteris*, four *Acystopteris* and 18 *Gymnocarpium* specimens. To save on barcode expenses, we applied some barcodes more than once (e.g., we used the same barcode for a *Cystopteris* and an *Acystopteris* accession). For example, G_dry_7000, A_ten_4225 and C_mil_6761 were all labeled with BC03, but were assigned as different "groups" (A, B, C) in the map files (and the appropriate reference sequences for each group were added to the reference sequence file). In the configuration file we need to specify: 
+In this dataset, four loci were amplified from 28 *Cystopteris*, four *Acystopteris* and 18 *Gymnocarpium* specimens. To save on barcode expenses, we applied some barcodes more than once (e.g., we used the same barcode for a *Cystopteris* and an *Acystopteris* accession). For example, G_dry_7000, A_ten_4225 and C_mil_6761 were all labeled with BC03, but were assigned as different "groups" (A, B, C) in the map files (and the appropriate reference sequences for each group were added to the reference sequence file). In the configuration file we need to specify:
 ```
 Multiplex_per_barcode	= 1
 ```
@@ -197,7 +209,7 @@ TGCCACACTGGTGAGTATTGTCTTACTCTTTTTCTTGGTGAGAAAGGGTAAAGTGCATGGCATATTCACGTCAACCCCCG
 TGCCACACTGGTGAGTATTATCTTACTCTTTTTCTTGGTGAGAAAGGGTAGTGTGCATGGCATATTCATGTCAACCCCCGCTTGGCACCGGGGGTGATAAGGATGTTACTGTTGGGTGATACCTGTGATGCCCAATTGGAGCAAATAGTAAAATCAACTTCGTAAATATCATTTATTTGAAGGATTAATAGACATGGTATTTAAATTCCTCTCACATTCAAAACAGGGTGGTTGCAGAACTGGTATGGCCAAAGTAACGAACGCTTACGATTTGCCTGCAAGGTAAAAGTTGAACAATGCTCAAGGTGGGGCTACTCCTTTTGTCACTTAAGCAAGGATCTTCAAGCATGTAAAATTATTCTCCCTCAACTTTGCTTTACAAAAGAAATTTAACATATTGACTACTTCATCCATGGAATTTGAGCAGCTACACATGTAGATGTTTTTTTTTTGAGGCAAGGGGTTCTTGTTTGCATGTGGTTGTAGAAATGTTTATCACATTTCTATTTGGGTCTTTTGACATGGCTATTTTTGCATAACTGCCAAGTTACAAATTAGAATTGTTCACTTGCTGTTTGTACGAAATCTCAATTGACTGTCTTTTGCTCTTGTATGCTCATTTGATGATTGCATGCGTACACCTTTATGTTCATTTCAGGCTATGTTTTGTCAGCTCACAAGATTTTGATGCTAAACCTAACGTGACAGGAAAGTTATACATACTGTTGGTCCAAGATATGCTGTAAAATATCATACAGCTGCAGAAAATGCTCTAAGTCGTTGCTACCGATCTTGTTTAGAGGCTTTGATTGACTTAGGCCTTCAAAGGTACCAGCTGCTTGTTTAACAGCTCAAAATTAAAGGAGAGTTTTTTCCTTTTGGATTAAAGTTTATCTCCCATGTAATTCTTGCAGCATTGCCCTGGGGTGTATTTACACAGAGTCTAAAGGCTAT---------------------------------------------------------------------------------------
 ...
 ```
-        
+
 ### Example 3 - Illumina ###
 PURC can work with Illumina data too. You'd need to merge the pair-end reads first, for example, using [PEAR](https://github.com/xflouris/PEAR). In this dataset, each sequence is labeled by two barcodes, one on the forward and the other on the reverse primer. In the map file, we tell PURC which barcode combination corresponds to which specimen. We invoke dual-barcode mode by:
 ```
@@ -210,7 +222,7 @@ BCF2	BCR1	species2
 BCF3	BCR1	species3
 ...
 ```
-    
+
 
 Again that if you are using the dual barcode function, the names have to be BCF1, BCF2, ..., BCF9, and BCR1, BCR2, ..., BCR9, where         the F and R denote the barcodes on forward and reverse primers respectively. This is used to check whether there are invalid F-F or R-R situation; only F-R or R-F are kept.
 
@@ -219,36 +231,36 @@ This script relies heavily on USEARCH, MUSCLE, and BLAST.
 If this script assisted with a publication, please cite the following papers
 (or updated citations, depending on the versions of USEARCH, etc., used).
 
-PURC: 
--Rothfels, C.J., K.M. Pryer, and F-W. Li. 2016. Next-generation polyploid 
-phylogenetics: rapid resolution of hybrid polyploid complexes using PacBio 
+PURC:
+-Rothfels, C.J., K.M. Pryer, and F-W. Li. 2016. Next-generation polyploid
+phylogenetics: rapid resolution of hybrid polyploid complexes using PacBio
 single-molecule sequencing. New Phytologist
 
-USEARCH/UCLUST: 
--Edgar, R.C. 2010. Search and clustering orders of magnitude faster than BLAST. 
+USEARCH/UCLUST:
+-Edgar, R.C. 2010. Search and clustering orders of magnitude faster than BLAST.
 Bioinformatics 26(19), 2460-2461.
 
 UCHIME:
--Edgar, R.C., B.J. Haas, J.C. Clemente, C. Quince, R. Knight. 2011. 
+-Edgar, R.C., B.J. Haas, J.C. Clemente, C. Quince, R. Knight. 2011.
 UCHIME improves sensitivity and speed of chimera detection, Bioinformatics 27(16), 2194-2200.
 
 Cutadapt:
--Martin, M. 2011. Cutadapt removes adapter sequences from high-throughput sequencing reads. 
+-Martin, M. 2011. Cutadapt removes adapter sequences from high-throughput sequencing reads.
 EMBnet.journal 17:10-12.
 
 MUSCLE:
--Edgar, R.C. 2004. MUSCLE: Multiple sequence alignment with high accuracy and high throughput. 
+-Edgar, R.C. 2004. MUSCLE: Multiple sequence alignment with high accuracy and high throughput.
 Nucleic Acids Research 32:1792-1797.
 
-BLAST: 
--Camacho, C., G. Coulouris, V. Avagyan, N. Ma, J. Papadopoulos, et al. 2009. 
+BLAST:
+-Camacho, C., G. Coulouris, V. Avagyan, N. Ma, J. Papadopoulos, et al. 2009.
 BLAST+: Architecture and applications. BMC Bioinformatics 10: 421.
 
 
 ### FAQ ###
 * What does "ERRmidBC" flag mean?
- 
-     It indicates that PURC identified a barcode sequence in the middle of the read (not at the ends). The reason could be PCR/sequencing artifacts, or a stretch of reads that resemble one of the barcodes. If latter, then use 
+
+     It indicates that PURC identified a barcode sequence in the middle of the read (not at the ends). The reason could be PCR/sequencing artifacts, or a stretch of reads that resemble one of the barcodes. If latter, then use
 
         Barcode_detection = 1
 
@@ -256,7 +268,7 @@ BLAST+: Architecture and applications. BMC Bioinformatics 10: 421.
 
 * What are the output files produced (e.g., BC16_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss3.fa, the .uc ones, etc)?
 
-     PURC produces a number of intermediate files during the clustering/chimera-killing steps. The '.uc' and '.uchime' files are from USEARCH and UCHIME, respectively, and contain detailed clustering and chimera detection results. The fasta files from each clustering/chimera-killing steps are saved as well. 'Sl' means fasta sorted by length, 'C1_0.997' means the first clustering with identity of 0.997, 'dCh1' means the first chimera detection, 'Ss' means fasta sorted by cluster size. If you don't want to keep all these intermediate files (to save space for example), in configuration file use 
+     PURC produces a number of intermediate files during the clustering/chimera-killing steps. The '.uc' and '.uchime' files are from USEARCH and UCHIME, respectively, and contain detailed clustering and chimera detection results. The fasta files from each clustering/chimera-killing steps are saved as well. 'Sl' means fasta sorted by length, 'C1_0.997' means the first clustering with identity of 0.997, 'dCh1' means the first chimera detection, 'Ss' means fasta sorted by cluster size. If you don't want to keep all these intermediate files (to save space for example), in configuration file use
 
         Remove_intermediates = 1
 
