@@ -1,2594 +1,0 @@
-
--------------------------------------------------------------
-|                            PURC                           |
-|        Pipeline for Untangling Reticulate Complexes       |
-|                        version 1.02                       | 
-|           https://bitbucket.org/crothfels/purc            |
-|															|
-|                 Fay-Wei Li & Carl J Rothfels              |
--------------------------------------------------------------
-
-PURC called with: 
-	['./purc.py', 'purc_configuration.txt']
-Usearch location: /home/ps997/sandbox/PURC/PURC/Dependencies/usearch8.1.1756
-Cutadapt location: /home/ps997/sandbox/PURC/PURC/Dependencies/cutadapt_source/bin/cutadapt
-Muscle location: /home/ps997/sandbox/PURC/PURC/Dependencies/muscle3.8.31
-Settings for this run:
-	Sequence file:	1-PacBio_seq.fasta
-	Loci:	APP	GAP	IBR	PGI
-	Mapping files: 4-map_APP.txt, 4-map_GAP.txt, 4-map_IBR.txt, 4-map_PGI.txt
-	Forward primers: GGACCTGGSCTYGCTGARGAGTG, TCTGCMCATGCMATTGAAAGAGAG, GAGYGTTTGGAATGTYTCWTTCCTYGG, CYACMAACTGCCTTGCRCCTCTTGCC
-	Reverse primers: GGAAGVACCTTYCCTACTGCCTG, TAGCTGCTCRAATTCCATKSAT, CTGATTAAMACATDTGMAGCATCACAAAC, GCTTTCCATACTAAGCTGCAGAC
-	Expecting barcodes on forward primers only
-	Expecting each barcode to be used for only a single taxon
-	Barcodes will be looked for in the terminal 25 bases of each sequence, only
-	Primer-searching will be done using the BLAST-based approach, only
-	Inter-locus chimeras will be removed from the analysis
-	Similarity cut-off for clustering:	0.997	0.995	0.99
-	Cluster size for retention:	1.0
-
-
-Building a new DB, current time: 01/15/2021 14:45:26
-New DB name:   /home/ps997/sandbox/PURC/PURC/purc_out_BlastDBs/refseq_blastdb
-New DB title:  3-ref_sequences.fasta.nohyphen.fasta
-Sequence type: Nucleotide
-Keep MBits: T
-Maximum file size: 1000000000B
-Adding sequences from FASTA; added 4 sequences in 0.000526905 seconds.
-
-
-
-
-Building a new DB, current time: 01/15/2021 14:45:26
-New DB name:   /home/ps997/sandbox/PURC/PURC/purc_out_BlastDBs/barcode_blastdb
-New DB title:  2-barcodes.fasta.nohyphen.fasta
-Sequence type: Nucleotide
-Keep MBits: T
-Maximum file size: 1000000000B
-Adding sequences from FASTA; added 48 sequences in 0.011586 seconds.
-
-
-
-#Concatemers Removal#
-	12 inter-locus chimeric sequences found
-
-#Barcode Removal#
-	...done
-
-#Primer Removal#
-**Primer-trimming results**
-This is cutadapt 1.9.2.dev0 with Python 3.7.6
-Command line parameters: -O 15 -e 0.05 -n 2 -m 50 -g ^GGACCTGGSCTYGCTGARGAGTG -g ^TCTGCMCATGCMATTGAAAGAGAG -g ^GAGYGTTTGGAATGTYTCWTTCCTYGG -g ^CYACMAACTGCCTTGCRCCTCTTGCC -a CAGGCAGTAGGRAAGGTBCTTCC -a ATSMATGGAATTYGAGCAGCTA -a GTTTGTGATGCTKCAHATGTKTTAATCAG -a GTCTGCAGCTTAGTATGGAAAGC purc_out/purc_1_bc_trimmed.fa
-Trimming 8 adapters with at most 5.0% errors in single-end mode ...
-Finished in 0.78 s (254 us/read; 0.24 M reads/minute).
-
-=== Summary ===
-
-Total reads processed:                   3,083
-Reads with adapters:                     3,081 (99.9%)
-Reads that were too short:                   0 (0.0%)
-Reads written (passing filters):         3,083 (100.0%)
-
-Total basepairs processed:     3,004,609 bp
-Total written (filtered):      1,431,678 bp (47.6%)
-
-=== Adapter 1 ===
-
-Sequence: CAGGCAGTAGGRAAGGTBCTTCC; Type: regular 3'; Length: 23; Trimmed: 850 times.
-
-No. of allowed errors:
-0-19 bp: 0; 20-23 bp: 1
-
-Bases preceding removed adapters:
-  A: 0.2%
-  C: 0.2%
-  G: 99.4%
-  T: 0.1%
-  none/other: 0.0%
-WARNING:
-    The adapter is preceded by "G" extremely often.
-    The provided adapter sequence may be incomplete.
-    To fix the problem, add "G" to the beginning of the adapter sequence.
-
-Overview of removed sequences
-length	count	expect	max.err	error counts
-123	1	0.0	1	0 1
-126	1	0.0	1	1
-145	1	0.0	1	1
-159	1	0.0	1	1
-180	1	0.0	1	1
-192	1	0.0	1	1
-204	1	0.0	1	1
-209	1	0.0	1	1
-211	1	0.0	1	1
-215	1	0.0	1	1
-216	2	0.0	1	2
-221	1	0.0	1	1
-222	1	0.0	1	1
-226	1	0.0	1	0 1
-315	1	0.0	1	1
-348	1	0.0	1	1
-367	1	0.0	1	1
-378	1	0.0	1	1
-410	1	0.0	1	1
-425	1	0.0	1	1
-442	1	0.0	1	1
-462	1	0.0	1	1
-470	1	0.0	1	1
-475	1	0.0	1	1
-494	1	0.0	1	1
-497	1	0.0	1	1
-498	1	0.0	1	1
-499	1	0.0	1	1
-500	4	0.0	1	4
-501	5	0.0	1	5
-502	3	0.0	1	3
-504	1	0.0	1	1
-505	2	0.0	1	2
-506	2	0.0	1	2
-508	2	0.0	1	2
-511	2	0.0	1	1 1
-513	2	0.0	1	2
-514	1	0.0	1	0 1
-515	1	0.0	1	1
-516	2	0.0	1	2
-517	7	0.0	1	7
-518	5	0.0	1	5
-519	6	0.0	1	6
-520	33	0.0	1	32 1
-521	113	0.0	1	112 1
-522	54	0.0	1	52 2
-523	31	0.0	1	29 2
-524	8	0.0	1	7 1
-525	12	0.0	1	11 1
-526	11	0.0	1	9 2
-527	21	0.0	1	21
-528	38	0.0	1	36 2
-529	24	0.0	1	21 3
-530	17	0.0	1	15 2
-531	33	0.0	1	32 1
-532	39	0.0	1	37 2
-533	14	0.0	1	14
-534	4	0.0	1	4
-535	6	0.0	1	6
-536	6	0.0	1	6
-537	2	0.0	1	2
-538	1	0.0	1	1
-539	4	0.0	1	4
-540	1	0.0	1	1
-541	1	0.0	1	1
-542	2	0.0	1	2
-544	2	0.0	1	0 2
-546	1	0.0	1	1
-549	2	0.0	1	2
-550	2	0.0	1	1 1
-551	3	0.0	1	3
-552	1	0.0	1	1
-553	5	0.0	1	5
-554	13	0.0	1	13
-555	6	0.0	1	6
-556	1	0.0	1	1
-557	3	0.0	1	3
-558	1	0.0	1	1
-559	2	0.0	1	2
-560	3	0.0	1	3
-561	3	0.0	1	3
-562	19	0.0	1	18 1
-563	20	0.0	1	20
-564	56	0.0	1	54 2
-565	26	0.0	1	26
-566	25	0.0	1	25
-567	13	0.0	1	12 1
-568	9	0.0	1	9
-569	5	0.0	1	5
-570	4	0.0	1	4
-571	2	0.0	1	2
-576	2	0.0	1	1 1
-585	2	0.0	1	2
-586	2	0.0	1	2
-587	5	0.0	1	5
-588	14	0.0	1	14
-589	18	0.0	1	18
-590	10	0.0	1	10
-591	4	0.0	1	3 1
-592	4	0.0	1	4
-593	5	0.0	1	4 1
-594	5	0.0	1	5
-596	1	0.0	1	1
-1538	1	0.0	1	1
-1592	1	0.0	1	1
-
-=== Adapter 2 ===
-
-Sequence: ATSMATGGAATTYGAGCAGCTA; Type: regular 3'; Length: 22; Trimmed: 1181 times.
-
-No. of allowed errors:
-0-19 bp: 0; 20-22 bp: 1
-
-Overview of removed sequences
-length	count	expect	max.err	error counts
-160	1	0.0	1	1
-167	1	0.0	1	0 1
-174	1	0.0	1	1
-176	1	0.0	1	1
-179	1	0.0	1	1
-195	1	0.0	1	0 1
-202	1	0.0	1	1
-211	1	0.0	1	1
-245	1	0.0	1	1
-257	1	0.0	1	1
-262	1	0.0	1	1
-266	1	0.0	1	1
-277	1	0.0	1	0 1
-299	1	0.0	1	1
-312	1	0.0	1	1
-315	1	0.0	1	1
-324	1	0.0	1	1
-330	1	0.0	1	1
-343	1	0.0	1	1
-345	1	0.0	1	0 1
-347	1	0.0	1	1
-348	1	0.0	1	1
-350	1	0.0	1	1
-372	1	0.0	1	1
-380	1	0.0	1	1
-382	1	0.0	1	1
-383	1	0.0	1	1
-399	1	0.0	1	1
-404	1	0.0	1	1
-412	1	0.0	1	1
-413	1	0.0	1	1
-414	1	0.0	1	1
-429	1	0.0	1	1
-435	2	0.0	1	2
-440	1	0.0	1	1
-465	1	0.0	1	1
-479	1	0.0	1	0 1
-480	1	0.0	1	1
-482	1	0.0	1	1
-486	1	0.0	1	1
-487	1	0.0	1	1
-488	1	0.0	1	1
-491	1	0.0	1	1
-493	1	0.0	1	1
-496	1	0.0	1	1
-499	2	0.0	1	2
-504	1	0.0	1	1
-506	1	0.0	1	1
-507	1	0.0	1	1
-508	1	0.0	1	1
-513	1	0.0	1	1
-515	2	0.0	1	1 1
-517	1	0.0	1	1
-519	2	0.0	1	2
-520	2	0.0	1	2
-521	2	0.0	1	2
-522	2	0.0	1	2
-523	3	0.0	1	2 1
-524	5	0.0	1	5
-525	6	0.0	1	6
-526	39	0.0	1	38 1
-527	21	0.0	1	20 1
-528	19	0.0	1	17 2
-529	48	0.0	1	47 1
-530	17	0.0	1	15 2
-531	38	0.0	1	38
-532	26	0.0	1	25 1
-533	12	0.0	1	9 3
-534	7	0.0	1	6 1
-535	1	0.0	1	1
-536	1	0.0	1	1
-537	3	0.0	1	3
-538	2	0.0	1	2
-539	1	0.0	1	1
-540	2	0.0	1	2
-541	3	0.0	1	3
-542	3	0.0	1	2 1
-543	7	0.0	1	6 1
-544	7	0.0	1	6 1
-545	12	0.0	1	11 1
-546	21	0.0	1	20 1
-547	56	0.0	1	55 1
-548	38	0.0	1	37 1
-549	15	0.0	1	14 1
-550	11	0.0	1	9 2
-551	6	0.0	1	6
-552	4	0.0	1	4
-553	3	0.0	1	3
-554	4	0.0	1	4
-555	1	0.0	1	1
-556	1	0.0	1	1
-557	2	0.0	1	1 1
-558	4	0.0	1	4
-559	2	0.0	1	2
-560	3	0.0	1	3
-561	5	0.0	1	4 1
-562	4	0.0	1	4
-563	16	0.0	1	15 1
-564	39	0.0	1	37 2
-565	38	0.0	1	37 1
-566	26	0.0	1	25 1
-567	19	0.0	1	18 1
-568	10	0.0	1	8 2
-569	9	0.0	1	9
-570	27	0.0	1	26 1
-571	32	0.0	1	28 4
-572	49	0.0	1	48 1
-573	75	0.0	1	71 4
-574	126	0.0	1	125 1
-575	80	0.0	1	75 5
-576	54	0.0	1	52 2
-577	19	0.0	1	19
-578	15	0.0	1	14 1
-579	9	0.0	1	9
-580	3	0.0	1	3
-581	1	0.0	1	1
-583	2	0.0	1	2
-584	1	0.0	1	0 1
-586	1	0.0	1	1
-616	1	0.0	1	0 1
-1564	1	0.0	1	1
-1594	1	0.0	1	1
-
-=== Adapter 3 ===
-
-Sequence: GTTTGTGATGCTKCAHATGTKTTAATCAG; Type: regular 3'; Length: 29; Trimmed: 515 times.
-
-No. of allowed errors:
-0-19 bp: 0; 20-29 bp: 1
-
-Overview of removed sequences
-length	count	expect	max.err	error counts
-106	2	0.0	1	2
-131	1	0.0	1	1
-235	1	0.0	1	1
-255	1	0.0	1	1
-256	1	0.0	1	1
-257	1	0.0	1	1
-258	1	0.0	1	1
-262	2	0.0	1	1 1
-263	1	0.0	1	1
-272	1	0.0	1	1
-290	1	0.0	1	0 1
-299	1	0.0	1	1
-306	1	0.0	1	1
-364	1	0.0	1	1
-369	1	0.0	1	1
-370	1	0.0	1	1
-372	2	0.0	1	1 1
-374	2	0.0	1	1 1
-375	2	0.0	1	2
-376	7	0.0	1	5 2
-377	12	0.0	1	5 7
-378	18	0.0	1	14 4
-379	51	0.0	1	37 14
-380	122	0.0	1	100 22
-381	83	0.0	1	48 35
-382	73	0.0	1	45 28
-383	70	0.0	1	59 11
-384	27	0.0	1	23 4
-385	15	0.0	1	11 4
-386	7	0.0	1	2 5
-387	3	0.0	1	2 1
-388	2	0.0	1	1 1
-389	1	0.0	1	1
-
-=== Adapter 4 ===
-
-Sequence: GTCTGCAGCTTAGTATGGAAAGC; Type: regular 3'; Length: 23; Trimmed: 519 times.
-
-No. of allowed errors:
-0-19 bp: 0; 20-23 bp: 1
-
-Overview of removed sequences
-length	count	expect	max.err	error counts
-25	1	0.0	1	1
-27	1	0.0	1	1
-53	1	0.0	1	0 1
-56	1	0.0	1	1
-88	1	0.0	1	1
-126	1	0.0	1	1
-130	1	0.0	1	1
-140	1	0.0	1	1
-146	1	0.0	1	1
-168	1	0.0	1	1
-206	1	0.0	1	1
-208	1	0.0	1	1
-209	1	0.0	1	1
-211	1	0.0	1	1
-233	1	0.0	1	1
-266	1	0.0	1	1
-280	1	0.0	1	1
-302	1	0.0	1	1
-312	1	0.0	1	0 1
-322	1	0.0	1	1
-324	1	0.0	1	1
-325	1	0.0	1	0 1
-327	1	0.0	1	0 1
-330	1	0.0	1	1
-331	1	0.0	1	1
-336	2	0.0	1	1 1
-337	1	0.0	1	1
-342	3	0.0	1	2 1
-343	2	0.0	1	2
-349	2	0.0	1	2
-355	1	0.0	1	1
-356	1	0.0	1	1
-370	1	0.0	1	1
-376	1	0.0	1	1
-383	1	0.0	1	1
-384	1	0.0	1	1
-385	1	0.0	1	1
-386	1	0.0	1	0 1
-387	2	0.0	1	2
-388	1	0.0	1	1
-389	3	0.0	1	3
-390	26	0.0	1	26
-391	41	0.0	1	41
-392	9	0.0	1	9
-393	9	0.0	1	8 1
-394	11	0.0	1	10 1
-395	9	0.0	1	9
-396	42	0.0	1	41 1
-397	84	0.0	1	78 6
-398	124	0.0	1	119 5
-399	67	0.0	1	60 7
-400	17	0.0	1	15 2
-401	9	0.0	1	8 1
-402	2	0.0	1	0 2
-403	1	0.0	1	1
-404	1	0.0	1	0 1
-405	1	0.0	1	1
-406	1	0.0	1	1
-407	1	0.0	1	1
-409	1	0.0	1	1
-415	1	0.0	1	0 1
-427	1	0.0	1	1
-431	1	0.0	1	1
-432	2	0.0	1	2
-433	4	0.0	1	4
-434	1	0.0	1	1
-435	1	0.0	1	1
-438	2	0.0	1	2
-443	1	0.0	1	0 1
-
-=== Adapter 5 ===
-
-Sequence: GGACCTGGSCTYGCTGARGAGTG; Type: anchored 5'; Length: 23; Trimmed: 1114 times.
-
-No. of allowed errors:
-0-19 bp: 0; 20-23 bp: 1
-
-Overview of removed sequences
-length	count	expect	max.err	error counts
-22	140	0.0	1	0 140
-23	879	0.0	1	871 8
-24	95	0.0	1	0 95
-
-=== Adapter 6 ===
-
-Sequence: TCTGCMCATGCMATTGAAAGAGAG; Type: anchored 5'; Length: 24; Trimmed: 511 times.
-
-No. of allowed errors:
-0-19 bp: 0; 20-24 bp: 1
-
-Overview of removed sequences
-length	count	expect	max.err	error counts
-23	34	0.0	1	0 34
-24	417	0.0	1	417
-25	60	0.0	1	0 60
-
-=== Adapter 7 ===
-
-Sequence: GAGYGTTTGGAATGTYTCWTTCCTYGG; Type: anchored 5'; Length: 27; Trimmed: 499 times.
-
-No. of allowed errors:
-0-19 bp: 0; 20-27 bp: 1
-
-Overview of removed sequences
-length	count	expect	max.err	error counts
-26	22	0.0	1	0 22
-27	391	0.0	1	391
-28	86	0.0	1	0 86
-
-=== Adapter 8 ===
-
-Sequence: CYACMAACTGCCTTGCRCCTCTTGCC; Type: anchored 5'; Length: 26; Trimmed: 802 times.
-
-No. of allowed errors:
-0-19 bp: 0; 20-26 bp: 1
-
-Overview of removed sequences
-length	count	expect	max.err	error counts
-25	50	0.0	1	0 50
-26	611	0.0	1	610 1
-27	141	0.0	1	0 141
-
-WARNING:
-    One or more of your adapter sequences may be incomplete.
-    Please see the detailed output above.
-	...done
-
-#Sequence Annotation#
-	There are 0 sequences that failed to match any of the reference sequences -- these are likely contaminants and added to the 'unclassifiable' output fasta file
-The groups found are 
-And the loci found are 
-	...done
-
-#Sequence clustering/dechimera-izing#
-
-Working on APP ...
-Working on C_mou_8732
-	First clustering
-
-Attempting to sort: C_mou_8732.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mou_8732_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mou_8732_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mou_8732_SlC1_0.997.fa
-00:00 7.4Mb    5.9% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/16 chimeras found (0.0%)
-00:00  12Mb    6.2% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    6.2% Writing 16 non-chimeras00:00  12Mb  100.0% Writing 16 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mou_8732_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mou_8732_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mou_8732_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    8.3% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/11 chimeras found (0.0%)
-00:00  12Mb    9.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    9.1% Writing 11 non-chimeras00:00  12Mb  100.0% Writing 11 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8732_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8732_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mou_8732_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   11.1% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/8 chimeras found (0.0%)
-00:00  12Mb   12.5% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   12.5% Writing 8 non-chimeras00:00  12Mb  100.0% Writing 8 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8732_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8732_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mou_8732_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   11.1% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/8 chimeras found (0.0%)
-00:00  12Mb   12.5% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   12.5% Writing 8 non-chimeras00:00  12Mb  100.0% Writing 8 non-chimeras
-Working on C_pel_8733
-	First clustering
-
-Attempting to sort: C_pel_8733.fa
-	First chimera slaying expedition
-
-**Uchime output onC_pel_8733_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_pel_8733_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_pel_8733_SlC1_0.997.fa
-00:00 7.4Mb    2.6% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/37 chimeras found (0.0%)
-00:00  12Mb    2.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.7% Writing 37 non-chimeras00:00  12Mb  100.0% Writing 37 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_pel_8733_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_pel_8733_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_pel_8733_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    3.4% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/28 chimeras found (0.0%)
-00:00  12Mb    3.6% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.6% Writing 28 non-chimeras00:00  12Mb  100.0% Writing 28 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_pel_8733_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_pel_8733_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_pel_8733_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    7.1% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/13 chimeras found (0.0%)
-00:00  12Mb    7.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    7.7% Writing 13 non-chimeras00:00  12Mb  100.0% Writing 13 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_pel_8733_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_pel_8733_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_pel_8733_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    7.7% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/12 chimeras found (0.0%)
-00:00  12Mb    8.3% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    8.3% Writing 12 non-chimeras00:00  12Mb  100.0% Writing 12 non-chimeras
-Working on C_fra_8657
-	First clustering
-
-Attempting to sort: C_fra_8657.fa
-	First chimera slaying expedition
-
-**Uchime output onC_fra_8657_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_fra_8657_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_fra_8657_SlC1_0.997.fa
-00:00 7.4Mb   10.0% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/9 chimeras found (0.0%)
-00:00  12Mb   11.1% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   11.1% Writing 9 non-chimeras00:00  12Mb  100.0% Writing 9 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_fra_8657_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_fra_8657_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_fra_8657_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb   11.1% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/8 chimeras found (0.0%)
-00:00  12Mb   12.5% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   12.5% Writing 8 non-chimeras00:00  12Mb  100.0% Writing 8 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_fra_8657_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_fra_8657_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_fra_8657_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   16.7% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/5 chimeras found (0.0%)
-00:00  12Mb   20.0% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   20.0% Writing 5 non-chimeras00:00  12Mb  100.0% Writing 5 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_fra_8657_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_fra_8657_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_fra_8657_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   20.0% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/4 chimeras found (0.0%)
-00:00  12Mb   25.0% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   25.0% Writing 4 non-chimeras00:00  12Mb  100.0% Writing 4 non-chimeras
-Working on C_mou_8734
-	First clustering
-
-Attempting to sort: C_mou_8734.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mou_8734_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mou_8734_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mou_8734_SlC1_0.997.fa
-00:00 7.4Mb    1.7% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/57 chimeras found (0.0%)
-00:00  12Mb    1.8% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    1.8% Writing 57 non-chimeras00:00  12Mb  100.0% Writing 57 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mou_8734_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mou_8734_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mou_8734_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    3.6% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/27 chimeras found (0.0%)
-00:00  12Mb    3.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.7% Writing 27 non-chimeras00:00  12Mb  100.0% Writing 27 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8734_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8734_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mou_8734_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    4.5% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/21 chimeras found (0.0%)
-00:00  12Mb    4.8% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    4.8% Writing 21 non-chimeras00:00  12Mb  100.0% Writing 21 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8734_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8734_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mou_8734_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    4.8% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/20 chimeras found (0.0%)
-00:00  12Mb    5.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    5.0% Writing 20 non-chimeras00:00  12Mb  100.0% Writing 20 non-chimeras
-Working on C_mou_8735
-	First clustering
-
-Attempting to sort: C_mou_8735.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mou_8735_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mou_8735_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mou_8735_SlC1_0.997.fa
-00:00 7.4Mb    1.6% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 1/63 chimeras found (1.6%)
-00:00  12Mb    1.6% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    1.6% Writing 62 non-chimeras00:00  12Mb  100.0% Writing 62 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mou_8735_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mou_8735_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mou_8735_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    2.0% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/50 chimeras found (0.0%)
-00:00  12Mb    2.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.0% Writing 50 non-chimeras00:00  12Mb  100.0% Writing 50 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8735_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8735_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mou_8735_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    3.0% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/32 chimeras found (0.0%)
-00:00  12Mb    3.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.1% Writing 32 non-chimeras00:00  12Mb  100.0% Writing 32 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8735_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8735_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mou_8735_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    3.8% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/25 chimeras found (0.0%)
-00:00  12Mb    4.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    4.0% Writing 25 non-chimeras00:00  12Mb  100.0% Writing 25 non-chimeras
-Working on C_fra_7616
-	First clustering
-
-Attempting to sort: C_fra_7616.fa
-	First chimera slaying expedition
-
-**Uchime output onC_fra_7616_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_fra_7616_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_fra_7616_SlC1_0.997.fa
-00:00 7.4Mb    2.8% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/35 chimeras found (0.0%)
-00:00  12Mb    2.9% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.9% Writing 35 non-chimeras00:00  12Mb  100.0% Writing 35 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_fra_7616_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_fra_7616_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_fra_7616_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    4.5% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/21 chimeras found (0.0%)
-00:00  12Mb    4.8% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    4.8% Writing 21 non-chimeras00:00  12Mb  100.0% Writing 21 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_fra_7616_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_fra_7616_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_fra_7616_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    7.7% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/12 chimeras found (0.0%)
-00:00  12Mb    8.3% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    8.3% Writing 12 non-chimeras00:00  12Mb  100.0% Writing 12 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_fra_7616_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_fra_7616_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_fra_7616_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   10.0% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/9 chimeras found (0.0%)
-00:00  12Mb   11.1% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   11.1% Writing 9 non-chimeras00:00  12Mb  100.0% Writing 9 non-chimeras
-Working on C_ree_7038
-	First clustering
-
-Attempting to sort: C_ree_7038.fa
-	First chimera slaying expedition
-
-**Uchime output onC_ree_7038_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_ree_7038_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_ree_7038_SlC1_0.997.fa
-00:00 7.4Mb    2.1% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/46 chimeras found (0.0%)
-00:00  12Mb    2.2% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.2% Writing 46 non-chimeras00:00  12Mb  100.0% Writing 46 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_ree_7038_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    2.9% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/33 chimeras found (0.0%)
-00:00  12Mb    3.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.0% Writing 33 non-chimeras00:00  12Mb  100.0% Writing 33 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    5.3% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/18 chimeras found (0.0%)
-00:00  12Mb    5.6% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    5.6% Writing 18 non-chimeras00:00  12Mb  100.0% Writing 18 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    6.7% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/14 chimeras found (0.0%)
-00:00  12Mb    7.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    7.1% Writing 14 non-chimeras00:00  12Mb  100.0% Writing 14 non-chimeras
-Working on C_fra_7303
-	First clustering
-
-Attempting to sort: C_fra_7303.fa
-	First chimera slaying expedition
-
-**Uchime output onC_fra_7303_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_fra_7303_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_fra_7303_SlC1_0.997.fa
-00:00 7.4Mb   10.0% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/9 chimeras found (0.0%)
-00:00  12Mb   11.1% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   11.1% Writing 9 non-chimeras00:00  12Mb  100.0% Writing 9 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_fra_7303_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_fra_7303_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_fra_7303_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb   12.5% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/7 chimeras found (0.0%)
-00:00  12Mb   14.3% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   14.3% Writing 7 non-chimeras00:00  12Mb  100.0% Writing 7 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_fra_7303_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_fra_7303_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_fra_7303_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   20.0% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/4 chimeras found (0.0%)
-00:00  12Mb   25.0% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   25.0% Writing 4 non-chimeras00:00  12Mb  100.0% Writing 4 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_fra_7303_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_fra_7303_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_fra_7303_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   20.0% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/4 chimeras found (0.0%)
-00:00  12Mb   25.0% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   25.0% Writing 4 non-chimeras00:00  12Mb  100.0% Writing 4 non-chimeras
-Working on C_tenn_4513
-	First clustering
-
-Attempting to sort: C_tenn_4513.fa
-	First chimera slaying expedition
-
-**Uchime output onC_tenn_4513_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_tenn_4513_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_tenn_4513_SlC1_0.997.fa
-00:00 7.4Mb    1.1% Search 0/1 chimeras found (0.0%) 00:00  12Mb  100.0% Search 0/87 chimeras found (0.0%)
-00:00  12Mb    1.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    1.1% Writing 87 non-chimeras00:00  12Mb  100.0% Writing 87 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    1.7% Search 0/1 chimeras found (0.0%)                00:00  12Mb  100.0% Search 0/57 chimeras found (0.0%)
-00:00  12Mb    1.8% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    1.8% Writing 57 non-chimeras00:00  12Mb  100.0% Writing 57 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    2.6% Search 0/1 chimeras found (0.0%)                              00:00  12Mb  100.0% Search 0/38 chimeras found (0.0%)
-00:00  12Mb    2.6% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.6% Writing 38 non-chimeras00:00  12Mb  100.0% Writing 38 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    3.1% Search 0/1 chimeras found (0.0%)                                            00:00  12Mb  100.0% Search 0/31 chimeras found (0.0%)
-00:00  12Mb    3.2% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.2% Writing 31 non-chimeras00:00  12Mb  100.0% Writing 31 non-chimeras
-Working on C_mon_5839
-	First clustering
-
-Attempting to sort: C_mon_5839.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mon_5839_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mon_5839_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mon_5839_SlC1_0.997.fa
-00:00 7.4Mb   11.1% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/8 chimeras found (0.0%)
-00:00  12Mb   12.5% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   12.5% Writing 8 non-chimeras00:00  12Mb  100.0% Writing 8 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mon_5839_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb   14.3% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/6 chimeras found (0.0%)
-00:00  12Mb   16.7% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   16.7% Writing 6 non-chimeras00:00  12Mb  100.0% Writing 6 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   16.7% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/5 chimeras found (0.0%)
-00:00  12Mb   20.0% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   20.0% Writing 5 non-chimeras00:00  12Mb  100.0% Writing 5 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   16.7% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/5 chimeras found (0.0%)
-00:00  12Mb   20.0% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   20.0% Writing 5 non-chimeras00:00  12Mb  100.0% Writing 5 non-chimeras
-Working on C_tenu_7648
-	First clustering
-
-Attempting to sort: C_tenu_7648.fa
-	First chimera slaying expedition
-
-**Uchime output onC_tenu_7648_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_tenu_7648_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_tenu_7648_SlC1_0.997.fa
-00:00 7.4Mb    1.1% Search 0/1 chimeras found (0.0%) 00:00  12Mb  100.0% Search 0/87 chimeras found (0.0%)
-00:00  12Mb    1.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    1.1% Writing 87 non-chimeras00:00  12Mb  100.0% Writing 87 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    1.5% Search 0/1 chimeras found (0.0%)                00:00  12Mb  100.0% Search 0/65 chimeras found (0.0%)
-00:00  12Mb    1.5% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    1.5% Writing 65 non-chimeras00:00  12Mb  100.0% Writing 65 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    2.3% Search 0/1 chimeras found (0.0%)                              00:00  12Mb  100.0% Search 0/43 chimeras found (0.0%)
-00:00  12Mb    2.3% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.3% Writing 43 non-chimeras00:00  12Mb  100.0% Writing 43 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    2.5% Search 0/1 chimeras found (0.0%)                                            00:00  12Mb  100.0% Search 0/39 chimeras found (0.0%)
-00:00  12Mb    2.6% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.6% Writing 39 non-chimeras00:00  12Mb  100.0% Writing 39 non-chimeras
-Working on C_mon_8672
-	First clustering
-
-Attempting to sort: C_mon_8672.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mon_8672_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mon_8672_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mon_8672_SlC1_0.997.fa
-00:00 7.4Mb    0.6% Search 0/1 chimeras found (0.0%)00:00  13Mb  100.0% Search 0/167 chimeras found (0.0%)
-00:00  13Mb    0.6% Writing hits                      00:00  13Mb  100.0% Writing hits
-00:00  13Mb    0.6% Writing 167 non-chimeras00:00  13Mb  100.0% Writing 167 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mon_8672_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    0.7% Search 0/1 chimeras found (0.0%)               00:00  13Mb  100.0% Search 0/147 chimeras found (0.0%)
-00:00  13Mb    0.7% Writing hits                      00:00  13Mb  100.0% Writing hits
-00:00  13Mb    0.7% Writing 147 non-chimeras00:00  13Mb  100.0% Writing 147 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    1.4% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/72 chimeras found (0.0%)
-00:00  12Mb    1.4% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    1.4% Writing 72 non-chimeras00:00  12Mb  100.0% Writing 72 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    1.6% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/63 chimeras found (0.0%)
-00:00  12Mb    1.6% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    1.6% Writing 63 non-chimeras00:00  12Mb  100.0% Writing 63 non-chimeras
-Working on C_mou_8665
-	First clustering
-
-Attempting to sort: C_mou_8665.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mou_8665_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mou_8665_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mou_8665_SlC1_0.997.fa
-00:00 7.4Mb    6.2% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/15 chimeras found (0.0%)
-00:00  12Mb    6.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    6.7% Writing 15 non-chimeras00:00  12Mb  100.0% Writing 15 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mou_8665_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mou_8665_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mou_8665_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    8.3% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/11 chimeras found (0.0%)
-00:00  12Mb    9.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    9.1% Writing 11 non-chimeras00:00  12Mb  100.0% Writing 11 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8665_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8665_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mou_8665_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   12.5% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/7 chimeras found (0.0%)
-00:00  12Mb   14.3% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   14.3% Writing 7 non-chimeras00:00  12Mb  100.0% Writing 7 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8665_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8665_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mou_8665_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   12.5% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/7 chimeras found (0.0%)
-00:00  12Mb   14.3% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   14.3% Writing 7 non-chimeras00:00  12Mb  100.0% Writing 7 non-chimeras
-Working on C_bul_7635
-	First clustering
-
-Attempting to sort: C_bul_7635.fa
-	First chimera slaying expedition
-
-**Uchime output onC_bul_7635_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_bul_7635_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_bul_7635_SlC1_0.997.fa
-00:00 7.4Mb    2.1% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/46 chimeras found (0.0%)
-00:00  12Mb    2.2% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.2% Writing 46 non-chimeras00:00  12Mb  100.0% Writing 46 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_bul_7635_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    3.0% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/32 chimeras found (0.0%)
-00:00  12Mb    3.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.1% Writing 32 non-chimeras00:00  12Mb  100.0% Writing 32 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    5.3% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/18 chimeras found (0.0%)
-00:00  12Mb    5.6% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    5.6% Writing 18 non-chimeras00:00  12Mb  100.0% Writing 18 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    8.3% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/11 chimeras found (0.0%)
-00:00  12Mb    9.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    9.1% Writing 11 non-chimeras00:00  12Mb  100.0% Writing 11 non-chimeras
-Working on C_tenu_7798
-	First clustering
-
-Attempting to sort: C_tenu_7798.fa
-	First chimera slaying expedition
-
-**Uchime output onC_tenu_7798_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_tenu_7798_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_tenu_7798_SlC1_0.997.fa
-00:00 7.4Mb    7.1% Search 0/1 chimeras found (0.0%) 00:00  12Mb  100.0% Search 0/13 chimeras found (0.0%)
-00:00  12Mb    7.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    7.7% Writing 13 non-chimeras00:00  12Mb  100.0% Writing 13 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_tenu_7798_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_tenu_7798_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_tenu_7798_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    9.1% Search 0/1 chimeras found (0.0%)                00:00  12Mb  100.0% Search 0/10 chimeras found (0.0%)
-00:00  12Mb   10.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb   10.0% Writing 10 non-chimeras00:00  12Mb  100.0% Writing 10 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenu_7798_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenu_7798_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_tenu_7798_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   12.5% Search 0/1 chimeras found (0.0%)                              00:00  12Mb  100.0% Search 0/7 chimeras found (0.0%)
-00:00  12Mb   14.3% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   14.3% Writing 7 non-chimeras00:00  12Mb  100.0% Writing 7 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenu_7798_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenu_7798_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_tenu_7798_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   14.3% Search 0/1 chimeras found (0.0%)                                            00:00  12Mb  100.0% Search 0/6 chimeras found (0.0%)
-00:00  12Mb   16.7% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   16.7% Writing 6 non-chimeras00:00  12Mb  100.0% Writing 6 non-chimeras
-Working on C_mou_8656
-	First clustering
-
-Attempting to sort: C_mou_8656.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mou_8656_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mou_8656_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mou_8656_SlC1_0.997.fa
-00:00 7.4Mb    2.1% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/47 chimeras found (0.0%)
-00:00  12Mb    2.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.1% Writing 47 non-chimeras00:00  12Mb  100.0% Writing 47 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mou_8656_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mou_8656_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mou_8656_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    3.1% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/31 chimeras found (0.0%)
-00:00  12Mb    3.2% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.2% Writing 31 non-chimeras00:00  12Mb  100.0% Writing 31 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8656_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8656_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mou_8656_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    5.0% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/19 chimeras found (0.0%)
-00:00  12Mb    5.3% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    5.3% Writing 19 non-chimeras00:00  12Mb  100.0% Writing 19 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8656_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8656_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mou_8656_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    5.9% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/16 chimeras found (0.0%)
-00:00  12Mb    6.2% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    6.2% Writing 16 non-chimeras00:00  12Mb  100.0% Writing 16 non-chimeras
-Working on C_mil_6761
-	First clustering
-
-Attempting to sort: C_mil_6761.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mil_6761_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mil_6761_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mil_6761_SlC1_0.997.fa
-00:00 7.4Mb    5.9% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/16 chimeras found (0.0%)
-00:00  12Mb    6.2% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    6.2% Writing 16 non-chimeras00:00  12Mb  100.0% Writing 16 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mil_6761_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    7.7% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/12 chimeras found (0.0%)
-00:00  12Mb    8.3% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    8.3% Writing 12 non-chimeras00:00  12Mb  100.0% Writing 12 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   12.5% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/7 chimeras found (0.0%)
-00:00  12Mb   14.3% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   14.3% Writing 7 non-chimeras00:00  12Mb  100.0% Writing 7 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   16.7% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/5 chimeras found (0.0%)
-00:00  12Mb   20.0% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   20.0% Writing 5 non-chimeras00:00  12Mb  100.0% Writing 5 non-chimeras
-Working on C_pro_7518
-	First clustering
-
-Attempting to sort: C_pro_7518.fa
-	First chimera slaying expedition
-
-**Uchime output onC_pro_7518_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_pro_7518_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_pro_7518_SlC1_0.997.fa
-00:00 7.4Mb    2.9% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/33 chimeras found (0.0%)
-00:00  12Mb    3.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.0% Writing 33 non-chimeras00:00  12Mb  100.0% Writing 33 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_pro_7518_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    3.6% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/27 chimeras found (0.0%)
-00:00  12Mb    3.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.7% Writing 27 non-chimeras00:00  12Mb  100.0% Writing 27 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    6.2% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/15 chimeras found (0.0%)
-00:00  12Mb    6.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    6.7% Writing 15 non-chimeras00:00  12Mb  100.0% Writing 15 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    7.1% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/13 chimeras found (0.0%)
-00:00  12Mb    7.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    7.7% Writing 13 non-chimeras00:00  12Mb  100.0% Writing 13 non-chimeras
-
-Working on PGI ...
-Working on C_mou_8732
-	First clustering
-
-Attempting to sort: C_mou_8732.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mou_8732_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mou_8732_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mou_8732_SlC1_0.997.fa
-00:00 7.4Mb   50.0% Search 0/1 chimeras found (0.0%)00:00  11Mb  100.0% Search 0/1 chimeras found (0.0%)
-00:00  11Mb  100.0% Writing hits                    
-00:00  11Mb  100.0% Writing 1 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mou_8732_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mou_8732_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mou_8732_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb   50.0% Search 0/1 chimeras found (0.0%)               00:00  11Mb  100.0% Search 0/1 chimeras found (0.0%)
-00:00  11Mb  100.0% Writing hits                    
-00:00  11Mb  100.0% Writing 1 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8732_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8732_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mou_8732_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   50.0% Search 0/1 chimeras found (0.0%)                             00:00  11Mb  100.0% Search 0/1 chimeras found (0.0%)
-00:00  11Mb  100.0% Writing hits                    
-00:00  11Mb  100.0% Writing 1 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8732_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8732_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mou_8732_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   50.0% Search 0/1 chimeras found (0.0%)                                           00:00  11Mb  100.0% Search 0/1 chimeras found (0.0%)
-00:00  11Mb  100.0% Writing hits                    
-00:00  11Mb  100.0% Writing 1 non-chimeras
-Working on C_mou_8735
-	First clustering
-
-Attempting to sort: C_mou_8735.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mou_8735_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mou_8735_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mou_8735_SlC1_0.997.fa
-00:00 7.4Mb    6.2% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/15 chimeras found (0.0%)
-00:00  12Mb    6.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    6.7% Writing 15 non-chimeras00:00  12Mb  100.0% Writing 15 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mou_8735_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mou_8735_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mou_8735_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    7.7% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/12 chimeras found (0.0%)
-00:00  12Mb    8.3% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    8.3% Writing 12 non-chimeras00:00  12Mb  100.0% Writing 12 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8735_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8735_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mou_8735_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    9.1% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 1/10 chimeras found (10.0%)
-00:00  12Mb   10.0% Writing hits                      00:00  12Mb  100.0% Writing hits
-00:00  12Mb   10.0% Writing 9 non-chimeras00:00  12Mb  100.0% Writing 9 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8735_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8735_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mou_8735_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   10.0% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/9 chimeras found (0.0%)
-00:00  12Mb   11.1% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   11.1% Writing 9 non-chimeras00:00  12Mb  100.0% Writing 9 non-chimeras
-Working on C_mon_5839
-	First clustering
-
-Attempting to sort: C_mon_5839.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mon_5839_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mon_5839_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mon_5839_SlC1_0.997.fa
-00:00 7.4Mb    2.4% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/40 chimeras found (0.0%)
-00:00  12Mb    2.5% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.5% Writing 40 non-chimeras00:00  12Mb  100.0% Writing 40 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mon_5839_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    3.0% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/32 chimeras found (0.0%)
-00:00  12Mb    3.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.1% Writing 32 non-chimeras00:00  12Mb  100.0% Writing 32 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    4.8% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/20 chimeras found (0.0%)
-00:00  12Mb    5.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    5.0% Writing 20 non-chimeras00:00  12Mb  100.0% Writing 20 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    5.0% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/19 chimeras found (0.0%)
-00:00  12Mb    5.3% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    5.3% Writing 19 non-chimeras00:00  12Mb  100.0% Writing 19 non-chimeras
-Working on C_ree_7038
-	First clustering
-
-Attempting to sort: C_ree_7038.fa
-	First chimera slaying expedition
-
-**Uchime output onC_ree_7038_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_ree_7038_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_ree_7038_SlC1_0.997.fa
-00:00 7.4Mb    4.3% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/22 chimeras found (0.0%)
-00:00  12Mb    4.5% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    4.5% Writing 22 non-chimeras00:00  12Mb  100.0% Writing 22 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_ree_7038_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    5.9% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/16 chimeras found (0.0%)
-00:00  12Mb    6.2% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    6.2% Writing 16 non-chimeras00:00  12Mb  100.0% Writing 16 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    8.3% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 1/11 chimeras found (9.1%)
-00:00  12Mb    9.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    9.1% Writing 10 non-chimeras00:00  12Mb  100.0% Writing 10 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    9.1% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/10 chimeras found (0.0%)
-00:00  12Mb   10.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb   10.0% Writing 10 non-chimeras00:00  12Mb  100.0% Writing 10 non-chimeras
-Working on C_mil_6761
-	First clustering
-
-Attempting to sort: C_mil_6761.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mil_6761_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mil_6761_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mil_6761_SlC1_0.997.fa
-00:00 7.4Mb    6.2% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/15 chimeras found (0.0%)
-00:00  12Mb    6.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    6.7% Writing 15 non-chimeras00:00  12Mb  100.0% Writing 15 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mil_6761_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    8.3% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/11 chimeras found (0.0%)
-00:00  12Mb    9.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    9.1% Writing 11 non-chimeras00:00  12Mb  100.0% Writing 11 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    8.3% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/11 chimeras found (0.0%)
-00:00  12Mb    9.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    9.1% Writing 11 non-chimeras00:00  12Mb  100.0% Writing 11 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    8.3% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/11 chimeras found (0.0%)
-00:00  12Mb    9.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    9.1% Writing 11 non-chimeras00:00  12Mb  100.0% Writing 11 non-chimeras
-Working on C_tenn_4513
-	First clustering
-
-Attempting to sort: C_tenn_4513.fa
-	First chimera slaying expedition
-
-**Uchime output onC_tenn_4513_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_tenn_4513_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_tenn_4513_SlC1_0.997.fa
-00:00 7.4Mb    4.3% Search 0/1 chimeras found (0.0%) 00:00  12Mb  100.0% Search 1/22 chimeras found (4.5%)
-00:00  12Mb    4.5% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    4.5% Writing 21 non-chimeras00:00  12Mb  100.0% Writing 21 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    5.3% Search 0/1 chimeras found (0.0%)                00:00  12Mb  100.0% Search 2/18 chimeras found (11.1%)
-00:00  12Mb    5.6% Writing hits                      00:00  12Mb  100.0% Writing hits
-00:00  12Mb    5.6% Writing 16 non-chimeras00:00  12Mb  100.0% Writing 16 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   10.0% Search 0/1 chimeras found (0.0%)                              00:00  12Mb  100.0% Search 0/9 chimeras found (0.0%)
-00:00  12Mb   11.1% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   11.1% Writing 9 non-chimeras00:00  12Mb  100.0% Writing 9 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   14.3% Search 0/1 chimeras found (0.0%)                                            00:00  12Mb  100.0% Search 0/6 chimeras found (0.0%)
-00:00  12Mb   16.7% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   16.7% Writing 6 non-chimeras00:00  12Mb  100.0% Writing 6 non-chimeras
-Working on C_tenu_7648
-	First clustering
-
-Attempting to sort: C_tenu_7648.fa
-	First chimera slaying expedition
-
-**Uchime output onC_tenu_7648_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_tenu_7648_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_tenu_7648_SlC1_0.997.fa
-00:00 7.4Mb    2.0% Search 0/1 chimeras found (0.0%) 00:00  12Mb  100.0% Search 0/49 chimeras found (0.0%)
-00:00  12Mb    2.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.0% Writing 49 non-chimeras00:00  12Mb  100.0% Writing 49 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    2.9% Search 0/1 chimeras found (0.0%)                00:00  12Mb  100.0% Search 0/33 chimeras found (0.0%)
-00:00  12Mb    3.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.0% Writing 33 non-chimeras00:00  12Mb  100.0% Writing 33 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    8.3% Search 0/1 chimeras found (0.0%)                              00:00  12Mb  100.0% Search 0/11 chimeras found (0.0%)
-00:00  12Mb    9.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    9.1% Writing 11 non-chimeras00:00  12Mb  100.0% Writing 11 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    9.1% Search 0/1 chimeras found (0.0%)                                            00:00  12Mb  100.0% Search 0/10 chimeras found (0.0%)
-00:00  12Mb   10.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb   10.0% Writing 10 non-chimeras00:00  12Mb  100.0% Writing 10 non-chimeras
-Working on C_mon_8672
-	First clustering
-
-Attempting to sort: C_mon_8672.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mon_8672_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mon_8672_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mon_8672_SlC1_0.997.fa
-00:00 7.4Mb    1.7% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 1/57 chimeras found (1.8%)
-00:00  12Mb    1.8% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    1.8% Writing 56 non-chimeras00:00  12Mb  100.0% Writing 56 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mon_8672_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    2.2% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/44 chimeras found (0.0%)
-00:00  12Mb    2.3% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.3% Writing 44 non-chimeras00:00  12Mb  100.0% Writing 44 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    2.9% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/34 chimeras found (0.0%)
-00:00  12Mb    2.9% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.9% Writing 34 non-chimeras00:00  12Mb  100.0% Writing 34 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    3.2% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/30 chimeras found (0.0%)
-00:00  12Mb    3.3% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.3% Writing 30 non-chimeras00:00  12Mb  100.0% Writing 30 non-chimeras
-Working on C_bul_7635
-	First clustering
-
-Attempting to sort: C_bul_7635.fa
-	First chimera slaying expedition
-
-**Uchime output onC_bul_7635_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_bul_7635_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_bul_7635_SlC1_0.997.fa
-00:00 7.4Mb    3.7% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/26 chimeras found (0.0%)
-00:00  12Mb    3.8% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.8% Writing 26 non-chimeras00:00  12Mb  100.0% Writing 26 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_bul_7635_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    5.9% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/16 chimeras found (0.0%)
-00:00  12Mb    6.2% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    6.2% Writing 16 non-chimeras00:00  12Mb  100.0% Writing 16 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   14.3% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/6 chimeras found (0.0%)
-00:00  12Mb   16.7% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   16.7% Writing 6 non-chimeras00:00  12Mb  100.0% Writing 6 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   25.0% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/3 chimeras found (0.0%)
-00:00  12Mb   33.3% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   33.3% Writing 3 non-chimeras00:00  12Mb  100.0% Writing 3 non-chimeras
-Working on C_pel_8733
-	First clustering
-
-Attempting to sort: C_pel_8733.fa
-	First chimera slaying expedition
-
-**Uchime output onC_pel_8733_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_pel_8733_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_pel_8733_SlC1_0.997.fa
-00:00 7.4Mb    7.1% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/13 chimeras found (0.0%)
-00:00  12Mb    7.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    7.7% Writing 13 non-chimeras00:00  12Mb  100.0% Writing 13 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_pel_8733_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_pel_8733_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_pel_8733_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    8.3% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/11 chimeras found (0.0%)
-00:00  12Mb    9.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    9.1% Writing 11 non-chimeras00:00  12Mb  100.0% Writing 11 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_pel_8733_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_pel_8733_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_pel_8733_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   11.1% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/8 chimeras found (0.0%)
-00:00  12Mb   12.5% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   12.5% Writing 8 non-chimeras00:00  12Mb  100.0% Writing 8 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_pel_8733_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_pel_8733_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_pel_8733_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   11.1% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/8 chimeras found (0.0%)
-00:00  12Mb   12.5% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   12.5% Writing 8 non-chimeras00:00  12Mb  100.0% Writing 8 non-chimeras
-Working on C_mou_8656
-	First clustering
-
-Attempting to sort: C_mou_8656.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mou_8656_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mou_8656_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mou_8656_SlC1_0.997.fa
-00:00 7.4Mb    2.4% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 1/41 chimeras found (2.4%)
-00:00  12Mb    2.4% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.4% Writing 40 non-chimeras00:00  12Mb  100.0% Writing 40 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mou_8656_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mou_8656_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mou_8656_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    2.6% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/38 chimeras found (0.0%)
-00:00  12Mb    2.6% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.6% Writing 38 non-chimeras00:00  12Mb  100.0% Writing 38 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8656_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8656_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mou_8656_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    3.3% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 2/29 chimeras found (6.9%)
-00:00  12Mb    3.4% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.4% Writing 27 non-chimeras00:00  12Mb  100.0% Writing 27 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8656_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8656_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mou_8656_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    3.7% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 1/26 chimeras found (3.8%)
-00:00  12Mb    3.8% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.8% Writing 25 non-chimeras00:00  12Mb  100.0% Writing 25 non-chimeras
-Working on C_pro_7518
-	First clustering
-
-Attempting to sort: C_pro_7518.fa
-	First chimera slaying expedition
-
-**Uchime output onC_pro_7518_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_pro_7518_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_pro_7518_SlC1_0.997.fa
-00:00 7.4Mb    6.2% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/15 chimeras found (0.0%)
-00:00  12Mb    6.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    6.7% Writing 15 non-chimeras00:00  12Mb  100.0% Writing 15 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_pro_7518_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb   10.0% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/9 chimeras found (0.0%)
-00:00  12Mb   11.1% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   11.1% Writing 9 non-chimeras00:00  12Mb  100.0% Writing 9 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   16.7% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/5 chimeras found (0.0%)
-00:00  12Mb   20.0% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   20.0% Writing 5 non-chimeras00:00  12Mb  100.0% Writing 5 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   25.0% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/3 chimeras found (0.0%)
-00:00  12Mb   33.3% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   33.3% Writing 3 non-chimeras00:00  12Mb  100.0% Writing 3 non-chimeras
-
-Working on IBR ...
-Working on C_mon_5839
-	First clustering
-
-Attempting to sort: C_mon_5839.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mon_5839_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mon_5839_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mon_5839_SlC1_0.997.fa
-00:00 7.4Mb    4.8% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/20 chimeras found (0.0%)
-00:00  12Mb    5.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    5.0% Writing 20 non-chimeras00:00  12Mb  100.0% Writing 20 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mon_5839_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    7.1% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/13 chimeras found (0.0%)
-00:00  12Mb    7.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    7.7% Writing 13 non-chimeras00:00  12Mb  100.0% Writing 13 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   14.3% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/6 chimeras found (0.0%)
-00:00  12Mb   16.7% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   16.7% Writing 6 non-chimeras00:00  12Mb  100.0% Writing 6 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   14.3% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/6 chimeras found (0.0%)
-00:00  12Mb   16.7% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   16.7% Writing 6 non-chimeras00:00  12Mb  100.0% Writing 6 non-chimeras
-Working on C_ree_7038
-	First clustering
-
-Attempting to sort: C_ree_7038.fa
-	First chimera slaying expedition
-
-**Uchime output onC_ree_7038_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_ree_7038_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_ree_7038_SlC1_0.997.fa
-00:00 7.4Mb    2.0% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/50 chimeras found (0.0%)
-00:00  12Mb    2.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.0% Writing 50 non-chimeras00:00  12Mb  100.0% Writing 50 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_ree_7038_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    2.9% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/34 chimeras found (0.0%)
-00:00  12Mb    2.9% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.9% Writing 34 non-chimeras00:00  12Mb  100.0% Writing 34 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    4.5% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/21 chimeras found (0.0%)
-00:00  12Mb    4.8% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    4.8% Writing 21 non-chimeras00:00  12Mb  100.0% Writing 21 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    5.0% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/19 chimeras found (0.0%)
-00:00  12Mb    5.3% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    5.3% Writing 19 non-chimeras00:00  12Mb  100.0% Writing 19 non-chimeras
-Working on C_mil_6761
-	First clustering
-
-Attempting to sort: C_mil_6761.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mil_6761_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mil_6761_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mil_6761_SlC1_0.997.fa
-00:00 7.4Mb   14.3% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/6 chimeras found (0.0%)
-00:00  12Mb   16.7% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   16.7% Writing 6 non-chimeras00:00  12Mb  100.0% Writing 6 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mil_6761_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb   25.0% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/3 chimeras found (0.0%)
-00:00  12Mb   33.3% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   33.3% Writing 3 non-chimeras00:00  12Mb  100.0% Writing 3 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   33.3% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/2 chimeras found (0.0%)
-00:00  12Mb   50.0% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   50.0% Writing 2 non-chimeras00:00  12Mb  100.0% Writing 2 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   33.3% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/2 chimeras found (0.0%)
-00:00  12Mb   50.0% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   50.0% Writing 2 non-chimeras00:00  12Mb  100.0% Writing 2 non-chimeras
-Working on C_tenn_4513
-	First clustering
-
-Attempting to sort: C_tenn_4513.fa
-	First chimera slaying expedition
-
-**Uchime output onC_tenn_4513_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_tenn_4513_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_tenn_4513_SlC1_0.997.fa
-00:00 7.4Mb    2.8% Search 0/1 chimeras found (0.0%) 00:00  12Mb  100.0% Search 2/35 chimeras found (5.7%)
-00:00  12Mb    2.9% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.9% Writing 33 non-chimeras00:00  12Mb  100.0% Writing 33 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    3.6% Search 0/1 chimeras found (0.0%)                00:00  12Mb  100.0% Search 0/27 chimeras found (0.0%)
-00:00  12Mb    3.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.7% Writing 27 non-chimeras00:00  12Mb  100.0% Writing 27 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    5.6% Search 0/1 chimeras found (0.0%)                              00:00  12Mb  100.0% Search 0/17 chimeras found (0.0%)
-00:00  12Mb    5.9% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    5.9% Writing 17 non-chimeras00:00  12Mb  100.0% Writing 17 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    6.7% Search 0/1 chimeras found (0.0%)                                            00:00  12Mb  100.0% Search 0/14 chimeras found (0.0%)
-00:00  12Mb    7.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    7.1% Writing 14 non-chimeras00:00  12Mb  100.0% Writing 14 non-chimeras
-Working on C_tenu_7648
-	First clustering
-
-Attempting to sort: C_tenu_7648.fa
-	First chimera slaying expedition
-
-**Uchime output onC_tenu_7648_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_tenu_7648_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_tenu_7648_SlC1_0.997.fa
-00:00 7.4Mb    2.0% Search 0/1 chimeras found (0.0%) 00:00  12Mb  100.0% Search 0/49 chimeras found (0.0%)
-00:00  12Mb    2.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.0% Writing 49 non-chimeras00:00  12Mb  100.0% Writing 49 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    3.3% Search 0/1 chimeras found (0.0%)                00:00  12Mb  100.0% Search 0/29 chimeras found (0.0%)
-00:00  12Mb    3.4% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.4% Writing 29 non-chimeras00:00  12Mb  100.0% Writing 29 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    6.2% Search 0/1 chimeras found (0.0%)                              00:00  12Mb  100.0% Search 0/15 chimeras found (0.0%)
-00:00  12Mb    6.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    6.7% Writing 15 non-chimeras00:00  12Mb  100.0% Writing 15 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    6.7% Search 0/1 chimeras found (0.0%)                                            00:00  12Mb  100.0% Search 0/14 chimeras found (0.0%)
-00:00  12Mb    7.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    7.1% Writing 14 non-chimeras00:00  12Mb  100.0% Writing 14 non-chimeras
-Working on C_mon_8672
-	First clustering
-
-Attempting to sort: C_mon_8672.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mon_8672_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mon_8672_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mon_8672_SlC1_0.997.fa
-00:00 7.4Mb    1.0% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/99 chimeras found (0.0%)
-00:00  12Mb    1.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    1.0% Writing 99 non-chimeras00:00  12Mb  100.0% Writing 99 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mon_8672_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    1.5% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 1/66 chimeras found (1.5%)
-00:00  12Mb    1.5% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    1.5% Writing 65 non-chimeras00:00  12Mb  100.0% Writing 65 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    2.6% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/37 chimeras found (0.0%)
-00:00  12Mb    2.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.7% Writing 37 non-chimeras00:00  12Mb  100.0% Writing 37 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    3.7% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/26 chimeras found (0.0%)
-00:00  12Mb    3.8% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.8% Writing 26 non-chimeras00:00  12Mb  100.0% Writing 26 non-chimeras
-Working on C_bul_7635
-	First clustering
-
-Attempting to sort: C_bul_7635.fa
-	First chimera slaying expedition
-
-**Uchime output onC_bul_7635_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_bul_7635_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_bul_7635_SlC1_0.997.fa
-00:00 7.4Mb    3.3% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/29 chimeras found (0.0%)
-00:00  12Mb    3.4% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.4% Writing 29 non-chimeras00:00  12Mb  100.0% Writing 29 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_bul_7635_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    5.3% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/18 chimeras found (0.0%)
-00:00  12Mb    5.6% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    5.6% Writing 18 non-chimeras00:00  12Mb  100.0% Writing 18 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    8.3% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/11 chimeras found (0.0%)
-00:00  12Mb    9.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    9.1% Writing 11 non-chimeras00:00  12Mb  100.0% Writing 11 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_bul_7635_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   11.1% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/8 chimeras found (0.0%)
-00:00  12Mb   12.5% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   12.5% Writing 8 non-chimeras00:00  12Mb  100.0% Writing 8 non-chimeras
-Working on C_pro_7518
-	First clustering
-
-Attempting to sort: C_pro_7518.fa
-	First chimera slaying expedition
-
-**Uchime output onC_pro_7518_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_pro_7518_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_pro_7518_SlC1_0.997.fa
-00:00 7.4Mb    7.1% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/13 chimeras found (0.0%)
-00:00  12Mb    7.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    7.7% Writing 13 non-chimeras00:00  12Mb  100.0% Writing 13 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_pro_7518_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb   11.1% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/8 chimeras found (0.0%)
-00:00  12Mb   12.5% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   12.5% Writing 8 non-chimeras00:00  12Mb  100.0% Writing 8 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   12.5% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/7 chimeras found (0.0%)
-00:00  12Mb   14.3% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   14.3% Writing 7 non-chimeras00:00  12Mb  100.0% Writing 7 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   12.5% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/7 chimeras found (0.0%)
-00:00  12Mb   14.3% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   14.3% Writing 7 non-chimeras00:00  12Mb  100.0% Writing 7 non-chimeras
-
-Working on GAP ...
-Working on C_mou_8732
-	First clustering
-
-Attempting to sort: C_mou_8732.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mou_8732_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mou_8732_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mou_8732_SlC1_0.997.fa
-00:00 7.4Mb    2.8% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/35 chimeras found (0.0%)
-00:00  12Mb    2.9% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.9% Writing 35 non-chimeras00:00  12Mb  100.0% Writing 35 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mou_8732_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mou_8732_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mou_8732_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    4.3% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/22 chimeras found (0.0%)
-00:00  12Mb    4.5% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    4.5% Writing 22 non-chimeras00:00  12Mb  100.0% Writing 22 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8732_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8732_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mou_8732_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    7.1% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/13 chimeras found (0.0%)
-00:00  12Mb    7.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    7.7% Writing 13 non-chimeras00:00  12Mb  100.0% Writing 13 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8732_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8732_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mou_8732_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    7.7% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/12 chimeras found (0.0%)
-00:00  12Mb    8.3% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    8.3% Writing 12 non-chimeras00:00  12Mb  100.0% Writing 12 non-chimeras
-Working on C_mon_5839
-	First clustering
-
-Attempting to sort: C_mon_5839.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mon_5839_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mon_5839_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mon_5839_SlC1_0.997.fa
-00:00 7.4Mb    9.1% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/10 chimeras found (0.0%)
-00:00  12Mb   10.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb   10.0% Writing 10 non-chimeras00:00  12Mb  100.0% Writing 10 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mon_5839_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb   11.1% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/8 chimeras found (0.0%)
-00:00  12Mb   12.5% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   12.5% Writing 8 non-chimeras00:00  12Mb  100.0% Writing 8 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   20.0% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/4 chimeras found (0.0%)
-00:00  12Mb   25.0% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   25.0% Writing 4 non-chimeras00:00  12Mb  100.0% Writing 4 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mon_5839_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   20.0% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/4 chimeras found (0.0%)
-00:00  12Mb   25.0% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   25.0% Writing 4 non-chimeras00:00  12Mb  100.0% Writing 4 non-chimeras
-Working on C_tenu_7648
-	First clustering
-
-Attempting to sort: C_tenu_7648.fa
-	First chimera slaying expedition
-
-**Uchime output onC_tenu_7648_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_tenu_7648_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_tenu_7648_SlC1_0.997.fa
-00:00 7.4Mb    1.1% Search 0/1 chimeras found (0.0%) 00:00  12Mb  100.0% Search 4/91 chimeras found (4.4%)
-00:00  12Mb    1.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    1.1% Writing 87 non-chimeras00:00  12Mb  100.0% Writing 87 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    1.5% Search 0/1 chimeras found (0.0%)                00:00  12Mb  100.0% Search 0/66 chimeras found (0.0%)
-00:00  12Mb    1.5% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    1.5% Writing 66 non-chimeras00:00  12Mb  100.0% Writing 66 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    2.1% Search 0/1 chimeras found (0.0%)                              00:00  12Mb  100.0% Search 0/46 chimeras found (0.0%)
-00:00  12Mb    2.2% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.2% Writing 46 non-chimeras00:00  12Mb  100.0% Writing 46 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_tenu_7648_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    2.4% Search 0/1 chimeras found (0.0%)                                            00:00  12Mb  100.0% Search 0/40 chimeras found (0.0%)
-00:00  12Mb    2.5% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.5% Writing 40 non-chimeras00:00  12Mb  100.0% Writing 40 non-chimeras
-Working on C_mou_8734
-	First clustering
-
-Attempting to sort: C_mou_8734.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mou_8734_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mou_8734_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mou_8734_SlC1_0.997.fa
-00:00 7.4Mb    2.9% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 1/33 chimeras found (3.0%)
-00:00  12Mb    3.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.0% Writing 32 non-chimeras00:00  12Mb  100.0% Writing 32 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mou_8734_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mou_8734_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mou_8734_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    3.6% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/27 chimeras found (0.0%)
-00:00  12Mb    3.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.7% Writing 27 non-chimeras00:00  12Mb  100.0% Writing 27 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8734_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8734_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mou_8734_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    4.3% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/22 chimeras found (0.0%)
-00:00  12Mb    4.5% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    4.5% Writing 22 non-chimeras00:00  12Mb  100.0% Writing 22 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8734_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8734_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mou_8734_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    5.0% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/19 chimeras found (0.0%)
-00:00  12Mb    5.3% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    5.3% Writing 19 non-chimeras00:00  12Mb  100.0% Writing 19 non-chimeras
-Working on C_mil_6761
-	First clustering
-
-Attempting to sort: C_mil_6761.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mil_6761_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mil_6761_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mil_6761_SlC1_0.997.fa
-00:00 7.4Mb    3.3% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/29 chimeras found (0.0%)
-00:00  12Mb    3.4% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.4% Writing 29 non-chimeras00:00  12Mb  100.0% Writing 29 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mil_6761_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    7.1% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/13 chimeras found (0.0%)
-00:00  12Mb    7.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    7.7% Writing 13 non-chimeras00:00  12Mb  100.0% Writing 13 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   12.5% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/7 chimeras found (0.0%)
-00:00  12Mb   14.3% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   14.3% Writing 7 non-chimeras00:00  12Mb  100.0% Writing 7 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mil_6761_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   14.3% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/6 chimeras found (0.0%)
-00:00  12Mb   16.7% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   16.7% Writing 6 non-chimeras00:00  12Mb  100.0% Writing 6 non-chimeras
-Working on C_fra_7616
-	First clustering
-
-Attempting to sort: C_fra_7616.fa
-	First chimera slaying expedition
-
-**Uchime output onC_fra_7616_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_fra_7616_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_fra_7616_SlC1_0.997.fa
-00:00 7.4Mb    3.7% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 1/26 chimeras found (3.8%)
-00:00  12Mb    3.8% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.8% Writing 25 non-chimeras00:00  12Mb  100.0% Writing 25 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_fra_7616_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_fra_7616_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_fra_7616_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    4.3% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/22 chimeras found (0.0%)
-00:00  12Mb    4.5% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    4.5% Writing 22 non-chimeras00:00  12Mb  100.0% Writing 22 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_fra_7616_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_fra_7616_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_fra_7616_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    4.8% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/20 chimeras found (0.0%)
-00:00  12Mb    5.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    5.0% Writing 20 non-chimeras00:00  12Mb  100.0% Writing 20 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_fra_7616_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_fra_7616_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_fra_7616_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    4.8% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/20 chimeras found (0.0%)
-00:00  12Mb    5.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    5.0% Writing 20 non-chimeras00:00  12Mb  100.0% Writing 20 non-chimeras
-Working on C_mou_8735
-	First clustering
-
-Attempting to sort: C_mou_8735.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mou_8735_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mou_8735_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mou_8735_SlC1_0.997.fa
-00:00 7.4Mb    2.7% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/36 chimeras found (0.0%)
-00:00  12Mb    2.8% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.8% Writing 36 non-chimeras00:00  12Mb  100.0% Writing 36 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mou_8735_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mou_8735_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mou_8735_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    2.9% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 1/33 chimeras found (3.0%)
-00:00  12Mb    3.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.0% Writing 32 non-chimeras00:00  12Mb  100.0% Writing 32 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8735_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8735_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mou_8735_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    3.8% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/25 chimeras found (0.0%)
-00:00  12Mb    4.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    4.0% Writing 25 non-chimeras00:00  12Mb  100.0% Writing 25 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8735_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8735_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mou_8735_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    3.8% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 1/25 chimeras found (4.0%)
-00:00  12Mb    4.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    4.0% Writing 24 non-chimeras00:00  12Mb  100.0% Writing 24 non-chimeras
-Working on C_ree_7038
-	First clustering
-
-Attempting to sort: C_ree_7038.fa
-	First chimera slaying expedition
-
-**Uchime output onC_ree_7038_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_ree_7038_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_ree_7038_SlC1_0.997.fa
-00:00 7.4Mb    1.5% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/66 chimeras found (0.0%)
-00:00  12Mb    1.5% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    1.5% Writing 66 non-chimeras00:00  12Mb  100.0% Writing 66 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_ree_7038_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    1.7% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/57 chimeras found (0.0%)
-00:00  12Mb    1.8% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    1.8% Writing 57 non-chimeras00:00  12Mb  100.0% Writing 57 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    2.2% Search 0/1 chimeras found (0.0%)                             00:01  12Mb   93.5% Search 0/43 chimeras found (0.0%)00:01  12Mb  100.0% Search 0/45 chimeras found (0.0%)
-00:01  12Mb    2.2% Writing hits                     00:01  12Mb  100.0% Writing hits
-00:01  12Mb    2.2% Writing 45 non-chimeras00:01  12Mb  100.0% Writing 45 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_ree_7038_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    2.3% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/43 chimeras found (0.0%)
-00:00  12Mb    2.3% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.3% Writing 43 non-chimeras00:00  12Mb  100.0% Writing 43 non-chimeras
-Working on C_fra_8657
-	First clustering
-
-Attempting to sort: C_fra_8657.fa
-	First chimera slaying expedition
-
-**Uchime output onC_fra_8657_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_fra_8657_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_fra_8657_SlC1_0.997.fa
-00:00 7.4Mb    5.3% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 1/18 chimeras found (5.6%)
-00:00  12Mb    5.6% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    5.6% Writing 17 non-chimeras00:00  12Mb  100.0% Writing 17 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_fra_8657_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_fra_8657_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_fra_8657_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    6.2% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/15 chimeras found (0.0%)
-00:00  12Mb    6.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    6.7% Writing 15 non-chimeras00:00  12Mb  100.0% Writing 15 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_fra_8657_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_fra_8657_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_fra_8657_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    9.1% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/10 chimeras found (0.0%)
-00:00  12Mb   10.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb   10.0% Writing 10 non-chimeras00:00  12Mb  100.0% Writing 10 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_fra_8657_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_fra_8657_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_fra_8657_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    9.1% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/10 chimeras found (0.0%)
-00:00  12Mb   10.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb   10.0% Writing 10 non-chimeras00:00  12Mb  100.0% Writing 10 non-chimeras
-Working on C_fra_7303
-	First clustering
-
-Attempting to sort: C_fra_7303.fa
-	First chimera slaying expedition
-
-**Uchime output onC_fra_7303_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_fra_7303_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_fra_7303_SlC1_0.997.fa
-00:00 7.4Mb    5.3% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/18 chimeras found (0.0%)
-00:00  12Mb    5.6% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    5.6% Writing 18 non-chimeras00:00  12Mb  100.0% Writing 18 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_fra_7303_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_fra_7303_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_fra_7303_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    7.1% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/13 chimeras found (0.0%)
-00:00  12Mb    7.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    7.7% Writing 13 non-chimeras00:00  12Mb  100.0% Writing 13 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_fra_7303_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_fra_7303_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_fra_7303_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   11.1% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/8 chimeras found (0.0%)
-00:00  12Mb   12.5% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   12.5% Writing 8 non-chimeras00:00  12Mb  100.0% Writing 8 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_fra_7303_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_fra_7303_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_fra_7303_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   12.5% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/7 chimeras found (0.0%)
-00:00  12Mb   14.3% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   14.3% Writing 7 non-chimeras00:00  12Mb  100.0% Writing 7 non-chimeras
-Working on C_tenn_4513
-	First clustering
-
-Attempting to sort: C_tenn_4513.fa
-	First chimera slaying expedition
-
-**Uchime output onC_tenn_4513_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_tenn_4513_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_tenn_4513_SlC1_0.997.fa
-00:00 7.4Mb   33.3% Search 0/1 chimeras found (0.0%) 00:00  12Mb  100.0% Search 0/2 chimeras found (0.0%)
-00:00  12Mb   50.0% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   50.0% Writing 2 non-chimeras00:00  12Mb  100.0% Writing 2 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb   33.3% Search 0/1 chimeras found (0.0%)                00:00  12Mb  100.0% Search 0/2 chimeras found (0.0%)
-00:00  12Mb   50.0% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   50.0% Writing 2 non-chimeras00:00  12Mb  100.0% Writing 2 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   33.3% Search 0/1 chimeras found (0.0%)                              00:00  12Mb  100.0% Search 0/2 chimeras found (0.0%)
-00:00  12Mb   50.0% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   50.0% Writing 2 non-chimeras00:00  12Mb  100.0% Writing 2 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_tenn_4513_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   33.3% Search 0/1 chimeras found (0.0%)                                            00:00  12Mb  100.0% Search 0/2 chimeras found (0.0%)
-00:00  12Mb   50.0% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   50.0% Writing 2 non-chimeras00:00  12Mb  100.0% Writing 2 non-chimeras
-Working on C_pel_8733
-	First clustering
-
-Attempting to sort: C_pel_8733.fa
-	First chimera slaying expedition
-
-**Uchime output onC_pel_8733_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_pel_8733_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_pel_8733_SlC1_0.997.fa
-00:00 7.4Mb    2.3% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/42 chimeras found (0.0%)
-00:00  12Mb    2.4% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.4% Writing 42 non-chimeras00:00  12Mb  100.0% Writing 42 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_pel_8733_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_pel_8733_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_pel_8733_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    3.6% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/27 chimeras found (0.0%)
-00:00  12Mb    3.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.7% Writing 27 non-chimeras00:00  12Mb  100.0% Writing 27 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_pel_8733_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_pel_8733_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_pel_8733_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   16.7% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/5 chimeras found (0.0%)
-00:00  12Mb   20.0% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   20.0% Writing 5 non-chimeras00:00  12Mb  100.0% Writing 5 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_pel_8733_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_pel_8733_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_pel_8733_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   16.7% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/5 chimeras found (0.0%)
-00:00  12Mb   20.0% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   20.0% Writing 5 non-chimeras00:00  12Mb  100.0% Writing 5 non-chimeras
-Working on C_mon_8672
-	First clustering
-
-Attempting to sort: C_mon_8672.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mon_8672_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mon_8672_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mon_8672_SlC1_0.997.fa
-00:00 7.4Mb    2.6% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/38 chimeras found (0.0%)
-00:00  12Mb    2.6% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.6% Writing 38 non-chimeras00:00  12Mb  100.0% Writing 38 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mon_8672_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    3.4% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/28 chimeras found (0.0%)
-00:00  12Mb    3.6% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.6% Writing 28 non-chimeras00:00  12Mb  100.0% Writing 28 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    5.9% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/16 chimeras found (0.0%)
-00:00  12Mb    6.2% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    6.2% Writing 16 non-chimeras00:00  12Mb  100.0% Writing 16 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mon_8672_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    7.1% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/13 chimeras found (0.0%)
-00:00  12Mb    7.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    7.7% Writing 13 non-chimeras00:00  12Mb  100.0% Writing 13 non-chimeras
-Working on C_mou_8665
-	First clustering
-
-Attempting to sort: C_mou_8665.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mou_8665_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mou_8665_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mou_8665_SlC1_0.997.fa
-00:00 7.4Mb    3.1% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/31 chimeras found (0.0%)
-00:00  12Mb    3.2% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.2% Writing 31 non-chimeras00:00  12Mb  100.0% Writing 31 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mou_8665_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mou_8665_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mou_8665_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    6.7% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/14 chimeras found (0.0%)
-00:00  12Mb    7.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    7.1% Writing 14 non-chimeras00:00  12Mb  100.0% Writing 14 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8665_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8665_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mou_8665_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb   11.1% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/8 chimeras found (0.0%)
-00:00  12Mb   12.5% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   12.5% Writing 8 non-chimeras00:00  12Mb  100.0% Writing 8 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8665_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8665_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mou_8665_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   14.3% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/6 chimeras found (0.0%)
-00:00  12Mb   16.7% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   16.7% Writing 6 non-chimeras00:00  12Mb  100.0% Writing 6 non-chimeras
-Working on C_tenu_7798
-	First clustering
-
-Attempting to sort: C_tenu_7798.fa
-	First chimera slaying expedition
-
-**Uchime output onC_tenu_7798_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_tenu_7798_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_tenu_7798_SlC1_0.997.fa
-00:00 7.4Mb    2.9% Search 0/1 chimeras found (0.0%) 00:00  12Mb  100.0% Search 0/33 chimeras found (0.0%)
-00:00  12Mb    3.0% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.0% Writing 33 non-chimeras00:00  12Mb  100.0% Writing 33 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_tenu_7798_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_tenu_7798_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_tenu_7798_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    4.2% Search 0/1 chimeras found (0.0%)                00:00  12Mb  100.0% Search 0/23 chimeras found (0.0%)
-00:00  12Mb    4.3% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    4.3% Writing 23 non-chimeras00:00  12Mb  100.0% Writing 23 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenu_7798_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenu_7798_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_tenu_7798_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    5.6% Search 0/1 chimeras found (0.0%)                              00:00  12Mb  100.0% Search 0/17 chimeras found (0.0%)
-00:00  12Mb    5.9% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    5.9% Writing 17 non-chimeras00:00  12Mb  100.0% Writing 17 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_tenu_7798_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_tenu_7798_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_tenu_7798_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    6.2% Search 0/1 chimeras found (0.0%)                                            00:00  12Mb  100.0% Search 0/15 chimeras found (0.0%)
-00:00  12Mb    6.7% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    6.7% Writing 15 non-chimeras00:00  12Mb  100.0% Writing 15 non-chimeras
-Working on C_mou_8656
-	First clustering
-
-Attempting to sort: C_mou_8656.fa
-	First chimera slaying expedition
-
-**Uchime output onC_mou_8656_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_mou_8656_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_mou_8656_SlC1_0.997.fa
-00:00 7.4Mb    1.5% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 3/64 chimeras found (4.7%)
-00:00  12Mb    1.6% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    1.6% Writing 61 non-chimeras00:00  12Mb  100.0% Writing 61 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_mou_8656_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_mou_8656_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_mou_8656_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    2.1% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 1/47 chimeras found (2.1%)
-00:00  12Mb    2.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.1% Writing 46 non-chimeras00:00  12Mb  100.0% Writing 46 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8656_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8656_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_mou_8656_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    2.8% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/35 chimeras found (0.0%)
-00:00  12Mb    2.9% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.9% Writing 35 non-chimeras00:00  12Mb  100.0% Writing 35 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_mou_8656_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_mou_8656_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_mou_8656_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb    3.0% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/32 chimeras found (0.0%)
-00:00  12Mb    3.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.1% Writing 32 non-chimeras00:00  12Mb  100.0% Writing 32 non-chimeras
-Working on C_pro_7518
-	First clustering
-
-Attempting to sort: C_pro_7518.fa
-	First chimera slaying expedition
-
-**Uchime output onC_pro_7518_SlC1_0.997.fa**
-00:00  37Mb    0.1% Reading C_pro_7518_SlC1_0.997.fa00:00  40Mb  100.0% Reading C_pro_7518_SlC1_0.997.fa
-00:00 7.4Mb    2.7% Search 0/1 chimeras found (0.0%)00:00  12Mb  100.0% Search 0/36 chimeras found (0.0%)
-00:00  12Mb    2.8% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    2.8% Writing 36 non-chimeras00:00  12Mb  100.0% Writing 36 non-chimeras
-	Second clustering
-	Second chimera slaying expedition
-
-**Uchime output onC_pro_7518_SlC1_0.997dCh1Ss1C2_0.995.fa**
-00:00  37Mb    0.1% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995.fa00:00  40Mb  100.0% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995.fa
-00:00 7.4Mb    3.7% Search 0/1 chimeras found (0.0%)               00:00  12Mb  100.0% Search 0/26 chimeras found (0.0%)
-00:00  12Mb    3.8% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    3.8% Writing 26 non-chimeras00:00  12Mb  100.0% Writing 26 non-chimeras
-	Third clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa**
-00:00  37Mb    0.1% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa00:00  40Mb  100.0% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99.fa
-00:00 7.4Mb    6.7% Search 0/1 chimeras found (0.0%)                             00:00  12Mb  100.0% Search 0/14 chimeras found (0.0%)
-00:00  12Mb    7.1% Writing hits                     00:00  12Mb  100.0% Writing hits
-00:00  12Mb    7.1% Writing 14 non-chimeras00:00  12Mb  100.0% Writing 14 non-chimeras
-\Forth clustering
-	Third chimera slaying expedition
-
-**Uchime output onC_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa**
-00:00  37Mb    0.1% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa00:00  40Mb  100.0% Reading C_pro_7518_SlC1_0.997dCh1Ss1C2_0.995dCh2Ss2C3_0.99dCh3Ss2C4_0.99.fa
-00:00 7.4Mb   11.1% Search 0/1 chimeras found (0.0%)                                           00:00  12Mb  100.0% Search 0/8 chimeras found (0.0%)
-00:00  12Mb   12.5% Writing hits                    00:00  12Mb  100.0% Writing hits
-00:00  12Mb   12.5% Writing 8 non-chimeras00:00  12Mb  100.0% Writing 8 non-chimeras
-	...done
-
-#Run Summary#
-
-Total input sequences:	3095
-Concatemers (multi-locus seqs):	12
-Sequences with barcodes:	3083
-Sequences without barcodes:	0
-Sequences with too many barcodes:	0
-Sequences annotated:	3083
-Sequences that cannot be classified:	0
-
-**Raw reads per accession per locus**
-	IBR	GAP	APP	PGI
-C_fra_8657	0	24	16	0	
-C_ree_7038	79	82	63	39	
-C_mon_5839	50	16	10	67	
-C_fra_7303	0	24	19	0	
-C_tenu_7648	82	122	122	91	
-C_mon_8672	141	78	243	96	
-C_mou_8665	0	51	25	0	
-C_mou_8656	0	82	86	50	
-C_pro_7518	25	41	47	32	
-C_mou_8732	0	51	29	1	
-C_mou_8734	0	43	90	0	
-C_mou_8735	0	42	88	19	
-C_fra_7616	0	43	58	0	
-C_mil_6761	21	41	35	20	
-C_tenn_4513	59	2	113	33	
-C_pel_8733	0	68	51	23	
-C_bul_7635	62	0	65	48	
-C_tenu_7798	0	51	24	0	
-
-**Final clustered sequences per accession per locus**
-	IBR	GAP	APP	PGI
-C_fra_8657	0	2	1	0	
-C_ree_7038	2	5	2	3	
-C_mon_5839	2	2	0	2	
-C_fra_7303	0	1	1	0	
-C_tenu_7648	2	6	3	1	
-C_mon_8672	4	3	6	4	
-C_mou_8665	0	1	2	0	
-C_mou_8656	0	4	4	3	
-C_pro_7518	2	1	2	1	
-C_mou_8732	0	2	3	0	
-C_mou_8734	0	4	4	0	
-C_mou_8735	0	4	5	1	
-C_fra_7616	0	2	2	0	
-C_mil_6761	1	1	1	1	
-C_tenn_4513	2	0	2	2	
-C_pel_8733	0	1	2	2	
-C_bul_7635	1	0	2	1	
-C_tenu_7798	0	2	2	0	
-
-**Allele/copy/cluster/whatever count by locus**
-IBR	16
-GAP	41
-APP	44
-PGI	21
-Aligning purc_4_IBR_clustered_reconsensus.fa
-
-**Muscle output onpurc_4_IBR_clustered_reconsensus.fa**
-
-MUSCLE v3.8.31 by Robert C. Edgar
-
-http://www.drive5.com/muscle
-This software is donated to the public domain.
-Please cite: Edgar, R.C. Nucleic Acids Res 32(5), 1792-97.
-
-purc_4_IBR_clustered_reconsensu 16 seqs, max length 482, avg  length 468
-00:00:00    10 MB(-1%)  Iter   1    0.74%  K-mer dist pass 100:00:00    10 MB(-1%)  Iter   1  100.00%  K-mer dist pass 1
-00:00:00    10 MB(-1%)  Iter   1    0.74%  K-mer dist pass 200:00:00    10 MB(-1%)  Iter   1  100.00%  K-mer dist pass 2
-00:00:00    10 MB(-1%)  Iter   1    6.67%  Align node       00:00:00    13 MB(-1%)  Iter   1   13.33%  Align node00:00:00    14 MB(-1%)  Iter   1   20.00%  Align node00:00:00    14 MB(-1%)  Iter   1   26.67%  Align node00:00:00    14 MB(-1%)  Iter   1   33.33%  Align node00:00:00    14 MB(-1%)  Iter   1   40.00%  Align node00:00:00    15 MB(-1%)  Iter   1   46.67%  Align node00:00:00    15 MB(-1%)  Iter   1   53.33%  Align node00:00:00    15 MB(-1%)  Iter   1   60.00%  Align node00:00:00    16 MB(-1%)  Iter   1   66.67%  Align node00:00:00    16 MB(-1%)  Iter   1   73.33%  Align node00:00:00    16 MB(-1%)  Iter   1   80.00%  Align node00:00:00    16 MB(-1%)  Iter   1   86.67%  Align node00:00:00    17 MB(-1%)  Iter   1   93.33%  Align node00:00:00    17 MB(-1%)  Iter   1  100.00%  Align node00:00:00    17 MB(-1%)  Iter   1  100.00%  Align node
-00:00:00    17 MB(-1%)  Iter   1    6.25%  Root alignment00:00:00    17 MB(-1%)  Iter   1   12.50%  Root alignment00:00:00    17 MB(-1%)  Iter   1   18.75%  Root alignment00:00:00    17 MB(-1%)  Iter   1   25.00%  Root alignment00:00:00    17 MB(-1%)  Iter   1   31.25%  Root alignment00:00:00    17 MB(-1%)  Iter   1   37.50%  Root alignment00:00:00    17 MB(-1%)  Iter   1   43.75%  Root alignment00:00:00    17 MB(-1%)  Iter   1   50.00%  Root alignment00:00:00    17 MB(-1%)  Iter   1   56.25%  Root alignment00:00:00    17 MB(-1%)  Iter   1   62.50%  Root alignment00:00:00    17 MB(-1%)  Iter   1   68.75%  Root alignment00:00:00    17 MB(-1%)  Iter   1   75.00%  Root alignment00:00:00    17 MB(-1%)  Iter   1   81.25%  Root alignment00:00:00    17 MB(-1%)  Iter   1   87.50%  Root alignment00:00:00    17 MB(-1%)  Iter   1   93.75%  Root alignment00:00:00    17 MB(-1%)  Iter   1  100.00%  Root alignment00:00:00    17 MB(-1%)  Iter   1  100.00%  Root alignment
-00:00:00    17 MB(-1%)  Iter   2    7.14%  Refine tree   00:00:00    17 MB(-1%)  Iter   2   14.29%  Refine tree00:00:00    17 MB(-1%)  Iter   2   21.43%  Refine tree00:00:00    17 MB(-1%)  Iter   2   28.57%  Refine tree00:00:00    17 MB(-1%)  Iter   2   35.71%  Refine tree00:00:00    17 MB(-1%)  Iter   2   42.86%  Refine tree00:00:00    17 MB(-1%)  Iter   2  100.00%  Refine tree
-00:00:00    17 MB(-1%)  Iter   2    6.25%  Root alignment00:00:00    17 MB(-1%)  Iter   2   12.50%  Root alignment00:00:00    17 MB(-1%)  Iter   2   18.75%  Root alignment00:00:00    17 MB(-1%)  Iter   2   25.00%  Root alignment00:00:00    17 MB(-1%)  Iter   2   31.25%  Root alignment00:00:00    17 MB(-1%)  Iter   2   37.50%  Root alignment00:00:00    17 MB(-1%)  Iter   2   43.75%  Root alignment00:00:00    17 MB(-1%)  Iter   2   50.00%  Root alignment00:00:00    17 MB(-1%)  Iter   2   56.25%  Root alignment00:00:00    17 MB(-1%)  Iter   2   62.50%  Root alignment00:00:00    17 MB(-1%)  Iter   2   68.75%  Root alignment00:00:00    17 MB(-1%)  Iter   2   75.00%  Root alignment00:00:00    17 MB(-1%)  Iter   2   81.25%  Root alignment00:00:00    17 MB(-1%)  Iter   2   87.50%  Root alignment00:00:00    17 MB(-1%)  Iter   2   93.75%  Root alignment00:00:00    17 MB(-1%)  Iter   2  100.00%  Root alignment00:00:00    17 MB(-1%)  Iter   2  100.00%  Root alignment
-00:00:00    17 MB(-1%)  Iter   2  100.00%  Root alignment
-00:00:00    17 MB(-1%)  Iter   3    6.90%  Refine biparts00:00:00    17 MB(-1%)  Iter   3   10.34%  Refine biparts00:00:00    17 MB(-1%)  Iter   3   13.79%  Refine biparts00:00:00    17 MB(-1%)  Iter   3   17.24%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   20.69%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   24.14%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   27.59%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   31.03%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   34.48%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   37.93%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   41.38%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   44.83%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   48.28%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   51.72%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   55.17%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   58.62%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   62.07%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   65.52%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   68.97%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   72.41%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   75.86%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   79.31%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   82.76%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   86.21%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   89.66%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   93.10%  Refine biparts00:00:01    17 MB(-1%)  Iter   3   96.55%  Refine biparts00:00:01    17 MB(-1%)  Iter   3  100.00%  Refine biparts00:00:01    17 MB(-1%)  Iter   3  103.45%  Refine biparts00:00:01    17 MB(-1%)  Iter   3  100.00%  Refine biparts
-00:00:01    17 MB(-1%)  Iter   4    6.90%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   10.34%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   13.79%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   17.24%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   20.69%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   24.14%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   27.59%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   31.03%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   34.48%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   37.93%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   41.38%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   44.83%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   48.28%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   51.72%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   55.17%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   58.62%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   62.07%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   65.52%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   68.97%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   72.41%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   75.86%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   79.31%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   82.76%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   86.21%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   89.66%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   93.10%  Refine biparts00:00:01    17 MB(-1%)  Iter   4   96.55%  Refine biparts00:00:01    17 MB(-1%)  Iter   4  100.00%  Refine biparts00:00:01    17 MB(-1%)  Iter   4  103.45%  Refine biparts00:00:01    17 MB(-1%)  Iter   4  100.00%  Refine biparts
-00:00:01    17 MB(-1%)  Iter   5    6.90%  Refine biparts00:00:01    17 MB(-1%)  Iter   5   10.34%  Refine biparts00:00:01    17 MB(-1%)  Iter   5  100.00%  Refine biparts
-00:00:01    17 MB(-1%)  Iter   5  100.00%  Refine biparts
-Aligning purc_4_PGI_clustered_reconsensus.fa
-
-**Muscle output onpurc_4_PGI_clustered_reconsensus.fa**
-
-MUSCLE v3.8.31 by Robert C. Edgar
-
-http://www.drive5.com/muscle
-This software is donated to the public domain.
-Please cite: Edgar, R.C. Nucleic Acids Res 32(5), 1792-97.
-
-purc_4_PGI_clustered_reconsensu 21 seqs, max length 635, avg  length 589
-00:00:00    10 MB(-1%)  Iter   1    0.43%  K-mer dist pass 100:00:00    10 MB(-1%)  Iter   1  100.00%  K-mer dist pass 1
-00:00:00    10 MB(-1%)  Iter   1    0.43%  K-mer dist pass 200:00:00    10 MB(-1%)  Iter   1  100.00%  K-mer dist pass 2
-00:00:00    11 MB(-1%)  Iter   1    5.00%  Align node       00:00:00    14 MB(-1%)  Iter   1   10.00%  Align node00:00:00    15 MB(-1%)  Iter   1   15.00%  Align node00:00:00    15 MB(-1%)  Iter   1   20.00%  Align node00:00:00    16 MB(-1%)  Iter   1   25.00%  Align node00:00:00    16 MB(-1%)  Iter   1   30.00%  Align node00:00:00    16 MB(-1%)  Iter   1   35.00%  Align node00:00:00    17 MB(-1%)  Iter   1   40.00%  Align node00:00:00    17 MB(-1%)  Iter   1   45.00%  Align node00:00:00    17 MB(-1%)  Iter   1   50.00%  Align node00:00:00    17 MB(-1%)  Iter   1   55.00%  Align node00:00:00    18 MB(-1%)  Iter   1   60.00%  Align node00:00:00    18 MB(-1%)  Iter   1   65.00%  Align node00:00:00    19 MB(-1%)  Iter   1   70.00%  Align node00:00:00    19 MB(-1%)  Iter   1   75.00%  Align node00:00:00    19 MB(-1%)  Iter   1   80.00%  Align node00:00:00    20 MB(-1%)  Iter   1   85.00%  Align node00:00:00    20 MB(-1%)  Iter   1   90.00%  Align node00:00:00    20 MB(-1%)  Iter   1   95.00%  Align node00:00:00    20 MB(-1%)  Iter   1  100.00%  Align node00:00:00    20 MB(-1%)  Iter   1  100.00%  Align node
-00:00:00    20 MB(-1%)  Iter   1    4.76%  Root alignment00:00:00    20 MB(-1%)  Iter   1    9.52%  Root alignment00:00:00    20 MB(-1%)  Iter   1   14.29%  Root alignment00:00:00    20 MB(-1%)  Iter   1   19.05%  Root alignment00:00:00    20 MB(-1%)  Iter   1   23.81%  Root alignment00:00:00    20 MB(-1%)  Iter   1   28.57%  Root alignment00:00:00    20 MB(-1%)  Iter   1   33.33%  Root alignment00:00:00    20 MB(-1%)  Iter   1   38.10%  Root alignment00:00:00    20 MB(-1%)  Iter   1   42.86%  Root alignment00:00:00    20 MB(-1%)  Iter   1   47.62%  Root alignment00:00:00    20 MB(-1%)  Iter   1   52.38%  Root alignment00:00:00    20 MB(-1%)  Iter   1   57.14%  Root alignment00:00:00    20 MB(-1%)  Iter   1   61.90%  Root alignment00:00:00    20 MB(-1%)  Iter   1   66.67%  Root alignment00:00:00    20 MB(-1%)  Iter   1   71.43%  Root alignment00:00:00    20 MB(-1%)  Iter   1   76.19%  Root alignment00:00:00    20 MB(-1%)  Iter   1   80.95%  Root alignment00:00:00    20 MB(-1%)  Iter   1   85.71%  Root alignment00:00:00    20 MB(-1%)  Iter   1   90.48%  Root alignment00:00:00    20 MB(-1%)  Iter   1   95.24%  Root alignment00:00:00    20 MB(-1%)  Iter   1  100.00%  Root alignment00:00:00    20 MB(-1%)  Iter   1  100.00%  Root alignment
-00:00:00    20 MB(-1%)  Iter   2    5.26%  Refine tree   00:00:00    20 MB(-1%)  Iter   2   10.53%  Refine tree00:00:00    20 MB(-1%)  Iter   2   15.79%  Refine tree00:00:00    20 MB(-1%)  Iter   2   21.05%  Refine tree00:00:00    20 MB(-1%)  Iter   2   26.32%  Refine tree00:00:00    20 MB(-1%)  Iter   2   31.58%  Refine tree00:00:00    20 MB(-1%)  Iter   2  100.00%  Refine tree
-00:00:00    20 MB(-1%)  Iter   2    4.76%  Root alignment00:00:00    20 MB(-1%)  Iter   2    9.52%  Root alignment00:00:00    20 MB(-1%)  Iter   2   14.29%  Root alignment00:00:00    20 MB(-1%)  Iter   2   19.05%  Root alignment00:00:00    20 MB(-1%)  Iter   2   23.81%  Root alignment00:00:00    20 MB(-1%)  Iter   2   28.57%  Root alignment00:00:00    20 MB(-1%)  Iter   2   33.33%  Root alignment00:00:00    20 MB(-1%)  Iter   2   38.10%  Root alignment00:00:00    20 MB(-1%)  Iter   2   42.86%  Root alignment00:00:00    20 MB(-1%)  Iter   2   47.62%  Root alignment00:00:00    20 MB(-1%)  Iter   2   52.38%  Root alignment00:00:00    20 MB(-1%)  Iter   2   57.14%  Root alignment00:00:00    20 MB(-1%)  Iter   2   61.90%  Root alignment00:00:00    20 MB(-1%)  Iter   2   66.67%  Root alignment00:00:00    20 MB(-1%)  Iter   2   71.43%  Root alignment00:00:00    20 MB(-1%)  Iter   2   76.19%  Root alignment00:00:00    20 MB(-1%)  Iter   2   80.95%  Root alignment00:00:00    20 MB(-1%)  Iter   2   85.71%  Root alignment00:00:00    20 MB(-1%)  Iter   2   90.48%  Root alignment00:00:00    20 MB(-1%)  Iter   2   95.24%  Root alignment00:00:00    20 MB(-1%)  Iter   2  100.00%  Root alignment00:00:00    20 MB(-1%)  Iter   2  100.00%  Root alignment
-00:00:00    20 MB(-1%)  Iter   2  100.00%  Root alignment
-00:00:00    20 MB(-1%)  Iter   3    5.13%  Refine biparts00:00:00    20 MB(-1%)  Iter   3    7.69%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   10.26%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   12.82%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   15.38%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   17.95%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   20.51%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   23.08%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   25.64%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   28.21%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   30.77%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   33.33%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   35.90%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   38.46%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   41.03%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   43.59%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   46.15%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   48.72%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   51.28%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   53.85%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   56.41%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   58.97%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   61.54%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   64.10%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   66.67%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   69.23%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   71.79%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   74.36%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   76.92%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   79.49%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   82.05%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   84.62%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   87.18%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   89.74%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   92.31%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   94.87%  Refine biparts00:00:00    20 MB(-1%)  Iter   3   97.44%  Refine biparts00:00:00    20 MB(-1%)  Iter   3  100.00%  Refine biparts00:00:00    20 MB(-1%)  Iter   3  102.56%  Refine biparts00:00:00    20 MB(-1%)  Iter   3  100.00%  Refine biparts
-00:00:00    20 MB(-1%)  Iter   4    5.13%  Refine biparts00:00:00    20 MB(-1%)  Iter   4    7.69%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   10.26%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   12.82%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   15.38%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   17.95%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   20.51%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   23.08%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   25.64%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   28.21%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   30.77%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   33.33%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   35.90%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   38.46%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   41.03%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   43.59%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   46.15%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   48.72%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   51.28%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   53.85%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   56.41%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   58.97%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   61.54%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   64.10%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   66.67%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   69.23%  Refine biparts00:00:00    20 MB(-1%)  Iter   4   71.79%  Refine biparts00:00:01    20 MB(-1%)  Iter   4   74.36%  Refine biparts00:00:01    20 MB(-1%)  Iter   4   76.92%  Refine biparts00:00:01    20 MB(-1%)  Iter   4   79.49%  Refine biparts00:00:01    20 MB(-1%)  Iter   4   82.05%  Refine biparts00:00:01    20 MB(-1%)  Iter   4   84.62%  Refine biparts00:00:01    20 MB(-1%)  Iter   4   87.18%  Refine biparts00:00:01    20 MB(-1%)  Iter   4   89.74%  Refine biparts00:00:01    20 MB(-1%)  Iter   4   92.31%  Refine biparts00:00:01    20 MB(-1%)  Iter   4   94.87%  Refine biparts00:00:01    20 MB(-1%)  Iter   4   97.44%  Refine biparts00:00:01    20 MB(-1%)  Iter   4  100.00%  Refine biparts00:00:01    20 MB(-1%)  Iter   4  102.56%  Refine biparts00:00:01    20 MB(-1%)  Iter   4  100.00%  Refine biparts
-Aligning purc_4_APP_clustered_reconsensus.fa
-
-**Muscle output onpurc_4_APP_clustered_reconsensus.fa**
-
-MUSCLE v3.8.31 by Robert C. Edgar
-
-http://www.drive5.com/muscle
-This software is donated to the public domain.
-Please cite: Edgar, R.C. Nucleic Acids Res 32(5), 1792-97.
-
-purc_4_APP_clustered_reconsensu 44 seqs, max length 438, avg  length 406
-00:00:00    10 MB(-1%)  Iter   1    0.10%  K-mer dist pass 100:00:00    10 MB(-1%)  Iter   1   50.61%  K-mer dist pass 100:00:00    10 MB(-1%)  Iter   1  100.00%  K-mer dist pass 1
-00:00:00    10 MB(-1%)  Iter   1    0.10%  K-mer dist pass 200:00:00    10 MB(-1%)  Iter   1   50.61%  K-mer dist pass 200:00:00    10 MB(-1%)  Iter   1  100.00%  K-mer dist pass 2
-00:00:00    10 MB(-1%)  Iter   1    2.33%  Align node       00:00:00    13 MB(-1%)  Iter   1    4.65%  Align node00:00:00    13 MB(-1%)  Iter   1    6.98%  Align node00:00:00    13 MB(-1%)  Iter   1    9.30%  Align node00:00:00    14 MB(-1%)  Iter   1   11.63%  Align node00:00:00    14 MB(-1%)  Iter   1   13.95%  Align node00:00:00    14 MB(-1%)  Iter   1   16.28%  Align node00:00:00    15 MB(-1%)  Iter   1   18.60%  Align node00:00:00    15 MB(-1%)  Iter   1   20.93%  Align node00:00:00    15 MB(-1%)  Iter   1   23.26%  Align node00:00:00    15 MB(-1%)  Iter   1   25.58%  Align node00:00:00    15 MB(-1%)  Iter   1   27.91%  Align node00:00:00    16 MB(-1%)  Iter   1   30.23%  Align node00:00:00    16 MB(-1%)  Iter   1   32.56%  Align node00:00:00    16 MB(-1%)  Iter   1   34.88%  Align node00:00:00    17 MB(-1%)  Iter   1   37.21%  Align node00:00:00    17 MB(-1%)  Iter   1   39.53%  Align node00:00:00    17 MB(-1%)  Iter   1   41.86%  Align node00:00:00    17 MB(-1%)  Iter   1   44.19%  Align node00:00:00    18 MB(-1%)  Iter   1   46.51%  Align node00:00:00    18 MB(-1%)  Iter   1   48.84%  Align node00:00:00    18 MB(-1%)  Iter   1   51.16%  Align node00:00:00    19 MB(-1%)  Iter   1   53.49%  Align node00:00:00    19 MB(-1%)  Iter   1   55.81%  Align node00:00:00    19 MB(-1%)  Iter   1   58.14%  Align node00:00:00    19 MB(-1%)  Iter   1   60.47%  Align node00:00:00    20 MB(-1%)  Iter   1   62.79%  Align node00:00:00    20 MB(-1%)  Iter   1   65.12%  Align node00:00:00    20 MB(-1%)  Iter   1   67.44%  Align node00:00:00    21 MB(-1%)  Iter   1   69.77%  Align node00:00:00    21 MB(-1%)  Iter   1   72.09%  Align node00:00:00    21 MB(-1%)  Iter   1   74.42%  Align node00:00:00    21 MB(-1%)  Iter   1   76.74%  Align node00:00:00    21 MB(-1%)  Iter   1   79.07%  Align node00:00:00    22 MB(-1%)  Iter   1   81.40%  Align node00:00:00    22 MB(-1%)  Iter   1   83.72%  Align node00:00:00    22 MB(-1%)  Iter   1   86.05%  Align node00:00:00    22 MB(-1%)  Iter   1   88.37%  Align node00:00:00    22 MB(-1%)  Iter   1   90.70%  Align node00:00:00    22 MB(-1%)  Iter   1   93.02%  Align node00:00:00    23 MB(-1%)  Iter   1   95.35%  Align node00:00:00    23 MB(-1%)  Iter   1   97.67%  Align node00:00:00    23 MB(-1%)  Iter   1  100.00%  Align node00:00:00    23 MB(-1%)  Iter   1  100.00%  Align node
-00:00:00    23 MB(-1%)  Iter   1    2.27%  Root alignment00:00:00    23 MB(-1%)  Iter   1    4.55%  Root alignment00:00:00    23 MB(-1%)  Iter   1    6.82%  Root alignment00:00:00    23 MB(-1%)  Iter   1    9.09%  Root alignment00:00:00    23 MB(-1%)  Iter   1   11.36%  Root alignment00:00:00    23 MB(-1%)  Iter   1   13.64%  Root alignment00:00:00    23 MB(-1%)  Iter   1   15.91%  Root alignment00:00:00    23 MB(-1%)  Iter   1   18.18%  Root alignment00:00:00    23 MB(-1%)  Iter   1   20.45%  Root alignment00:00:00    23 MB(-1%)  Iter   1   22.73%  Root alignment00:00:00    23 MB(-1%)  Iter   1   25.00%  Root alignment00:00:00    23 MB(-1%)  Iter   1   27.27%  Root alignment00:00:00    23 MB(-1%)  Iter   1   29.55%  Root alignment00:00:00    23 MB(-1%)  Iter   1   31.82%  Root alignment00:00:00    23 MB(-1%)  Iter   1   34.09%  Root alignment00:00:00    23 MB(-1%)  Iter   1   36.36%  Root alignment00:00:00    23 MB(-1%)  Iter   1   38.64%  Root alignment00:00:00    23 MB(-1%)  Iter   1   40.91%  Root alignment00:00:00    23 MB(-1%)  Iter   1   43.18%  Root alignment00:00:00    23 MB(-1%)  Iter   1   45.45%  Root alignment00:00:00    23 MB(-1%)  Iter   1   47.73%  Root alignment00:00:00    23 MB(-1%)  Iter   1   50.00%  Root alignment00:00:00    23 MB(-1%)  Iter   1   52.27%  Root alignment00:00:00    23 MB(-1%)  Iter   1   54.55%  Root alignment00:00:00    23 MB(-1%)  Iter   1   56.82%  Root alignment00:00:00    23 MB(-1%)  Iter   1   59.09%  Root alignment00:00:00    23 MB(-1%)  Iter   1   61.36%  Root alignment00:00:00    23 MB(-1%)  Iter   1   63.64%  Root alignment00:00:00    23 MB(-1%)  Iter   1   65.91%  Root alignment00:00:00    23 MB(-1%)  Iter   1   68.18%  Root alignment00:00:00    23 MB(-1%)  Iter   1   70.45%  Root alignment00:00:00    23 MB(-1%)  Iter   1   72.73%  Root alignment00:00:00    23 MB(-1%)  Iter   1   75.00%  Root alignment00:00:00    23 MB(-1%)  Iter   1   77.27%  Root alignment00:00:00    23 MB(-1%)  Iter   1   79.55%  Root alignment00:00:00    23 MB(-1%)  Iter   1   81.82%  Root alignment00:00:00    23 MB(-1%)  Iter   1   84.09%  Root alignment00:00:00    23 MB(-1%)  Iter   1   86.36%  Root alignment00:00:00    23 MB(-1%)  Iter   1   88.64%  Root alignment00:00:00    23 MB(-1%)  Iter   1   90.91%  Root alignment00:00:00    23 MB(-1%)  Iter   1   93.18%  Root alignment00:00:00    23 MB(-1%)  Iter   1   95.45%  Root alignment00:00:00    23 MB(-1%)  Iter   1   97.73%  Root alignment00:00:00    23 MB(-1%)  Iter   1  100.00%  Root alignment00:00:00    23 MB(-1%)  Iter   1  100.00%  Root alignment
-00:00:00    23 MB(-1%)  Iter   2    2.38%  Refine tree   00:00:00    23 MB(-1%)  Iter   2    4.76%  Refine tree00:00:00    23 MB(-1%)  Iter   2    7.14%  Refine tree00:00:00    24 MB(-1%)  Iter   2    9.52%  Refine tree00:00:00    24 MB(-1%)  Iter   2   11.90%  Refine tree00:00:00    24 MB(-1%)  Iter   2  100.00%  Refine tree
-00:00:00    24 MB(-1%)  Iter   2    2.27%  Root alignment00:00:00    24 MB(-1%)  Iter   2    4.55%  Root alignment00:00:00    24 MB(-1%)  Iter   2    6.82%  Root alignment00:00:00    24 MB(-1%)  Iter   2    9.09%  Root alignment00:00:00    24 MB(-1%)  Iter   2   11.36%  Root alignment00:00:00    24 MB(-1%)  Iter   2   13.64%  Root alignment00:00:00    24 MB(-1%)  Iter   2   15.91%  Root alignment00:00:00    24 MB(-1%)  Iter   2   18.18%  Root alignment00:00:00    24 MB(-1%)  Iter   2   20.45%  Root alignment00:00:00    24 MB(-1%)  Iter   2   22.73%  Root alignment00:00:00    24 MB(-1%)  Iter   2   25.00%  Root alignment00:00:00    24 MB(-1%)  Iter   2   27.27%  Root alignment00:00:00    24 MB(-1%)  Iter   2   29.55%  Root alignment00:00:00    24 MB(-1%)  Iter   2   31.82%  Root alignment00:00:00    24 MB(-1%)  Iter   2   34.09%  Root alignment00:00:00    24 MB(-1%)  Iter   2   36.36%  Root alignment00:00:00    24 MB(-1%)  Iter   2   38.64%  Root alignment00:00:00    24 MB(-1%)  Iter   2   40.91%  Root alignment00:00:00    24 MB(-1%)  Iter   2   43.18%  Root alignment00:00:00    24 MB(-1%)  Iter   2   45.45%  Root alignment00:00:00    24 MB(-1%)  Iter   2   47.73%  Root alignment00:00:00    24 MB(-1%)  Iter   2   50.00%  Root alignment00:00:00    24 MB(-1%)  Iter   2   52.27%  Root alignment00:00:00    24 MB(-1%)  Iter   2   54.55%  Root alignment00:00:00    24 MB(-1%)  Iter   2   56.82%  Root alignment00:00:00    24 MB(-1%)  Iter   2   59.09%  Root alignment00:00:00    24 MB(-1%)  Iter   2   61.36%  Root alignment00:00:00    24 MB(-1%)  Iter   2   63.64%  Root alignment00:00:00    24 MB(-1%)  Iter   2   65.91%  Root alignment00:00:00    24 MB(-1%)  Iter   2   68.18%  Root alignment00:00:00    24 MB(-1%)  Iter   2   70.45%  Root alignment00:00:00    24 MB(-1%)  Iter   2   72.73%  Root alignment00:00:00    24 MB(-1%)  Iter   2   75.00%  Root alignment00:00:00    24 MB(-1%)  Iter   2   77.27%  Root alignment00:00:00    24 MB(-1%)  Iter   2   79.55%  Root alignment00:00:00    24 MB(-1%)  Iter   2   81.82%  Root alignment00:00:00    24 MB(-1%)  Iter   2   84.09%  Root alignment00:00:00    24 MB(-1%)  Iter   2   86.36%  Root alignment00:00:00    24 MB(-1%)  Iter   2   88.64%  Root alignment00:00:00    24 MB(-1%)  Iter   2   90.91%  Root alignment00:00:00    24 MB(-1%)  Iter   2   93.18%  Root alignment00:00:00    24 MB(-1%)  Iter   2   95.45%  Root alignment00:00:00    24 MB(-1%)  Iter   2   97.73%  Root alignment00:00:00    24 MB(-1%)  Iter   2  100.00%  Root alignment00:00:00    24 MB(-1%)  Iter   2  100.00%  Root alignment
-00:00:00    24 MB(-1%)  Iter   2  100.00%  Root alignment
-00:00:00    24 MB(-1%)  Iter   3    2.35%  Refine biparts00:00:00    24 MB(-1%)  Iter   3    3.53%  Refine biparts00:00:00    24 MB(-1%)  Iter   3    4.71%  Refine biparts00:00:00    24 MB(-1%)  Iter   3    5.88%  Refine biparts00:00:00    24 MB(-1%)  Iter   3    7.06%  Refine biparts00:00:00    24 MB(-1%)  Iter   3    8.24%  Refine biparts00:00:00    24 MB(-1%)  Iter   3    9.41%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   10.59%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   11.76%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   12.94%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   14.12%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   15.29%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   16.47%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   17.65%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   18.82%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   20.00%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   21.18%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   22.35%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   23.53%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   24.71%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   25.88%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   27.06%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   28.24%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   29.41%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   30.59%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   31.76%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   32.94%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   34.12%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   35.29%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   36.47%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   37.65%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   38.82%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   40.00%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   41.18%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   42.35%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   43.53%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   44.71%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   45.88%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   47.06%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   48.24%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   49.41%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   50.59%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   51.76%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   52.94%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   54.12%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   55.29%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   56.47%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   57.65%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   58.82%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   60.00%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   61.18%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   62.35%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   63.53%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   64.71%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   65.88%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   67.06%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   68.24%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   69.41%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   70.59%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   71.76%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   72.94%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   74.12%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   75.29%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   76.47%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   77.65%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   78.82%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   80.00%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   81.18%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   82.35%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   83.53%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   84.71%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   85.88%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   87.06%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   88.24%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   89.41%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   90.59%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   91.76%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   92.94%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   94.12%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   95.29%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   96.47%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   97.65%  Refine biparts00:00:00    24 MB(-1%)  Iter   3   98.82%  Refine biparts00:00:00    24 MB(-1%)  Iter   3  100.00%  Refine biparts00:00:00    24 MB(-1%)  Iter   3  101.18%  Refine biparts00:00:00    24 MB(-1%)  Iter   3  100.00%  Refine biparts
-00:00:00    24 MB(-1%)  Iter   4    2.35%  Refine biparts00:00:00    24 MB(-1%)  Iter   4    3.53%  Refine biparts00:00:00    24 MB(-1%)  Iter   4    4.71%  Refine biparts00:00:00    24 MB(-1%)  Iter   4    5.88%  Refine biparts00:00:00    24 MB(-1%)  Iter   4    7.06%  Refine biparts00:00:00    24 MB(-1%)  Iter   4    8.24%  Refine biparts00:00:00    24 MB(-1%)  Iter   4    9.41%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   10.59%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   11.76%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   12.94%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   14.12%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   15.29%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   16.47%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   17.65%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   18.82%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   20.00%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   21.18%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   22.35%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   23.53%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   24.71%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   25.88%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   27.06%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   28.24%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   29.41%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   30.59%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   31.76%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   32.94%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   34.12%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   35.29%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   36.47%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   37.65%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   38.82%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   40.00%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   41.18%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   42.35%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   43.53%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   44.71%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   45.88%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   47.06%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   48.24%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   49.41%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   50.59%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   51.76%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   52.94%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   54.12%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   55.29%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   56.47%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   57.65%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   58.82%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   60.00%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   61.18%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   62.35%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   63.53%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   64.71%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   65.88%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   67.06%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   68.24%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   69.41%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   70.59%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   71.76%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   72.94%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   74.12%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   75.29%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   76.47%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   77.65%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   78.82%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   80.00%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   81.18%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   82.35%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   83.53%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   84.71%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   85.88%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   87.06%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   88.24%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   89.41%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   90.59%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   91.76%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   92.94%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   94.12%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   95.29%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   96.47%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   97.65%  Refine biparts00:00:00    24 MB(-1%)  Iter   4   98.82%  Refine biparts00:00:00    24 MB(-1%)  Iter   4  100.00%  Refine biparts00:00:00    24 MB(-1%)  Iter   4  101.18%  Refine biparts00:00:00    24 MB(-1%)  Iter   4  100.00%  Refine biparts
-Aligning purc_4_GAP_clustered_reconsensus.fa
-
-**Muscle output onpurc_4_GAP_clustered_reconsensus.fa**
-
-MUSCLE v3.8.31 by Robert C. Edgar
-
-http://www.drive5.com/muscle
-This software is donated to the public domain.
-Please cite: Edgar, R.C. Nucleic Acids Res 32(5), 1792-97.
-
-purc_4_GAP_clustered_reconsensu 41 seqs, max length 465, avg  length 453
-00:00:00    10 MB(-1%)  Iter   1    0.12%  K-mer dist pass 100:00:00    10 MB(-1%)  Iter   1   58.19%  K-mer dist pass 100:00:00    10 MB(-1%)  Iter   1  100.00%  K-mer dist pass 1
-00:00:00    10 MB(-1%)  Iter   1    0.12%  K-mer dist pass 200:00:00    10 MB(-1%)  Iter   1   58.19%  K-mer dist pass 200:00:00    10 MB(-1%)  Iter   1  100.00%  K-mer dist pass 2
-00:00:00    11 MB(-1%)  Iter   1    2.50%  Align node       00:00:00    13 MB(-1%)  Iter   1    5.00%  Align node00:00:00    13 MB(-1%)  Iter   1    7.50%  Align node00:00:00    14 MB(-1%)  Iter   1   10.00%  Align node00:00:01    14 MB(-1%)  Iter   1   12.50%  Align node00:00:01    14 MB(-1%)  Iter   1   15.00%  Align node00:00:01    15 MB(-1%)  Iter   1   17.50%  Align node00:00:01    15 MB(-1%)  Iter   1   20.00%  Align node00:00:01    15 MB(-1%)  Iter   1   22.50%  Align node00:00:01    15 MB(-1%)  Iter   1   25.00%  Align node00:00:01    16 MB(-1%)  Iter   1   27.50%  Align node00:00:01    16 MB(-1%)  Iter   1   30.00%  Align node00:00:01    16 MB(-1%)  Iter   1   32.50%  Align node00:00:01    17 MB(-1%)  Iter   1   35.00%  Align node00:00:01    17 MB(-1%)  Iter   1   37.50%  Align node00:00:01    17 MB(-1%)  Iter   1   40.00%  Align node00:00:01    17 MB(-1%)  Iter   1   42.50%  Align node00:00:01    18 MB(-1%)  Iter   1   45.00%  Align node00:00:01    18 MB(-1%)  Iter   1   47.50%  Align node00:00:01    18 MB(-1%)  Iter   1   50.00%  Align node00:00:01    19 MB(-1%)  Iter   1   52.50%  Align node00:00:01    19 MB(-1%)  Iter   1   55.00%  Align node00:00:01    19 MB(-1%)  Iter   1   57.50%  Align node00:00:01    20 MB(-1%)  Iter   1   60.00%  Align node00:00:01    20 MB(-1%)  Iter   1   62.50%  Align node00:00:01    20 MB(-1%)  Iter   1   65.00%  Align node00:00:01    21 MB(-1%)  Iter   1   67.50%  Align node00:00:01    21 MB(-1%)  Iter   1   70.00%  Align node00:00:01    22 MB(-1%)  Iter   1   72.50%  Align node00:00:01    22 MB(-1%)  Iter   1   75.00%  Align node00:00:01    22 MB(-1%)  Iter   1   77.50%  Align node00:00:01    22 MB(-1%)  Iter   1   80.00%  Align node00:00:01    22 MB(-1%)  Iter   1   82.50%  Align node00:00:01    23 MB(-1%)  Iter   1   85.00%  Align node00:00:01    23 MB(-1%)  Iter   1   87.50%  Align node00:00:01    23 MB(-1%)  Iter   1   90.00%  Align node00:00:01    23 MB(-1%)  Iter   1   92.50%  Align node00:00:01    23 MB(-1%)  Iter   1   95.00%  Align node00:00:01    23 MB(-1%)  Iter   1   97.50%  Align node00:00:01    23 MB(-1%)  Iter   1  100.00%  Align node00:00:01    24 MB(-1%)  Iter   1  100.00%  Align node
-00:00:01    24 MB(-1%)  Iter   1    2.44%  Root alignment00:00:01    24 MB(-1%)  Iter   1    4.88%  Root alignment00:00:01    24 MB(-1%)  Iter   1    7.32%  Root alignment00:00:01    24 MB(-1%)  Iter   1    9.76%  Root alignment00:00:01    24 MB(-1%)  Iter   1   12.20%  Root alignment00:00:01    24 MB(-1%)  Iter   1   14.63%  Root alignment00:00:01    24 MB(-1%)  Iter   1   17.07%  Root alignment00:00:01    24 MB(-1%)  Iter   1   19.51%  Root alignment00:00:01    24 MB(-1%)  Iter   1   21.95%  Root alignment00:00:01    24 MB(-1%)  Iter   1   24.39%  Root alignment00:00:01    24 MB(-1%)  Iter   1   26.83%  Root alignment00:00:01    24 MB(-1%)  Iter   1   29.27%  Root alignment00:00:01    24 MB(-1%)  Iter   1   31.71%  Root alignment00:00:01    24 MB(-1%)  Iter   1   34.15%  Root alignment00:00:01    24 MB(-1%)  Iter   1   36.59%  Root alignment00:00:01    24 MB(-1%)  Iter   1   39.02%  Root alignment00:00:01    24 MB(-1%)  Iter   1   41.46%  Root alignment00:00:01    24 MB(-1%)  Iter   1   43.90%  Root alignment00:00:01    24 MB(-1%)  Iter   1   46.34%  Root alignment00:00:01    24 MB(-1%)  Iter   1   48.78%  Root alignment00:00:01    24 MB(-1%)  Iter   1   51.22%  Root alignment00:00:01    24 MB(-1%)  Iter   1   53.66%  Root alignment00:00:01    24 MB(-1%)  Iter   1   56.10%  Root alignment00:00:01    24 MB(-1%)  Iter   1   58.54%  Root alignment00:00:01    24 MB(-1%)  Iter   1   60.98%  Root alignment00:00:01    24 MB(-1%)  Iter   1   63.41%  Root alignment00:00:01    24 MB(-1%)  Iter   1   65.85%  Root alignment00:00:01    24 MB(-1%)  Iter   1   68.29%  Root alignment00:00:01    24 MB(-1%)  Iter   1   70.73%  Root alignment00:00:01    24 MB(-1%)  Iter   1   73.17%  Root alignment00:00:01    24 MB(-1%)  Iter   1   75.61%  Root alignment00:00:01    24 MB(-1%)  Iter   1   78.05%  Root alignment00:00:01    24 MB(-1%)  Iter   1   80.49%  Root alignment00:00:01    24 MB(-1%)  Iter   1   82.93%  Root alignment00:00:01    24 MB(-1%)  Iter   1   85.37%  Root alignment00:00:01    24 MB(-1%)  Iter   1   87.80%  Root alignment00:00:01    24 MB(-1%)  Iter   1   90.24%  Root alignment00:00:01    24 MB(-1%)  Iter   1   92.68%  Root alignment00:00:01    24 MB(-1%)  Iter   1   95.12%  Root alignment00:00:01    24 MB(-1%)  Iter   1   97.56%  Root alignment00:00:01    24 MB(-1%)  Iter   1  100.00%  Root alignment00:00:01    24 MB(-1%)  Iter   1  100.00%  Root alignment
-00:00:01    24 MB(-1%)  Iter   2    2.56%  Refine tree   00:00:01    24 MB(-1%)  Iter   2    5.13%  Refine tree00:00:01    24 MB(-1%)  Iter   2    7.69%  Refine tree00:00:01    24 MB(-1%)  Iter   2   10.26%  Refine tree00:00:01    24 MB(-1%)  Iter   2   12.82%  Refine tree00:00:01    24 MB(-1%)  Iter   2   15.38%  Refine tree00:00:01    24 MB(-1%)  Iter   2   17.95%  Refine tree00:00:01    24 MB(-1%)  Iter   2   20.51%  Refine tree00:00:01    24 MB(-1%)  Iter   2   23.08%  Refine tree00:00:01    24 MB(-1%)  Iter   2   25.64%  Refine tree00:00:01    24 MB(-1%)  Iter   2  100.00%  Refine tree
-00:00:01    24 MB(-1%)  Iter   2    2.44%  Root alignment00:00:01    24 MB(-1%)  Iter   2    4.88%  Root alignment00:00:01    24 MB(-1%)  Iter   2    7.32%  Root alignment00:00:01    24 MB(-1%)  Iter   2    9.76%  Root alignment00:00:01    24 MB(-1%)  Iter   2   12.20%  Root alignment00:00:01    24 MB(-1%)  Iter   2   14.63%  Root alignment00:00:01    24 MB(-1%)  Iter   2   17.07%  Root alignment00:00:01    24 MB(-1%)  Iter   2   19.51%  Root alignment00:00:01    24 MB(-1%)  Iter   2   21.95%  Root alignment00:00:01    24 MB(-1%)  Iter   2   24.39%  Root alignment00:00:01    24 MB(-1%)  Iter   2   26.83%  Root alignment00:00:01    24 MB(-1%)  Iter   2   29.27%  Root alignment00:00:01    24 MB(-1%)  Iter   2   31.71%  Root alignment00:00:01    24 MB(-1%)  Iter   2   34.15%  Root alignment00:00:01    24 MB(-1%)  Iter   2   36.59%  Root alignment00:00:01    24 MB(-1%)  Iter   2   39.02%  Root alignment00:00:01    24 MB(-1%)  Iter   2   41.46%  Root alignment00:00:01    24 MB(-1%)  Iter   2   43.90%  Root alignment00:00:01    24 MB(-1%)  Iter   2   46.34%  Root alignment00:00:01    24 MB(-1%)  Iter   2   48.78%  Root alignment00:00:01    24 MB(-1%)  Iter   2   51.22%  Root alignment00:00:01    24 MB(-1%)  Iter   2   53.66%  Root alignment00:00:01    24 MB(-1%)  Iter   2   56.10%  Root alignment00:00:01    24 MB(-1%)  Iter   2   58.54%  Root alignment00:00:01    24 MB(-1%)  Iter   2   60.98%  Root alignment00:00:01    24 MB(-1%)  Iter   2   63.41%  Root alignment00:00:01    24 MB(-1%)  Iter   2   65.85%  Root alignment00:00:01    24 MB(-1%)  Iter   2   68.29%  Root alignment00:00:01    24 MB(-1%)  Iter   2   70.73%  Root alignment00:00:01    24 MB(-1%)  Iter   2   73.17%  Root alignment00:00:01    24 MB(-1%)  Iter   2   75.61%  Root alignment00:00:01    24 MB(-1%)  Iter   2   78.05%  Root alignment00:00:01    24 MB(-1%)  Iter   2   80.49%  Root alignment00:00:01    24 MB(-1%)  Iter   2   82.93%  Root alignment00:00:01    24 MB(-1%)  Iter   2   85.37%  Root alignment00:00:01    24 MB(-1%)  Iter   2   87.80%  Root alignment00:00:01    24 MB(-1%)  Iter   2   90.24%  Root alignment00:00:01    24 MB(-1%)  Iter   2   92.68%  Root alignment00:00:01    24 MB(-1%)  Iter   2   95.12%  Root alignment00:00:01    24 MB(-1%)  Iter   2   97.56%  Root alignment00:00:01    24 MB(-1%)  Iter   2  100.00%  Root alignment00:00:01    24 MB(-1%)  Iter   2  100.00%  Root alignment
-00:00:01    24 MB(-1%)  Iter   2  100.00%  Root alignment
-00:00:01    24 MB(-1%)  Iter   3    2.53%  Refine biparts00:00:01    24 MB(-1%)  Iter   3    3.80%  Refine biparts00:00:01    24 MB(-1%)  Iter   3    5.06%  Refine biparts00:00:01    24 MB(-1%)  Iter   3    6.33%  Refine biparts00:00:01    24 MB(-1%)  Iter   3    7.59%  Refine biparts00:00:01    24 MB(-1%)  Iter   3    8.86%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   10.13%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   11.39%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   12.66%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   13.92%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   15.19%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   16.46%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   17.72%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   18.99%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   20.25%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   21.52%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   22.78%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   24.05%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   25.32%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   26.58%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   27.85%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   29.11%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   30.38%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   31.65%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   32.91%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   34.18%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   35.44%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   36.71%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   37.97%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   39.24%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   40.51%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   41.77%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   43.04%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   44.30%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   45.57%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   46.84%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   48.10%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   49.37%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   50.63%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   51.90%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   53.16%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   54.43%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   55.70%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   56.96%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   58.23%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   59.49%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   60.76%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   62.03%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   63.29%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   64.56%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   65.82%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   67.09%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   68.35%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   69.62%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   70.89%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   72.15%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   73.42%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   74.68%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   75.95%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   77.22%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   78.48%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   79.75%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   81.01%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   82.28%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   83.54%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   84.81%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   86.08%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   87.34%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   88.61%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   89.87%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   91.14%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   92.41%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   93.67%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   94.94%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   96.20%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   97.47%  Refine biparts00:00:01    24 MB(-1%)  Iter   3   98.73%  Refine biparts00:00:01    24 MB(-1%)  Iter   3  100.00%  Refine biparts00:00:01    24 MB(-1%)  Iter   3  101.27%  Refine biparts00:00:01    24 MB(-1%)  Iter   3  100.00%  Refine biparts
-00:00:01    24 MB(-1%)  Iter   4    2.53%  Refine biparts00:00:01    24 MB(-1%)  Iter   4    3.80%  Refine biparts00:00:01    24 MB(-1%)  Iter   4    5.06%  Refine biparts00:00:01    24 MB(-1%)  Iter   4    6.33%  Refine biparts00:00:01    24 MB(-1%)  Iter   4    7.59%  Refine biparts00:00:01    24 MB(-1%)  Iter   4    8.86%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   10.13%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   11.39%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   12.66%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   13.92%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   15.19%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   16.46%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   17.72%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   18.99%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   20.25%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   21.52%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   22.78%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   24.05%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   25.32%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   26.58%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   27.85%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   29.11%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   30.38%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   31.65%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   32.91%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   34.18%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   35.44%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   36.71%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   37.97%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   39.24%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   40.51%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   41.77%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   43.04%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   44.30%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   45.57%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   46.84%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   48.10%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   49.37%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   50.63%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   51.90%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   53.16%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   54.43%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   55.70%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   56.96%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   58.23%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   59.49%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   60.76%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   62.03%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   63.29%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   64.56%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   65.82%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   67.09%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   68.35%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   69.62%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   70.89%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   72.15%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   73.42%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   74.68%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   75.95%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   77.22%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   78.48%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   79.75%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   81.01%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   82.28%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   83.54%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   84.81%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   86.08%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   87.34%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   88.61%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   89.87%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   91.14%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   92.41%  Refine biparts00:00:01    24 MB(-1%)  Iter   4   93.67%  Refine biparts00:00:02    24 MB(-1%)  Iter   4   94.94%  Refine biparts00:00:02    24 MB(-1%)  Iter   4   96.20%  Refine biparts00:00:02    24 MB(-1%)  Iter   4   97.47%  Refine biparts00:00:02    24 MB(-1%)  Iter   4   98.73%  Refine biparts00:00:02    24 MB(-1%)  Iter   4  100.00%  Refine biparts00:00:02    24 MB(-1%)  Iter   4  101.27%  Refine biparts00:00:02    24 MB(-1%)  Iter   4  100.00%  Refine biparts
-00:00:02    24 MB(-1%)  Iter   5    2.53%  Refine biparts00:00:02    24 MB(-1%)  Iter   5  100.00%  Refine biparts
-00:00:02    24 MB(-1%)  Iter   5  100.00%  Refine biparts
