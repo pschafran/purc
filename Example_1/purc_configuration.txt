@@ -53,7 +53,7 @@ sizeThreshold2 			= 4			# The min. number of sequences/cluster necessary for tha
 abundance_skew			= 1.9
 
 [Lima Override]
-Lima_override = 0 # Set to 1 to use BLAST-based demultiplexing instead of Lima (Linux only)
+Lima_override = 1 # Set to 1 to use BLAST-based demultiplexing instead of Lima (Linux only)
 
 [Dependencies]
 Usearch 				= vsearch								# The name of (or path to) Usearch executable; Here assumed to be accessible through the shell's PATH
