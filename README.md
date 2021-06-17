@@ -302,4 +302,4 @@ Carl Rothfels ([crothfels@berkeley.edu](mailto:crothfels@berkeley.edu))
 
 
 ### Known Bugs ###
-* Inconsistent number of sequences reported during barcode removal (does not equal total number of sequences)
+* Inconsistent number of sequences reported during barcode removal (does not always equal total number of sequences)
