@@ -32,42 +32,15 @@ PURC should run on most recent versions of macOS and Linux. Windows support is d
 
 ## **Quick Start** ##
 ### Step 1: Setup ###
-PURC consists of purc.py (and another variation--purc_recluster.py--that we describe below) and relies on a number of dependencies. We recommend using the [Miniconda](https://conda.io/en/latest/miniconda.html) package manager for installing dependencies. Once installed (and the terminal rebooted), you should be able to run these commands:
+PURC consists of purc.py (and another variation--purc_recluster.py--that we describe below) and relies on a number of dependencies. We recommend using the [Miniconda](https://conda.io/en/latest/miniconda.html) package manager for installing dependencies. Once installed (and the terminal rebooted), you should be able to run on of these commands to install dependencies, depending on your operating system:
 ```
-conda install -c bioconda blast muscle vsearch r-base r-essentials bioconductor-dada2 # Do not use the R packages distributed from the conda-forge channel!
-conda install -c bioconda -c conda-forge cutadapt
-pip install Biopython
+# macOS
+conda env create -n purc --file purc_macos.yaml
 
-# For Linux users:
-conda install -c bioconda lima
+# Linux
+conda env create -n purc --file purc_linux.yaml
 ```
-If R is already installed, it is best not to install multiple instances. Omit `r-base r-essentials` from the command above. Make sure `R` and `Rscript` are in your PATH (type the command and it runs from anywhere). E.g. if installed with installer on macOS, you may need to add `/Library/Frameworks/R.framework/Versions/4.0/Resources/`. Note this will need be redone each time your open a new Terminal.
-```
-PATH="/Library/Frameworks/R.framework/Versions/4.0/Resources/:$PATH"
-```
-Once R is installed and accessible from the command line, open `R` and run these commands to install required packages.
-```
-# If install fails, try changing BiocManager version based on your R version:
-# R version = BiocManager Version
-# 4.0.2+ = 3.12
-# 4.0 = 3.11
-# 3.6 = 3.10
-# 3.5 = 3.8
-# 3.4 = 3.6
-# 3.3 = 3.4
-# 3.2 = 3.2
-
-### Install ###
-if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager", quiet = TRUE)
-BiocManager::install(version = '3.13', ask = FALSE)
-if (!require("dada2", quietly = TRUE)) BiocManager::install("dada2", ask = FALSE)
-if (!require("gridExtra", quietly = TRUE)) install.packages("gridExtra", quiet = TRUE)
-if (!require("ggplot2", quietly = TRUE)) install.packages("ggplot2", quiet = TRUE)
-if (!require("reshape2", quietly = TRUE)) install.packages("reshape2", quiet = TRUE)
-if (!require("RColorBrewer", quietly = TRUE)) install.packages("RColorBrewer", quiet = TRUE)
-```
-
-If you get an error message like "ERROR: Cython is not installed", install/update [Cython](http://docs.cython.org/src/quickstart/install.html) and try again.
+If PURC fails to run it is likely due to dependency issues. See advanced installation at the bottom of this page.
 
 ### Step 2: Get files ready ###
 PURC requires the following files:
@@ -304,6 +277,45 @@ Fay-Wei Li ([fl329@cornell.edu](mailto:fl329@cornell.edu))
 
 Carl Rothfels ([crothfels@berkeley.edu](mailto:crothfels@berkeley.edu))
 
+### Advanced Installation ###
+If PURC is not functioning correctly when installed with the YAML files, you can try manual installation. Run either of the conda commands below, followed by the pip command.
+```
+# macOS
+conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch r-base=4.1 r-essentials bioconductor-dada2 r-ggplot2 r-reshape2 r-gridextra r-rcolorbrewer python">=3.7"
+
+# Linux
+conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch r-base=4.1 r-essentials bioconductor-dada2 r-ggplot2 r-reshape2 r-gridextra r-rcolorbrewer python">=3.7" lima
+
+# macOS or Linux
+pip install Biopython
+```
+If R is already installed, it is best not to install multiple instances. Omit `r-base r-essentials` from the command above. Make sure `R` and `Rscript` are in your PATH (type the command and it runs from anywhere). E.g. if installed with installer on macOS, you may need to add `/Library/Frameworks/R.framework/Versions/4.0/Resources/`. Note this will need be redone each time your open a new Terminal.
+```
+PATH="/Library/Frameworks/R.framework/Versions/4.0/Resources/:$PATH"
+```
+Once R is installed and accessible from the command line, open `R` and run these commands to install required packages.
+```
+# If install fails, try changing BiocManager version based on your R version:
+# R version = BiocManager Version
+# 4.0.2+ = 3.12
+# 4.0 = 3.11
+# 3.6 = 3.10
+# 3.5 = 3.8
+# 3.4 = 3.6
+# 3.3 = 3.4
+# 3.2 = 3.2
+
+### Install ###
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager", quiet = TRUE)
+BiocManager::install(version = '3.13', ask = FALSE)
+if (!require("dada2", quietly = TRUE)) BiocManager::install("dada2", ask = FALSE)
+if (!require("gridExtra", quietly = TRUE)) install.packages("gridExtra", quiet = TRUE)
+if (!require("ggplot2", quietly = TRUE)) install.packages("ggplot2", quiet = TRUE)
+if (!require("reshape2", quietly = TRUE)) install.packages("reshape2", quiet = TRUE)
+if (!require("RColorBrewer", quietly = TRUE)) install.packages("RColorBrewer", quiet = TRUE)
+```
+
+If you get an error message like "ERROR: Cython is not installed", install/update [Cython](http://docs.cython.org/src/quickstart/install.html) and try again.
 
 ### Known Bugs ###
 * Inconsistent number of sequences reported during barcode removal (does not always equal total number of sequences)
