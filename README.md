@@ -34,8 +34,12 @@ PURC should run on most recent versions of macOS and Linux. Windows support is d
 ### Step 1: Setup ###
 PURC consists of purc.py (and another variation--purc_recluster.py--that we describe below) and relies on a number of dependencies. We recommend using the [Miniconda](https://conda.io/en/latest/miniconda.html) package manager for installing dependencies. Once installed (and the terminal rebooted), you should be able to run these commands:
 ```
-pip install biopython
-conda install -c bioconda -c conda-forge cutadapt blast muscle vsearch r-base r-essentials
+conda install -c bioconda blast muscle vsearch r-base r-essentials bioconductor-dada2 # Do not use the R packages distributed from the conda-forge channel!
+conda install -c bioconda -c conda-forge cutadapt
+pip install Biopython
+
+# For Linux users:
+conda install -c bioconda lima
 ```
 If R is already installed, it is best not to install multiple instances. Omit `r-base r-essentials` from the command above. Make sure `R` and `Rscript` are in your PATH (type the command and it runs from anywhere). E.g. if installed with installer on macOS, you may need to add `/Library/Frameworks/R.framework/Versions/4.0/Resources/`. Note this will need be redone each time your open a new Terminal.
 ```
