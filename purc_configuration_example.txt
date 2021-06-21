@@ -32,6 +32,7 @@ Recycle_no_barcoded_seq	= 0		# 0: Do not recycle
 								# 1: Use Smith-Waterman local alignment (more sensitive) to find barcodes in those sequences that BLAST failed to detect barcode
 Clustering_method = 0		# 0: Use DADA2 ASV inference
 								# 1: Use Vsearch OTU clustering
+								# 2: Use both clustering methods
 Align					= 1		# 0: No aligning attempted. 1: Final consensus sequences will be aligned with MUSCLE
 
 ***Miscellaneous***

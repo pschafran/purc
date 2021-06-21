@@ -170,7 +170,7 @@ def makeBlastDB(inFileName, outDBname):
 			print("Offending line: %s" % i.id)
 			sys.exit(1)
 	seq_no_hyphen.close()
-	makeblastdb_cmd = 'makeblastdb -in %s -dbtype nucl -parse_seqids -out %s' % (inFileName + '.nohyphen.fasta', outDBname)
+	makeblastdb_cmd = "makeblastdb -in %s -dbtype nucl -parse_seqids -out %s" % (inFileName + '.nohyphen.fasta', outDBname)
 	process = subprocess.Popen(makeblastdb_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text = True)
 	process.wait()
 	(out, err) = process.communicate()
@@ -273,12 +273,20 @@ def CheckChimericLoci(inputfile_raw_sequences, outputfile_blast, outputfile_good
 
 	return chimera_dict # as {seq1: [locus1, locus2], seq2: [locus1, locus3]}
 
-def lima_dual(inputfile_raw_sequences, Lima_barcode_type, barcode_seq_file, Output_folder, Output_prefix):
+def lima_dual(inputfile_raw_sequences, Lima_barcode_type, barcode_seq_file, Output_folder, Output_prefix, mapping_file_list):
+	for mapFile in mapping_file_list:
+		biosamplecsv = ".".join(mapFile.split(".")[:-1]) + ".biosample.csv"
+		with open(mapFile, "r") as open_infile:
+			with open(biosamplecsv, "w") as open_outfile:
+				open_outfile.write("Barcodes,Bio Sample\n")
+				for line in open_infile:
+					splitline = line.strip("\n").split("\t")
+					open_outfile.write("%s--%s,%s\n" % (splitline[0], splitline[1], splitline[2]))
 	prefix = ".".join(inputfile_raw_sequences.split(".")[:-1])
 	fileExt = inputfile_raw_sequences.split(".")[-1]
-	cmdLine = "lima --different --ccs --peek-guess %s %s %s/%s.demux.%s" % (inputfile_raw_sequences, barcode_seq_file, Output_folder, Output_prefix, fileExt)
+	cmdLine = "lima --different --ccs --peek-guess --biosample-csv %s %s %s %s/%s.demux.%s" % (biosamplecsv, inputfile_raw_sequences, barcode_seq_file, Output_folder, Output_prefix, fileExt)
 	process = subprocess.Popen(cmdLine, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text = True)
-	process.wait()
+	stdout,stderr = process.communicate()
 	pass
 
 def lima_symmetric(inputfile_raw_sequences, Lima_barcode_type, barcode_seq_file, Output_folder, Output_prefix):
@@ -663,7 +671,7 @@ def SplitBy(annotd_seqs_file, split_by = "locus-taxon", Multiplex_perBC_flag=Tru
 
 		if split not in splits_list: # add split identifier to the list of splits
 			splits_list.append(split)
-			os.makedirs(split)
+			os.makedirs(split, exist_ok=True)
 			os.chdir(split)
 			seq_file = split + '.fa'
 			file_handle = open(seq_file, 'w') # Only have to do this once, for the first time that split occurs
@@ -2076,8 +2084,18 @@ else:
 					Clustering_method = "ASV"
 				elif setting_argument == '1':
 					Clustering_method = "OTU"
+				elif setting_argument == '2':
+					Clustering_method = "BOTH"
 				else:
 					sys.exit('Error: incorrect setting of Clustering_method')
+	# Check is sequence file type is compatible with clustering method
+	fileExt = raw_sequences.split(".")[-1]
+	if fileExt == "gz":
+		fileExt = raw_sequences.split(".")[-2]
+	if fileExt in ["fasta", "fa", "fas", "fna", "faa"] and Clustering_method in ["ASV", "OTU"]:
+		print("Error: ASV inference requires a FASTQ file. Your input appears to be FASTA format. Change to 'Clustering_method = 1' in config file.")
+		sys.exit(1)
+
 	# Check if dependencies are in place
 	sys.stderr.write('Checking dependencies...\n')
 	# Check if muscle can be executed
@@ -2247,18 +2265,21 @@ if mode == 0: # QC mode
 
 ## Remove barcodes ##
 log.write('\n#Barcode Removal#\n')
-if platform.system() == 'Linux' and Lima_override == 0:
+if platform.system() == 'Linux' and Lima_override == "0": # Add quotes around 0 to activate this section
+	print("Demultiplexing with Lima")
+	limaOutputPrefix = "%s.demux.lima" % Output_prefix
 	if Lima_barcode_type == "same":
-		lima_symmetric(fasta_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
+		lima_symmetric(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
 	elif Lima_barcode_type == "different":
-		lima_dual(fasta_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
+		lima_dual(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix, mapping_file_list)
 	elif Lima_barcode_type == "single-side":
-		lima_singleend(fasta_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
-	mvLine = "mv %s.summary %s ; mv %s.report %s; mv %s.counts %s; mv %s.guess %s " %(limaOuputPrefix, Output_folder, limaOuputPrefix, Output_folder, limaOuputPrefix, Output_folder, limaOuputPrefix, Output_folder)
+		lima_singleend(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
+	mvLine = "mv %s.summary %s ; mv %s.report %s; mv %s.counts %s; mv %s.guess %s " %(limaOutputPrefix, Output_folder, limaOutputPrefix, Output_folder, limaOutputPrefix, Output_folder, limaOutputPrefix, Output_folder)
 	process = subprocess.Popen(mvLine, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
-	process.wait()
+	stdout,stderr = process.communicate()
 
 else:
+	print("Demultiplexing with BLAST")
 	if Dual_barcode:
 		sys.stderr.write('Removing dual barcodes...\n')
 		DeBarcoder_dual(fasta_sequences, BLAST_DBs_folder + '/' + barcode_databasefile, SeqDict)
@@ -2285,7 +2306,7 @@ if Recycle_bc:
 log.write('\t...done\n\n')
 
 ## Remove primers ##
-if Clustering_method == "OTU":
+if Clustering_method == "OTU" or Clustering_method == "BOTH":
 	log.write('#Primer Removal#\n')
 	sys.stderr.write('Removing primers...\n')
 	primer_trimmed_file = Output_prefix + '_2_pr_trimmed.fa'
@@ -2297,6 +2318,7 @@ if Clustering_method == "OTU":
 		sys.exit('Error: primer-removal returned no sequence')
 elif Clustering_method == "ASV":
 	primer_trimmed_file = Output_prefix + '_1_bc_trimmed.fa'
+
 
 ## Annotate the sequences with the taxon and locus names, based on the reference sequences ##
 log.write('#Sequence Annotation#\n')
@@ -2321,6 +2343,48 @@ if Clustering_method == "OTU":
 	LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera = IterativeClusterDechimera(annoFileName, clustID, clustID2, clustID3, sizeThreshold, sizeThreshold2)
 elif Clustering_method == "ASV":
 	LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
+elif Clustering_method == "BOTH":
+	otuStartTime = time.time()
+	OTU_LocusTaxonCountDict_clustd, OTU_LocusTaxonCountDict_chimera = IterativeClusterDechimera(annoFileName, clustID, clustID2, clustID3, sizeThreshold, sizeThreshold2)
+	otuStopTime = time.time()
+	otuRunTime = otuStopTime - otuStartTime
+	if otuRunTime > 60:
+		otuRunTime = otuRunTime/60
+		if otuRunTime > 60:
+			otuRunTime = otuRunTime/60
+			print("OTU Runtime: %.2f hours" % otuRunTime)
+			log.write("OTU Runtime: %.2f hours\n" % otuRunTime)
+		else:
+			print("OTU Runtime: %.2f minutes" % otuRunTime)
+			log.write("OTU Runtime: %.2f minutes\n" % otuRunTime)
+	else:
+		print("OTU Runtime: %.2f seconds" % otuRunTime)
+		log.write("OTU Runtime: %.2f seconds\n" % otuRunTime)
+	asvStartTime = time.time()
+	ASV_LocusTaxonCountDict_clustd, ASV_LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
+	asvStopTime = time.time()
+	asvRunTime = asvStopTime - asvStartTime
+	if asvRunTime > 60:
+		asvRunTime = asvRunTime/60
+		if asvRunTime > 60:
+			asvRunTime = asvRunTime/60
+			print("ASV Runtime: %.2f hours" % asvRunTime)
+			log.write("ASV Runtime: %.2f hours\n" % asvRunTime)
+		else:
+			print("ASV Runtime: %.2f minutes" % asvRunTime)
+			log.write("ASV Runtime: %.2f minutes\n" % asvRunTime)
+	else:
+		print("ASV Runtime: %.2f seconds" % asvRunTime)
+		log.write("ASV Runtime: %.2f seconds\n" % asvRunTime)
+	LocusTaxonCountDict_clustd = {}
+	for locus_taxon in OTU_LocusTaxonCountDict_clustd:
+		LocusTaxonCountDict_clustd[locus_taxon] = {"OTU" : OTU_LocusTaxonCountDict_clustd[locus_taxon]}
+	for locus_taxon in ASV_LocusTaxonCountDict_clustd:
+		try:
+			LocusTaxonCountDict_clustd[locus_taxon].update({"ASV" : ASV_LocusTaxonCountDict_clustd[locus_taxon]})
+		except:
+			LocusTaxonCountDict_clustd[locus_taxon] = {"ASV" : ASV_LocusTaxonCountDict_clustd[locus_taxon]}
+
 ## Producing a summary ##
 log.write('#Run Summary#\n\n')
 count_output = open(Output_prefix + '_5_counts.xls', 'w')
@@ -2348,18 +2412,18 @@ locus_list = []
 for taxon_locus in list(LocusTaxonCountDict_clustd.keys()):
 	taxon_list.append(taxon_locus[0])
 	locus_list.append(taxon_locus[1])
-taxon_list = set(taxon_list)
-locus_list = set(locus_list)
+taxon_list = sorted(set(taxon_list))
+locus_list = sorted(set(locus_list))
 
 # Output read count per taxon per locus
 log.write("\n**Raw reads per accession per locus**\n")
 count_output.write('\n**Raw reads per accession per locus**\n')
 count_output.write('\t' + '\t'.join(locus_list) + '\n')
 log.write('\t' + '\t'.join(locus_list) + '\n')
-for each_taxon in set(taxon_list):
+for each_taxon in sorted(set(taxon_list)):
 	count_output.write(each_taxon + '\t')
 	log.write(each_taxon + '\t')
-	for each_locus in locus_list:
+	for each_locus in sorted(locus_list):
 		try:
 			count_output.write(str(LocusTaxonCountDict_unclustd[each_taxon, each_locus]) + '\t')
 			log.write(str(LocusTaxonCountDict_unclustd[each_taxon, each_locus]) + '\t')
@@ -2370,43 +2434,102 @@ for each_taxon in set(taxon_list):
 	log.write('\n')
 
 # Output clustered seq count
-count_output.write('\n**Final clustered sequences per accession per locus**\n')
-log.write('\n**Final clustered sequences per accession per locus**\n')
-count_output.write('\t' + '\t'.join(locus_list) + '\n')
-log.write('\t' + '\t'.join(locus_list) + '\n')
-for each_taxon in set(taxon_list):
-	count_output.write(each_taxon + '\t')
-	log.write(each_taxon + '\t')
-	for each_locus in locus_list:
-		try:
-			count_output.write(str(LocusTaxonCountDict_clustd[each_taxon, each_locus]) + '\t')
-			log.write(str(LocusTaxonCountDict_clustd[each_taxon, each_locus]) + '\t')
-		except:
-			count_output.write('0\t')
-			log.write('0\t')
-
-	count_output.write('\n')
-	log.write('\n')
+if Clustering_method != "BOTH":
+	count_output.write('\n**Final clustered sequences per accession per locus**\n')
+	log.write('\n**Final clustered sequences per accession per locus**\n')
+	count_output.write('\t' + '\t'.join(locus_list) + '\n')
+	log.write('\t' + '\t'.join(locus_list) + '\n')
+	copynumber_totals = {}
+	for each_taxon in sorted(set(taxon_list)):
+		count_output.write(each_taxon + '\t')
+		log.write(each_taxon + '\t')
+		for each_locus in sorted(locus_list):
+			try:
+				count = LocusTaxonCountDict_clustd[each_taxon, each_locus]
+				count_output.write(str(LocusTaxonCountDict_clustd[each_taxon, each_locus]) + '\t')
+				log.write(str(LocusTaxonCountDict_clustd[each_taxon, each_locus]) + '\t')
+			except:
+				count = 0
+				count_output.write('0\t')
+				log.write('0\t')
+			try:
+				copynumber_totals[each_locus] += count
+			except:
+				copynumber_totals[each_locus] = count
+		count_output.write('\n')
+		log.write('\n')
+elif Clustering_method == "BOTH":
+	count_output.write('\n**Final clustered sequences per accession per locus comparing OTUs and ASVs**\n')
+	count_output.write('\t' + '\t\t'.join(locus_list) + '\n')
+	count_output.write('\t' + "OTU\tASV\t"*len(locus_list) + '\n')
+	log.write('\n**Final clustered sequences per accession per locus comparing OTUs and ASVs**\n')
+	log.write('\t' + '\t\t'.join(locus_list) + '\n')
+	log.write('\t' + "OTU\tASV\t"*len(locus_list) + '\n')
+	copynumber_totals = {}
+	for each_taxon in sorted(set(taxon_list)):
+		count_output.write(each_taxon + '\t')
+		log.write(each_taxon + '\t')
+		for each_locus in sorted(locus_list):
+			try:
+				otu_count = LocusTaxonCountDict_clustd[each_taxon, each_locus]["OTU"]
+				count_output.write(str(LocusTaxonCountDict_clustd[each_taxon, each_locus]["OTU"]) + '\t')
+				log.write(str(LocusTaxonCountDict_clustd[each_taxon, each_locus]["OTU"]) + '\t')
+			except:
+				otu_count = 0
+				count_output.write('0\t')
+				log.write('0\t')
+			try:
+				asv_count = LocusTaxonCountDict_clustd[each_taxon, each_locus]["ASV"]
+				count_output.write(str(LocusTaxonCountDict_clustd[each_taxon, each_locus]["ASV"]) + '\t')
+				log.write(str(LocusTaxonCountDict_clustd[each_taxon, each_locus]["ASV"]) + '\t')
+			except:
+				asv_count = 0
+				count_output.write('0\t')
+				log.write('0\t')
+			try:
+				copynumber_totals[each_locus]["ASV"] += asv_count
+			except:
+				try:
+					copynumber_totals[each_locus].update({"ASV" : asv_count})
+				except:
+					copynumber_totals[each_locus] = {"ASV" : asv_count}
+			try:
+				copynumber_totals[each_locus]["OTU"] += otu_count
+			except:
+				try:
+					copynumber_totals[each_locus].update({"OTU" : otu_count})
+				except:
+					copynumber_totals[each_locus] = {"OTU" : otu_count}
+		count_output.write('\n')
+		log.write('\n')
 
 # Output cluster count per locus
-count_output.write('\n**Allele/copy/cluster/whatever count by locus**\n')
-log.write('\n**Allele/copy/cluster/whatever count by locus**\n')
-for each_locus in locus_list:
-	file_name = Output_prefix + '_4_' + str(each_locus) + '_clustered_reconsensus.fa'
-	try: #I'm hoping that this will stop the program from crashing if a locus has no sequences
-		seq_no = len(parse_fasta(file_name))
-		count_output.write(str(each_locus) + '\t' + str(seq_no) + '\n')
-		log.write(str(each_locus) + '\t' + str(seq_no) + '\n')
-	except:
-		count_output.write(str(each_locus) + '\t0\n')
-		log.write(str(each_locus) + '\t0\n')
+if Clustering_method != "BOTH":
+	count_output.write('\n**Allele/copy/cluster/whatever count by locus**\n')
+	log.write('\n**Allele/copy/cluster/whatever count by locus**\n')
+	for each_locus in sorted(locus_list):
+		file_name = Output_prefix + '_4_' + str(each_locus) + '_clustered_reconsensus.fa'
+		try: #I'm hoping that this will stop the program from crashing if a locus has no sequences
+			seq_no = len(parse_fasta(file_name))
+			count_output.write(str(each_locus) + '\t' + str(seq_no) + '\n')
+			log.write(str(each_locus) + '\t' + str(seq_no) + '\n')
+		except:
+			count_output.write(str(each_locus) + '\t0\n')
+			log.write(str(each_locus) + '\t0\n')
+elif Clustering_method == "BOTH":
+	count_output.write('\n**Allele/copy/cluster/whatever count by locus comparing OTUs and ASVs**\n')
+	log.write('\n**Allele/copy/cluster/whatever count by locus comparing OTUs and ASVs**\n')
+	count_output.write("\tOTU\tASV\n")
+	log.write("\tOTU\tASV\n")
+	for each_locus in sorted(locus_list):
+		count_output.write("%s\t%s\t%s\n" % (each_locus, copynumber_totals[each_locus]["OTU"], copynumber_totals[each_locus]["ASV"]))
 
 # Output chimeric seq count
 count_output.write('\n**Chimeric clusters/sequence count by locus**\n')
-for each_locus in locus_list:
+for each_locus in sorted(locus_list):
 	count_output.write(each_locus + '\n')
 	#log.write(each_locus + '\t')
-	for each_taxon in set(taxon_list):
+	for each_taxon in sorted(set(taxon_list)):
 		try:
 			if Clustering_method == "OTU":
 				count_output.write('\t' + each_taxon + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][0]) + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][1]) + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][2]) + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][3]) + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][4]))

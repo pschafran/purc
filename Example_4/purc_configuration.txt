@@ -1,6 +1,6 @@
 ***Important ones***
 [Files]
-Input_sequence_file		= Isoetes_sp_CCS_reads.fastq.gz	# Fasta file containing your sequencing reads
+Input_sequence_file		= Isoetes_sp_GA_CCS_reads.fastq	# Fasta file containing your sequencing reads
 in_Barcode_seq_file		= Isoetes_sp_barcodes.fasta		# Fasta file containing barcode names and sequences; the input for making blast database
 in_RefSeq_seq_file		= LFY_refs_diploids.fasta	# Fasta file containing reference names and sequences; the input for making blast database
 Output_prefix			= purc				# The prefix for output files
@@ -9,7 +9,7 @@ Log_file				= log_example4					# If left empty, default time-stamped log file na
 
 [Loci]
 Locus_name				= LFY	# The order must be identical to that in Locus-barcode-taxon_map
-Locus-barcode-taxon_map	= map_Isoetes_sp_LFY_dualBC.txt
+Locus-barcode-taxon_map	= map_Isoetes_sp_GA_LFY_dualBC.txt
 
 [Primers]
 Forward_primer			= GATCTTTATGAACAATGTGGGA	# 5'-3' Order must match locus_name and locus-barcode-taxon_map!
@@ -30,8 +30,9 @@ Recycle_chimeric_seq	= 0		# 0: Do not recycle
 								# 1: Split chimeric sequences into respective locus
 Recycle_no_barcoded_seq	= 0		# 0: Do not recycle
 								# 1: Use Smith-Waterman local alignment (more sensitive) to find barcodes in those sequences that BLAST failed to detect barcode
-Clustering_method = 0		# 0: Use DADA2 ASV inference
+Clustering_method = 2		# 0: Use DADA2 ASV inference
 								# 1: Use Vsearch OTU clustering
+								# 2: Use both clustering methods
 Align					= 1		# 0: No aligning attempted. 1: Final consensus sequences will be aligned with MUSCLE
 
 ***Miscellaneous***
