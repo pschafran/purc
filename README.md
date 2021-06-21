@@ -33,13 +33,13 @@ PURC should run on most recent versions of macOS and Linux. Windows support is d
 ## **Quick Start** ##
 ### Step 0: Clone this repository ###
 To download the program, enter your terminal, move to the directory where you want to download it, and clone from the repo. For example:
-```
+```bash
 cd ~
 git clone https://peter_schafran@bitbucket.org/peter_schafran/purc.git && cd purc
 ```
 ### Step 1: Setup ###
 PURC consists of purc.py (and another variation--purc_recluster.py--that we describe below) and relies on a number of dependencies. We recommend using the [Miniconda](https://conda.io/en/latest/miniconda.html) package manager for installing dependencies. Once installed (and the terminal rebooted), you should be able to run on of these commands to install dependencies, depending on your operating system:
-```
+```bash
 # macOS
 conda env create -n purc --file purc_macos.yaml && conda activate purc
 
@@ -108,13 +108,11 @@ PURC requires the following files:
 
 ### Step 3: Run ###
 PURC can be run by navigating to the directory that contains the configuration, barcode, reference sequence, and map files, and calling the program from there:
-```
-#!shell
+```bash
 /Users/fayweili/Programs/purc/purc.py purc_configuration.txt
 ```
 This assumes that the purc script (and Dependencies directory) is in /Users/fayweili/Programs/purc. **DO NOT** copy purc.py to your working directory; instead, call purc.py from there. Alternative, you can add the purc directory into your PATH, and in this case, you can run by:
-```
-#!shell
+```bash
 purc.py purc_configuration.txt
 ```
 
@@ -285,7 +283,7 @@ Carl Rothfels ([crothfels@berkeley.edu](mailto:crothfels@berkeley.edu))
 
 ### Advanced Installation ###
 If PURC is not functioning correctly when installed with the YAML files, you can try manual installation. Run these commands depending on your OS:
-```
+```bash
 # macOS
 conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch r-base=4.1 r-essentials bioconductor-dada2 r-ggplot2 r-reshape2 r-gridextra r-rcolorbrewer python">=3.7"
 
@@ -296,7 +294,7 @@ conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch r-
 conda activate purc && pip install Biopython
 ```
 If R is already installed, it is best not to install multiple instances. To install without R, use these commands:
-```
+```bash
 # macOS
 conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch python">=3.7"
 
@@ -307,11 +305,11 @@ conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch py
 conda activate purc && pip install Biopython
 ```
 Make sure `R` and `Rscript` are in your PATH (type the command and it runs from anywhere). E.g. if installed with the installer on macOS, you may need to add `/Library/Frameworks/R.framework/Versions/4.0/Resources/`. Note this will need be redone each time your open a new Terminal:
-```
+```bash
 PATH="/Library/Frameworks/R.framework/Versions/4.0/Resources/:$PATH"
 ```
 Once R is installed and accessible from the command line, open `R` and run these commands to install required packages. If install fails, try changing BiocManager version based on your R version.
-```
+```R
 # R version = BiocManager Version
 # 4.0.2+    = 3.12
 # 4.0       = 3.11
@@ -331,21 +329,21 @@ if (!require("reshape2", quietly = TRUE)) install.packages("reshape2", quiet = T
 if (!require("RColorBrewer", quietly = TRUE)) install.packages("RColorBrewer", quiet = TRUE)
 ```
 If you have another R installation, it may have a different library path that can be prioritized over the conda installed path (even in a conda environment). If R errors appear in the DADA2 logs, such as `Error: package or namespace load failed for ‘Rcpp’: package ‘Rcpp’ was installed before R 4.0.0: please re-install it` try entering an interactive R session and type:
-```
+```R
 .libPaths()
 ```
 You may see output like this:
-```
+```R
 > .libPaths()
 [1] "/home/ps997/R_libs"                            
 [2] "/home/ps997/miniconda3/envs/purc/lib/R/library"
 ```
 showing that a previous R library is prioritized over the conda installed one. You can reorder the list by editing your `.Renviron` file located in your home (~) directory. **Backup the original file**, and change the `R_LIBS` variable to the purc install path.
-```
+```bash
 R_LIBS=/home/ps997/miniconda3/envs/purc/lib/R/library
 ```
 Now when R is started, the `.libPaths()` command should return:
-```
+```R
 > .libPaths()
 [1] "/home/ps997/miniconda3/envs/purc/lib/R/library"
 ```
