@@ -6,7 +6,7 @@
 * PURC updated for compatibility with Python3 and macOS 10+
 * Usearch replaced with [vsearch](https://github.com/torognes/vsearch) for Linux and macOS
 * Amplicon sequence variant (ASVs) identification using [DADA2](https://benjjneb.github.io/dada2/index.html) introduced
-* //TODO Linux only: PacBio's [lima](https://github.com/pacificbiosciences/barcoding/) and [IsoSeq](https://github.com/PacificBiosciences/IsoSeq) replace BLAST methods for demultiplexing and concatemer detection, respectively
+* //TODO Linux only: PacBio's [lima](https://github.com/pacificbiosciences/barcoding/) replaces BLAST methods for demultiplexing
 * Input file path handling. Files no longer have to be in the working directory
 * Input sequence file can be gzip compressed
 * Primer order in config now must match locus order
@@ -31,14 +31,20 @@ PURC allows users to extract and analyze all the copies of a given locus present
 PURC should run on most recent versions of macOS and Linux. Windows support is deprecated, instead on PCs we recommend running an Ubuntu virtual machine (see tutorial [here](https://itsfoss.com/install-linux-in-virtualbox/)).
 
 ## **Quick Start** ##
+### Step 0: Clone this repository ###
+To download the program, enter your terminal, move to the directory where you want to download it, and clone from the repo. For example:
+```
+cd ~
+git clone https://peter_schafran@bitbucket.org/peter_schafran/purc.git && cd purc
+```
 ### Step 1: Setup ###
 PURC consists of purc.py (and another variation--purc_recluster.py--that we describe below) and relies on a number of dependencies. We recommend using the [Miniconda](https://conda.io/en/latest/miniconda.html) package manager for installing dependencies. Once installed (and the terminal rebooted), you should be able to run on of these commands to install dependencies, depending on your operating system:
 ```
 # macOS
-conda env create -n purc --file purc_macos.yaml
+conda env create -n purc --file purc_macos.yaml && conda activate purc
 
 # Linux
-conda env create -n purc --file purc_linux.yaml
+conda env create -n purc --file purc_linux.yaml && conda activate purc
 ```
 If PURC fails to run it is likely due to dependency issues. See advanced installation at the bottom of this page.
 
@@ -278,7 +284,7 @@ Fay-Wei Li ([fl329@cornell.edu](mailto:fl329@cornell.edu))
 Carl Rothfels ([crothfels@berkeley.edu](mailto:crothfels@berkeley.edu))
 
 ### Advanced Installation ###
-If PURC is not functioning correctly when installed with the YAML files, you can try manual installation. Run either of the conda commands below, followed by the pip command.
+If PURC is not functioning correctly when installed with the YAML files, you can try manual installation. Run these commands depending on your OS:
 ```
 # macOS
 conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch r-base=4.1 r-essentials bioconductor-dada2 r-ggplot2 r-reshape2 r-gridextra r-rcolorbrewer python">=3.7"
@@ -287,23 +293,33 @@ conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch r-
 conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch r-base=4.1 r-essentials bioconductor-dada2 r-ggplot2 r-reshape2 r-gridextra r-rcolorbrewer python">=3.7" lima
 
 # macOS or Linux
-pip install Biopython
+conda activate purc && pip install Biopython
 ```
-If R is already installed, it is best not to install multiple instances. Omit `r-base r-essentials` from the command above. Make sure `R` and `Rscript` are in your PATH (type the command and it runs from anywhere). E.g. if installed with installer on macOS, you may need to add `/Library/Frameworks/R.framework/Versions/4.0/Resources/`. Note this will need be redone each time your open a new Terminal.
+If R is already installed, it is best not to install multiple instances. To install without R, use these commands:
+```
+# macOS
+conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch python">=3.7"
+
+# Linux
+conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch python">=3.7" lima
+
+# macOS or Linux
+conda activate purc && pip install Biopython
+```
+Make sure `R` and `Rscript` are in your PATH (type the command and it runs from anywhere). E.g. if installed with the installer on macOS, you may need to add `/Library/Frameworks/R.framework/Versions/4.0/Resources/`. Note this will need be redone each time your open a new Terminal:
 ```
 PATH="/Library/Frameworks/R.framework/Versions/4.0/Resources/:$PATH"
 ```
-Once R is installed and accessible from the command line, open `R` and run these commands to install required packages.
+Once R is installed and accessible from the command line, open `R` and run these commands to install required packages. If install fails, try changing BiocManager version based on your R version.
 ```
-# If install fails, try changing BiocManager version based on your R version:
 # R version = BiocManager Version
-# 4.0.2+ = 3.12
-# 4.0 = 3.11
-# 3.6 = 3.10
-# 3.5 = 3.8
-# 3.4 = 3.6
-# 3.3 = 3.4
-# 3.2 = 3.2
+# 4.0.2+    = 3.12
+# 4.0       = 3.11
+# 3.6       = 3.10
+# 3.5       = 3.8
+# 3.4       = 3.6
+# 3.3       = 3.4
+# 3.2       = 3.2
 
 ### Install ###
 if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager", quiet = TRUE)
@@ -313,6 +329,25 @@ if (!require("gridExtra", quietly = TRUE)) install.packages("gridExtra", quiet =
 if (!require("ggplot2", quietly = TRUE)) install.packages("ggplot2", quiet = TRUE)
 if (!require("reshape2", quietly = TRUE)) install.packages("reshape2", quiet = TRUE)
 if (!require("RColorBrewer", quietly = TRUE)) install.packages("RColorBrewer", quiet = TRUE)
+```
+If you have another R installation, it may have a different library path that can be prioritized over the conda installed path (even in a conda environment). If R errors appear in the DADA2 logs, such as `Error: package or namespace load failed for ‘Rcpp’: package ‘Rcpp’ was installed before R 4.0.0: please re-install it` try entering an interactive R session and type:
+```
+.libPaths()
+```
+You may see output like this:
+```
+> .libPaths()
+[1] "/home/ps997/R_libs"                            
+[2] "/home/ps997/miniconda3/envs/purc/lib/R/library"
+```
+showing that a previous R library is prioritized over the conda installed one. You can reorder the list by editing your `.Renviron` file located in your home (~) directory. **Backup the original file**, and change the `R_LIBS` variable to the purc install path.
+```
+R_LIBS=/home/ps997/miniconda3/envs/purc/lib/R/library
+```
+Now when R is started, the `.libPaths()` command should return:
+```
+> .libPaths()
+[1] "/home/ps997/miniconda3/envs/purc/lib/R/library"
 ```
 
 If you get an error message like "ERROR: Cython is not installed", install/update [Cython](http://docs.cython.org/src/quickstart/install.html) and try again.
