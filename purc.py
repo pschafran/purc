@@ -2388,20 +2388,40 @@ if platform.system() == 'Linux' and Lima_override == "0": # Add quotes around 0 
 	elif dupesFound == 1:
 		lima_dual(raw_sequences, Lima_barcode_type, "nonduplicated_BCs.fasta", Output_folder, "nonduplicated_BCs")
 		lima_symmetric(raw_sequences, Lima_barcode_type, "deduplicated_BCs.fasta", Output_folder, "deduplicated_BCs")
-		with open("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "w") as open_bc_trimmed_file:
-			with open("%s/nonduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "r") as open_nondup_bcs:
-				for line in open_nondup_bcs:
-					open_bc_trimmed_file.write(line)
+		nondupeseqs = SeqIO.parse("%s/nonduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
+		nondupeseqIDs = []
+		for seq in nondupeseqs:
+			nondupeseqIDs.append(seq.id.split("|")[1])
+		dedupeseqs = SeqIO.parse("%s/deduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
+		dedupeseqIDs = []
+		for seq in dedupeseqs:
+			dedupeseqIDs.append(seq.id.split("|")[1])
+
+		shared_seq_list = list(set(nondupeseqIDs) & set(dedupeseqIDs))
+		if len(shared_seq_list) > 0:
+			print("WARNING: %s sequences identified with both symmetric and asymmetric barcodes" % len(shared_seq_list))
+
+		# Retrieve sequences from asymmetric demultiplexing that weren't also found in symmetric demultiplexing
+		nondupeseqs = SeqIO.parse("%s/nonduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
+		write_nondupeseqs = [i for i in nondupeseqs if i.id not in nondupeseqIDs]
+		SeqIO.write(write_nondupeseqs, "%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "fasta")
+		# Retrieve sequences from symmetric demultiplexing that weren't also found in asymmetric demultiplexing. Rename second barcode in pair to original names so can be handled downstream.
+		with open("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "a") as open_bc_trimmed_file:
+			#dedupeseqs = SeqIO.parse("%s/deduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
 			with open("%s/deduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "r") as open_dedup_bcs:
+				writeOut = 0
 				for line in open_dedup_bcs:
-					if line.startswith(">"):
+					if line.startswith(">") and line.strip(">\n").split("|")[1] not in shared_seq_list:
+						writeOut = 1
 						barcodes = line.strip(">\n").split("|")[0]
 						seqid = line.strip(">\n").split("|")[1]
 						barcode1 = barcodes.split("^")[0]
 						barcode2 = BCpairdict[barcode1]
 						newReadName = ">%s^%s|%s\n" %(barcode1, barcode2, seqid)
 						open_bc_trimmed_file.write(newReadName)
-					else:
+					elif line.startswith(">") and line.strip(">\n").split("|")[1] in shared_seq_list:
+						writeOut = 0
+					elif writeOut == 1:
 						open_bc_trimmed_file.write(line)
 else:
 	print("Demultiplexing with BLAST")
