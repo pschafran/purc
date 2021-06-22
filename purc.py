@@ -273,37 +273,95 @@ def CheckChimericLoci(inputfile_raw_sequences, outputfile_blast, outputfile_good
 
 	return chimera_dict # as {seq1: [locus1, locus2], seq2: [locus1, locus3]}
 
-def lima_dual(inputfile_raw_sequences, Lima_barcode_type, barcode_seq_file, Output_folder, Output_prefix, mapping_file_list):
-	for mapFile in mapping_file_list:
-		biosamplecsv = ".".join(mapFile.split(".")[:-1]) + ".biosample.csv"
-		with open(mapFile, "r") as open_infile:
-			with open(biosamplecsv, "w") as open_outfile:
-				open_outfile.write("Barcodes,Bio Sample\n")
-				for line in open_infile:
-					splitline = line.strip("\n").split("\t")
-					open_outfile.write("%s--%s,%s\n" % (splitline[0], splitline[1], splitline[2]))
+def lima_output_rename(Output_folder, Output_prefix, fileExt, barcode_seq_file): # renaming sequences to match PURC _1_bc_trimmed.fa format
+	with open(barcode_seq_file, "r") as open_barcode_file:
+		barcodeList = []
+		for line in open_barcode_file:
+			if line.startswith(">"):
+				barcodeList.append(line.strip(">\n"))
+	if fileExt in ["fasta", "fa", "fas", "fna", "faa"]:
+		with open("%s/%s.demux.%s" %(Output_folder, Output_prefix, fileExt), "r") as open_seq_file:
+			with open("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "w") as open_outfile:
+				for line in open_seq_file:
+					if line.startswith(">"):
+						splitline = line.strip(">\n").split(" ")
+						readName = splitline[0]
+						for item in splitline:
+							if item.split("=")[0] == "bc":
+								barcodes = item.split("=")[1]
+								barcode1 = int(barcodes.split(",")[0])
+								barcode1Name = barcodeList[barcode1]
+								if len(barcodes.split(",")) == 2:
+									barcode2 = int(barcodes.split(",")[1])
+									barcode2Name = barcodeList[barcode2]
+						if len(barcodes.split(",")) == 1:
+							newReadName = ">%s|%s\n" %(barcode1Name, readName)
+						elif len(barcodes.split(",")) == 2:
+							newReadName = ">%s^%s|%s\n" %(barcode1Name, barcode2Name, readName)
+						for char in [';', '=', '/']:
+							newReadName = newReadName.replace(char, "_")
+						open_outfile.write(newReadName)
+					else:
+						open_outfile.write(line)
+	elif fileExt in ["fastq", "fq"]:
+		with open("%s/%s.demux.%s" %(Output_folder, Output_prefix, fileExt), "r") as open_seq_file:
+			with open("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "w") as open_outfile:
+				lineCount = 0
+				for line in open_seq_file:
+					if lineCount == 0 or (lineCount % 4) == 0:
+						splitline = line.strip("@\n").split(" ")
+						readName = splitline[0]
+						for item in splitline:
+							if item.split("=")[0] == "bc":
+								barcodes = item.split("=")[1]
+								barcode1 = int(barcodes.split(",")[0])
+								barcode1Name = barcodeList[barcode1]
+								if len(barcodes.split(",")) == 2:
+									barcode2 = int(barcodes.split(",")[1])
+									barcode2Name = barcodeList[barcode2]
+						if len(barcodes.split(",")) == 1:
+							newReadName = ">%s|%s\n" %(barcode1Name, readName)
+						elif len(barcodes.split(",")) == 2:
+							newReadName = ">%s^%s|%s\n" %(barcode1Name, barcode2Name, readName)
+						for char in [';', '=', '/']:
+							newReadName = newReadName.replace(char, "_")
+						open_outfile.write(newReadName)
+					elif lineCount == 1 or ((lineCount-1)%4) == 0:
+						open_outfile.write(line)
+					lineCount += 1
+
+def lima_dual(inputfile_raw_sequences, Lima_barcode_type, barcode_seq_file, Output_folder, Output_prefix):
+# commands for creating biosample.csv file for lima -- not currently working in lima
+#	for mapFile in mapping_file_list:
+#		biosamplecsv = ".".join(mapFile.split(".")[:-1]) + ".biosample.csv"
+#		with open(mapFile, "r") as open_infile:
+#			with open(biosamplecsv, "w") as open_outfile:
+#				open_outfile.write("Barcodes,Bio Sample\n")
+#				for line in open_infile:
+#					splitline = line.strip("\n").split("\t")
+#					open_outfile.write("%s--%s,%s\n" % (splitline[0], splitline[1], splitline[2]))
 	prefix = ".".join(inputfile_raw_sequences.split(".")[:-1])
 	fileExt = inputfile_raw_sequences.split(".")[-1]
-	cmdLine = "lima --different --ccs --peek-guess --biosample-csv %s %s %s %s/%s.demux.%s" % (biosamplecsv, inputfile_raw_sequences, barcode_seq_file, Output_folder, Output_prefix, fileExt)
+	cmdLine = "lima --different --ccs --peek-guess %s %s %s/%s.demux.%s" % (inputfile_raw_sequences, barcode_seq_file, Output_folder, Output_prefix, fileExt)
 	process = subprocess.Popen(cmdLine, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text = True)
 	stdout,stderr = process.communicate()
-	pass
+	lima_output_rename(Output_folder, Output_prefix, fileExt, barcode_seq_file)
 
 def lima_symmetric(inputfile_raw_sequences, Lima_barcode_type, barcode_seq_file, Output_folder, Output_prefix):
 	prefix = ".".join(inputfile_raw_sequences.split(".")[:-1])
 	fileExt = inputfile_raw_sequences.split(".")[-1]
 	cmdLine = "lima --same --ccs --peek-guess %s %s %s/%s.demux.%s" % (inputfile_raw_sequences, barcode_seq_file, Output_folder, Output_prefix, fileExt)
 	process = subprocess.Popen(cmdLine, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text = True)
-	process.wait()
-	pass
+	stdout,stderr = process.communicate()
+	lima_output_rename(Output_folder, Output_prefix, fileExt, barcode_seq_file)
 
 def lima_singleend(inputfile_raw_sequences, Lima_barcode_type, barcode_seq_file, Output_folder, Output_prefix):
 	prefix = ".".join(inputfile_raw_sequences.split(".")[:-1])
 	fileExt = inputfile_raw_sequences.split(".")[-1]
 	cmdLine = "lima --single-side --ccs --peek-guess %s %s %s/%s.demux.%s" % (inputfile_raw_sequences, barcode_seq_file, Output_folder, Output_prefix, fileExt)
 	process = subprocess.Popen(cmdLine, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text = True)
-	process.wait()
-	pass
+	stdout,stderr = process.communicate()
+	lima_output_rename(Output_folder, Output_prefix, fileExt, barcode_seq_file)
 
 def DeBarcoder(inputfile_raw_sequences, databasefile, SeqDict, Output_folder, Output_prefix):
 	"""Blasts the raw sequences against the barcode blast database, identifies the barcode, adds the barcode ID to the
@@ -2271,12 +2329,12 @@ if platform.system() == 'Linux' and Lima_override == "0": # Add quotes around 0 
 	if Lima_barcode_type == "same":
 		lima_symmetric(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
 	elif Lima_barcode_type == "different":
-		lima_dual(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix, mapping_file_list)
+		lima_dual(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
 	elif Lima_barcode_type == "single-side":
 		lima_singleend(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
-	mvLine = "mv %s.summary %s ; mv %s.report %s; mv %s.counts %s; mv %s.guess %s " %(limaOutputPrefix, Output_folder, limaOutputPrefix, Output_folder, limaOutputPrefix, Output_folder, limaOutputPrefix, Output_folder)
-	process = subprocess.Popen(mvLine, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
-	stdout,stderr = process.communicate()
+	#mvLine = "mv %s.summary %s ; mv %s.report %s; mv %s.counts %s; mv %s.guess %s " %(limaOutputPrefix, Output_folder, limaOutputPrefix, Output_folder, limaOutputPrefix, Output_folder, limaOutputPrefix, Output_folder)
+	#process = subprocess.Popen(mvLine, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
+	#stdout,stderr = process.communicate()
 
 else:
 	print("Demultiplexing with BLAST")

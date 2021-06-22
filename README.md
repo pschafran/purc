@@ -291,7 +291,7 @@ conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch r-
 conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch r-base=4.1 r-essentials bioconductor-dada2 r-ggplot2 r-reshape2 r-gridextra r-rcolorbrewer python">=3.7" lima
 
 # macOS or Linux
-conda activate purc && pip install Biopython
+conda activate purc && pip install BioPython
 ```
 If R is already installed, it is best not to install multiple instances. To install without R, use these commands:
 ```bash
@@ -302,7 +302,7 @@ conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch py
 conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch python">=3.7" lima
 
 # macOS or Linux
-conda activate purc && pip install Biopython
+conda activate purc && pip install BioPython
 ```
 Make sure `R` and `Rscript` are in your PATH (type the command and it runs from anywhere). E.g. if installed with the installer on macOS, you may need to add `/Library/Frameworks/R.framework/Versions/4.0/Resources/`. Note this will need be redone each time your open a new Terminal:
 ```bash
@@ -338,7 +338,7 @@ You may see output like this:
 [1] "/home/ps997/R_libs"                            
 [2] "/home/ps997/miniconda3/envs/purc/lib/R/library"
 ```
-showing that a previous R library is prioritized over the conda installed one. You can reorder the list by editing your `.Renviron` file located in your home (~) directory. **Backup the original file**, and change the `R_LIBS` variable to the conda install path.
+showing that a previous R library is prioritized over the conda installed one. You can reorder the list by editing your `.Renviron` file located in your home (~) directory. **Backup the original file**, and change the `R_LIBS` variable to the purc install path.
 ```bash
 R_LIBS=/home/ps997/miniconda3/envs/purc/lib/R/library
 ```
@@ -347,10 +347,8 @@ Now when R is started, the `.libPaths()` command should return:
 > .libPaths()
 [1] "/home/ps997/miniconda3/envs/purc/lib/R/library"
 ```
-When finished with PURC, restore the original `.Renviron` file.
 
 If you get an error message like "ERROR: Cython is not installed", install/update [Cython](http://docs.cython.org/src/quickstart/install.html) and try again.
 
 ### Known Bugs ###
 * Inconsistent number of sequences reported during barcode removal (does not always equal total number of sequences)
-* Some CCS read names (lacking forward-slashes around ZMW id) do not work in lima
