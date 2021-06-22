@@ -352,3 +352,4 @@ If you get an error message like "ERROR: Cython is not installed", install/updat
 
 ### Known Bugs ###
 * Inconsistent number of sequences reported during barcode removal (does not always equal total number of sequences)
+* CCS files without forward-slashes around ZMW code in read name will break lima
