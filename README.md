@@ -291,7 +291,7 @@ conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch r-
 conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch r-base=4.1 r-essentials bioconductor-dada2 r-ggplot2 r-reshape2 r-gridextra r-rcolorbrewer python">=3.7" lima
 
 # macOS or Linux
-conda activate purc && pip install Biopython
+conda activate purc && pip install BioPython
 ```
 If R is already installed, it is best not to install multiple instances. To install without R, use these commands:
 ```bash
@@ -302,7 +302,7 @@ conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch py
 conda create -n purc -c bioconda -c conda-forge cutadapt blast muscle vsearch python">=3.7" lima
 
 # macOS or Linux
-conda activate purc && pip install Biopython
+conda activate purc && pip install BioPython
 ```
 Make sure `R` and `Rscript` are in your PATH (type the command and it runs from anywhere). E.g. if installed with the installer on macOS, you may need to add `/Library/Frameworks/R.framework/Versions/4.0/Resources/`. Note this will need be redone each time your open a new Terminal:
 ```bash
