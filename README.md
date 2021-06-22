@@ -1,13 +1,13 @@
 # PURC: Pipeline for Untangling Reticulate Complexes
 # v2.0
-#### Last updated 2021 June 17
+#### Last updated 2021 June 22
 
-## Changes from v1 ##
+## Major changes from v1 ##
 * PURC updated for compatibility with Python3 and macOS 10+
 * Usearch replaced with [vsearch](https://github.com/torognes/vsearch) for Linux and macOS
 * Amplicon sequence variant (ASVs) identification using [DADA2](https://benjjneb.github.io/dada2/index.html) introduced
-* //TODO Linux only: PacBio's [lima](https://github.com/pacificbiosciences/barcoding/) replaces BLAST methods for demultiplexing
-* Input file path handling. Files no longer have to be in the working directory
+* Linux only: PacBio's [lima](https://github.com/pacificbiosciences/barcoding/) replaces BLAST methods for demultiplexing
+* Input file path handling. Files no longer have to be in the working directory (output will still be written to working directory)
 * Input sequence file can be gzip compressed
 * Primer order in config now must match locus order
 * Dependencies expected to be in PATH by default
