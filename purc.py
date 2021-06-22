@@ -157,6 +157,48 @@ def ReverseComplement(seq):
 	letters = [basecomplement[base] for base in letters]
 	return ''.join(letters)
 
+def checkDuplicateBC(barcode_seq_filename):
+	"""Checks for duplicate seqs (including reverse complements in barcode file, which will cause lima to fail)"""
+	BCdict = SeqIO.parse(barcode_seq_filename, 'fasta')
+	BCseqdict = {} # Key: BC sequence. Entry: list of BCs with sequence (including reverse complements)
+	duplicateBClist = []
+	deduplicatedBClist = []
+	BCpairdict = {}
+	dupesFound = 0
+	for i in BCdict:
+		rc = ReverseComplement(i.seq)
+		if i.seq not in BCseqdict and rc not in BCseqdict:
+			BCseqdict.update({i.seq : [i.id]})
+		else:
+			dupesFound = 1
+			duplicateBClist.append(i.id)
+			if i.seq in BCseqdict:
+				print("WARNING: Duplicate barcodes found! %s and %s " %(i.id, BCseqdict[i.seq][0]))
+				BCseqdict[i.seq].append(i.id)
+				duplicateBClist.append(BCseqdict[i.seq][0])
+				BCpairdict.update({i.id : BCseqdict[i.seq][0]})
+				BCpairdict.update({BCseqdict[i.seq][0] : i.id})
+			elif rc in BCseqdict:
+				print("WARNING: Duplicate reverse complement barcodes found! %s and %s " %(i.id, BCseqdict[rc][0]))
+				BCseqdict[rc].append(i.id)
+				duplicateBClist.append(BCseqdict[rc][0])
+				BCpairdict.update({i.id : BCseqdict[rc][0]})
+				BCpairdict.update({BCseqdict[rc][0] : i.id})
+	duplicateBClist = set(duplicateBClist)
+	if dupesFound == 1:
+		print("Remove duplicates to run lima, or change config file to use BLAST demultiplexing (lima_override = 1)")
+		print("Will attempt to run by splitting same/different dual barcodes then rejoining before annotation")
+	for seq in BCseqdict:
+		if len(BCseqdict[seq]) > 1:
+			deduplicatedBClist.append(BCseqdict[seq][0])
+	BCdict = SeqIO.parse(barcode_seq_filename, 'fasta') # easiest way to get back to top of file
+	nonduplicatedBC = [i for i in BCdict if i.id not in deduplicatedBClist]
+	BCdict = SeqIO.parse(barcode_seq_filename, 'fasta') # easiest way to get back to top of file
+	deduplicatedBC = [i for i in BCdict if i.id in deduplicatedBClist]
+	SeqIO.write(nonduplicatedBC, "nonduplicated_BCs.fasta", "fasta")
+	SeqIO.write(deduplicatedBC, "deduplicated_BCs.fasta", "fasta")
+	return dupesFound,BCpairdict
+
 def makeBlastDB(inFileName, outDBname):
 	"""Makes a blast database from the input file"""
 
@@ -342,25 +384,31 @@ def lima_dual(inputfile_raw_sequences, Lima_barcode_type, barcode_seq_file, Outp
 #					open_outfile.write("%s--%s,%s\n" % (splitline[0], splitline[1], splitline[2]))
 	prefix = ".".join(inputfile_raw_sequences.split(".")[:-1])
 	fileExt = inputfile_raw_sequences.split(".")[-1]
-	cmdLine = "lima --different --ccs --peek-guess %s %s %s/%s.demux.%s" % (inputfile_raw_sequences, barcode_seq_file, Output_folder, Output_prefix, fileExt)
+	cmdLine = "lima --different --ccs --min-score 80 %s %s %s/%s.demux.%s" % (inputfile_raw_sequences, barcode_seq_file, Output_folder, Output_prefix, fileExt)
 	process = subprocess.Popen(cmdLine, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text = True)
 	stdout,stderr = process.communicate()
+	print(stdout)
+	print(stderr)
 	lima_output_rename(Output_folder, Output_prefix, fileExt, barcode_seq_file)
 
 def lima_symmetric(inputfile_raw_sequences, Lima_barcode_type, barcode_seq_file, Output_folder, Output_prefix):
 	prefix = ".".join(inputfile_raw_sequences.split(".")[:-1])
 	fileExt = inputfile_raw_sequences.split(".")[-1]
-	cmdLine = "lima --same --ccs --peek-guess %s %s %s/%s.demux.%s" % (inputfile_raw_sequences, barcode_seq_file, Output_folder, Output_prefix, fileExt)
+	cmdLine = "lima --same --ccs --min-score 80 %s %s %s/%s.demux.%s" % (inputfile_raw_sequences, barcode_seq_file, Output_folder, Output_prefix, fileExt)
 	process = subprocess.Popen(cmdLine, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text = True)
 	stdout,stderr = process.communicate()
+	print(stdout)
+	print(stderr)
 	lima_output_rename(Output_folder, Output_prefix, fileExt, barcode_seq_file)
 
 def lima_singleend(inputfile_raw_sequences, Lima_barcode_type, barcode_seq_file, Output_folder, Output_prefix):
 	prefix = ".".join(inputfile_raw_sequences.split(".")[:-1])
 	fileExt = inputfile_raw_sequences.split(".")[-1]
-	cmdLine = "lima --single-side --ccs --peek-guess %s %s %s/%s.demux.%s" % (inputfile_raw_sequences, barcode_seq_file, Output_folder, Output_prefix, fileExt)
+	cmdLine = "lima --single-side --ccs --min-score 80 %s %s %s/%s.demux.%s" % (inputfile_raw_sequences, barcode_seq_file, Output_folder, Output_prefix, fileExt)
 	process = subprocess.Popen(cmdLine, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text = True)
 	stdout,stderr = process.communicate()
+	print(stdout)
+	print(stderr)
 	lima_output_rename(Output_folder, Output_prefix, fileExt, barcode_seq_file)
 
 def DeBarcoder(inputfile_raw_sequences, databasefile, SeqDict, Output_folder, Output_prefix):
@@ -2325,17 +2373,36 @@ if mode == 0: # QC mode
 log.write('\n#Barcode Removal#\n')
 if platform.system() == 'Linux' and Lima_override == "0": # Add quotes around 0 to activate this section
 	print("Demultiplexing with Lima")
-	limaOutputPrefix = "%s.demux.lima" % Output_prefix
-	if Lima_barcode_type == "same":
-		lima_symmetric(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
-	elif Lima_barcode_type == "different":
-		lima_dual(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
-	elif Lima_barcode_type == "single-side":
-		lima_singleend(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
-	#mvLine = "mv %s.summary %s ; mv %s.report %s; mv %s.counts %s; mv %s.guess %s " %(limaOutputPrefix, Output_folder, limaOutputPrefix, Output_folder, limaOutputPrefix, Output_folder, limaOutputPrefix, Output_folder)
-	#process = subprocess.Popen(mvLine, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
-	#stdout,stderr = process.communicate()
-
+	dupesFound, BCpairdict = checkDuplicateBC(barcode_seq_filename)
+	if dupesFound == 0:
+		limaOutputPrefix = "%s.demux.lima" % Output_prefix
+		if Lima_barcode_type == "same":
+			lima_symmetric(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
+		elif Lima_barcode_type == "different":
+			lima_dual(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
+		elif Lima_barcode_type == "single-side":
+			lima_singleend(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
+		#mvLine = "mv %s.summary %s ; mv %s.report %s; mv %s.counts %s; mv %s.guess %s " %(limaOutputPrefix, Output_folder, limaOutputPrefix, Output_folder, limaOutputPrefix, Output_folder, limaOutputPrefix, Output_folder)
+		#process = subprocess.Popen(mvLine, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
+		#stdout,stderr = process.communicate()
+	elif dupesFound == 1:
+		lima_dual(raw_sequences, Lima_barcode_type, "nonduplicated_BCs.fasta", Output_folder, "nonduplicated_BCs")
+		lima_symmetric(raw_sequences, Lima_barcode_type, "deduplicated_BCs.fasta", Output_folder, "deduplicated_BCs")
+		with open("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "w") as open_bc_trimmed_file:
+			with open("%s/nonduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "r") as open_nondup_bcs:
+				for line in open_nondup_bcs:
+					open_bc_trimmed_file.write(line)
+			with open("%s/deduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "r") as open_dedup_bcs:
+				for line in open_dedup_bcs:
+					if line.startswith(">"):
+						barcodes = line.strip(">\n").split("|")[0]
+						seqid = line.strip(">\n").split("|")[1]
+						barcode1 = barcodes.split("^")[0]
+						barcode2 = BCpairdict[barcode1]
+						newReadName = ">%s^%s|%s\n" %(barcode1, barcode2, seqid)
+						open_bc_trimmed_file.write(newReadName)
+					else:
+						open_bc_trimmed_file.write(line)
 else:
 	print("Demultiplexing with BLAST")
 	if Dual_barcode:
