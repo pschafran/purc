@@ -1,6 +1,6 @@
 ***Important ones***
 [Files]
-Input_sequence_file		= 1-PacBio_seq.fasta	# Fasta file containing your sequencing reads
+Input_sequence_file		= 1-PacBio_seq.fastq	# Fasta/fastq file containing your sequencing reads
 in_Barcode_seq_file		= 2-barcodes.fasta		# Fasta file containing barcode names and sequences; the input for making blast database
 in_RefSeq_seq_file		= 3-ref_sequences.fasta	# Fasta file containing reference names and sequences; the input for making blast database
 Output_prefix			= purc_run				# The prefix for output files
@@ -30,7 +30,7 @@ Recycle_chimeric_seq	= 0		# 0: Do not recycle
 								# 1: Split chimeric sequences into respective locus
 Recycle_no_barcoded_seq	= 0		# 0: Do not recycle
 								# 1: Use Smith-Waterman local alignment (more sensitive) to find barcodes in those sequences that BLAST failed to detect barcode
-Clustering_method = 0		# 0: Use DADA2 ASV inference
+Clustering_method = 0			# 0: Use DADA2 ASV inference
 								# 1: Use Vsearch OTU clustering
 								# 2: Use both clustering methods
 Align					= 1		# 0: No aligning attempted. 1: Final consensus sequences will be aligned with MUSCLE
@@ -57,10 +57,10 @@ Lima_override = 1 # Set to 1 to use BLAST-based demultiplexing instead of Lima (
 
 [Dependencies]
 Usearch 				= vsearch								# The name of (or path to) Usearch executable; Here assumed to be accessible through the shell's PATH
-Cutadapt				= cutadapt							# The name of (or path to) Cutadapt executable; Here assumed to be accessible through the shell's PATH
+Cutadapt				= cutadapt								# The name of (or path to) Cutadapt executable; Here assumed to be accessible through the shell's PATH
 Muscle 					= muscle								# The name of (or path to) Muscle executable; Here assumed to be accessible through the shell's PATH
 Rscript					= Rscript								# The name of (or path to) Rscript executable; Here assumed to be accessible through the shell's PATH
-blastn 					= blastn								# The name of (or path to) Rscript executable; Here assumed to be accessible through the shell's PATH
+blastn 					= blastn								# The name of (or path to) blastn executable; Here assumed to be accessible through the shell's PATH
 
 
 [Miscellaneous]

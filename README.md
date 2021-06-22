@@ -46,7 +46,7 @@ conda env create -n purc --file purc_macos.yaml && conda activate purc
 # Linux
 conda env create -n purc --file purc_linux.yaml && conda activate purc
 ```
-If PURC fails to run it is likely due to dependency issues. See advanced installation at the bottom of this page.
+If PURC fails to run it is likely due to dependency issues. See advanced installation at the bottom of this page. In addition to the main log file created in the working directory, R logs are created in each locus/sample directory in the output folder. 
 
 ### Step 2: Get files ready ###
 PURC requires the following files:
