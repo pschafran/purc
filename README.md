@@ -338,7 +338,7 @@ You may see output like this:
 [1] "/home/ps997/R_libs"                            
 [2] "/home/ps997/miniconda3/envs/purc/lib/R/library"
 ```
-showing that a previous R library is prioritized over the conda installed one. You can reorder the list by editing your `.Renviron` file located in your home (~) directory. **Backup the original file**, and change the `R_LIBS` variable to the purc install path.
+showing that a previous R library is prioritized over the conda installed one. You can reorder the list by editing your `.Renviron` file located in your home (~) directory. **Backup the original file**, and change the `R_LIBS` variable to the conda install path.
 ```bash
 R_LIBS=/home/ps997/miniconda3/envs/purc/lib/R/library
 ```
@@ -347,8 +347,10 @@ Now when R is started, the `.libPaths()` command should return:
 > .libPaths()
 [1] "/home/ps997/miniconda3/envs/purc/lib/R/library"
 ```
+When finished with PURC, restore the original `.Renviron` file.
 
 If you get an error message like "ERROR: Cython is not installed", install/update [Cython](http://docs.cython.org/src/quickstart/install.html) and try again.
 
 ### Known Bugs ###
 * Inconsistent number of sequences reported during barcode removal (does not always equal total number of sequences)
+* Some CCS read names (lacking forward-slashes around ZMW id) do not work in lima
