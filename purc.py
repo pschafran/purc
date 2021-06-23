@@ -157,6 +157,78 @@ def ReverseComplement(seq):
 	letters = [basecomplement[base] for base in letters]
 	return ''.join(letters)
 
+def reorientSeqs(sequence_file, refseq_blastDB, num_threads): # function needed before lima demultiplexing to orient sequences so all are facing the same way. BLAST-based demultiplexing does this separately
+	print("Reorienting sequences based on references...")
+	filePrefix = ".".join(sequence_file.split(".")[:-1])
+	fileExt = sequence_file.split(".")[-1]
+	if fileExt in ["fastq", "fq"]:
+		fastq_sequence_file = sequence_file
+		fasta_sequence_file = convert_fastq_to_fasta(sequence_file)
+	else:
+		fasta_sequence_file = sequence_file
+	# use BLAST against ref sequences to determine orientation of reads
+	blastoutfile = "blast_reorient_out.txt"
+	blastCMD = "blastn -query %s -db %s -num_threads %s -max_target_seqs 1 -out %s -outfmt 6 -max_hsps 1" % (fasta_sequence_file, refseq_blastDB, num_threads, blastoutfile)
+	process = subprocess.Popen(blastCMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
+	stdout,stderr = process.communicate()
+	reorientList = []
+	with open(blastoutfile, "r") as open_blast_file:
+		for line in open_blast_file:
+			seqname = line.strip("\n").split("\t")[0]
+			sstart = int(line.strip("\n").split("\t")[8])
+			send = int(line.strip("\n").split("\t")[9])
+			evalue = line.strip("\n").split("\t")[10]
+			if send < sstart:
+				reorientList.append(seqname)
+	if len(reorientList) >= 1:
+		with open("reorient_list.txt", "w") as open_orient_list:
+			for name in reorientList:
+				open_orient_list.write("%s\n" % name)
+		print("\tReorienting %s sequences..." % len(reorientList))
+		fastaSeqs = SeqIO.parse(fasta_sequence_file, 'fasta')
+		with open("%s.reoriented.fa" % filePrefix, "w") as open_out_fasta:
+			print("\tWriting reoriented sequences to %s " %("%s_reoriented.fa" % filePrefix))
+			for read in fastaSeqs:
+				if read.id in reorientList:
+					open_out_fasta.write(">%s\n" % read.id)
+					open_out_fasta.write("%s\n" % ReverseComplement(read.seq))
+				else:
+					open_out_fasta.write(">%s\n" % read.id)
+					open_out_fasta.write("%s\n" % read.seq)
+		reorientedSequences = "%s.reoriented.fa" % filePrefix
+		if fileExt in ["fastq", "fq"]:
+			with open(fastq_sequence_file, "r") as open_fastq_file:
+				with open("%s.reoriented.fq" % filePrefix, "w") as open_out_fastq:
+					print("\tWriting reoriented sequences to %s " %("%s_reoriented.fq" % filePrefix))
+					lineCount = 0
+					reverseLine = 0
+					for line in open_fastq_file:
+						if lineCount == 0 or (lineCount % 4) == 0:
+							if line.strip("@\n") in reorientList:
+								reverseLine = 1
+								open_out_fastq.write(line)
+							else:
+								reverseLine = 0
+								open_out_fastq.write(line)
+						elif lineCount == 1 or ((lineCount-1)%4) == 0:
+							if reverseLine == 1:
+								reversed_seq = ReverseComplement(line.strip("\n"))
+								open_out_fastq.write("%s\n" % reversed_seq)
+							else:
+								open_out_fastq.write(line)
+						elif lineCount == 2 or ((lineCount-2)%4) ==  0:
+							open_out_fastq.write(line)
+						elif lineCount == 3 or ((lineCount-3)%4) == 0:
+							if reverseLine == 1:
+								reversed_qscore = line.strip("\n")[::-1]
+								open_out_fastq.write("%s\n" % reversed_qscore)
+							else:
+								open_out_fastq.write(line)
+			reorientedSequences = "%s.reoriented.fq" % filePrefix
+	else:
+		reorientedSequences = sequence_file
+	return reorientedSequences
+
 def checkDuplicateBC(barcode_seq_filename):
 	"""Checks for duplicate seqs (including reverse complements in barcode file, which will cause lima to fail)"""
 	BCdict = SeqIO.parse(barcode_seq_filename, 'fasta')
@@ -2206,7 +2278,7 @@ else:
 	sys.stderr.write('Checking dependencies...\n')
 	# Check if muscle can be executed
 	muscle_cline = '%s -version' % (Muscle)
-	print(muscle_cline)
+	#print(muscle_cline)
 	process = subprocess.Popen(muscle_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 	(out, err) = process.communicate() #the stdout and stderr
 	if not str(out).startswith("MUSCLE"):
@@ -2214,7 +2286,7 @@ else:
 
 	# Check if Vsearch can be executed (left Usearch name rather than rename variables)
 	usearch_cline = '%s --version' % (Usearch)
-	print(usearch_cline)
+	#print(usearch_cline)
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 	(out, err) = process.communicate() #the stdout and stderr
 	if not str(err).startswith("vsearch"):
@@ -2222,7 +2294,7 @@ else:
 
 	# Check if cutadapt can be executed
 	cutadapt_cline = '%s --help' % (Cutadapt)
-	print(cutadapt_cline)
+	#print(cutadapt_cline)
 	process = subprocess.Popen(cutadapt_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 	(out, err) = process.communicate() #the stdout and stderr
 	#print out
@@ -2232,7 +2304,7 @@ else:
 
 	# Check if blast can be execuated
 	blast_cline = 'blastn -version'
-	print(blast_cline)
+	#print(blast_cline)
 	process = subprocess.Popen(blast_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 	(out, err) = process.communicate() #the stdout and stderr
 	if not str(out).replace(' ','').startswith("blastn"):
@@ -2240,7 +2312,7 @@ else:
 
 	# Check if Rscript can be executed
 	Rscript_cline = 'Rscript --version'
-	print(Rscript_cline)
+	#print(Rscript_cline)
 	process = subprocess.Popen(Rscript_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 	(out, err) = process.communicate() #the stdout and stderr
 	if not str(err).replace(' ','').startswith("R"):
@@ -2348,7 +2420,7 @@ if os.path.exists(Output_folder): # overwrite existing folder
 	shutil.rmtree(Output_folder)
 os.makedirs(Output_folder)
 
-if mode == 0: # QC mode
+if mode == 0: # QC mode.
 	## Check chimeras ##
 	log.write('\n#Concatemers Removal#\n')
 	sys.stderr.write('Checking for inter-locus chimeric sequences (concatemers)...\n')
@@ -2373,7 +2445,7 @@ if mode == 0: # QC mode
 log.write('\n#Barcode Removal#\n')
 if platform.system() == 'Linux' and Lima_override == "0": # Add quotes around 0 to activate this section
 	print("Demultiplexing with Lima")
-	dupesFound, BCpairdict = checkDuplicateBC(barcode_seq_filename)
+	dupesFound, BCpairdict = checkDuplicateBC(barcode_seq_filename) # Can't have duplicate barcodes (including reverse complements) in lima
 	if dupesFound == 0:
 		limaOutputPrefix = "%s.demux.lima" % Output_prefix
 		if Lima_barcode_type == "same":
@@ -2382,10 +2454,7 @@ if platform.system() == 'Linux' and Lima_override == "0": # Add quotes around 0 
 			lima_dual(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
 		elif Lima_barcode_type == "single-side":
 			lima_singleend(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
-		#mvLine = "mv %s.summary %s ; mv %s.report %s; mv %s.counts %s; mv %s.guess %s " %(limaOutputPrefix, Output_folder, limaOutputPrefix, Output_folder, limaOutputPrefix, Output_folder, limaOutputPrefix, Output_folder)
-		#process = subprocess.Popen(mvLine, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
-		#stdout,stderr = process.communicate()
-	elif dupesFound == 1:
+	elif dupesFound == 1: # work around if duplicated barcodes are found. Split duplicated and nonduplicated barcodes and check sequences separately.
 		lima_dual(raw_sequences, Lima_barcode_type, "nonduplicated_BCs.fasta", Output_folder, "nonduplicated_BCs")
 		lima_symmetric(raw_sequences, Lima_barcode_type, "deduplicated_BCs.fasta", Output_folder, "deduplicated_BCs")
 		nondupeseqs = SeqIO.parse("%s/nonduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
@@ -2423,6 +2492,11 @@ if platform.system() == 'Linux' and Lima_override == "0": # Add quotes around 0 
 						writeOut = 0
 					elif writeOut == 1:
 						open_bc_trimmed_file.write(line)
+	reorientedSequences = reorientSeqs("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), BLAST_DBs_folder + '/' + refseq_databasefile, num_threads) # Seqs need to have same orientation for OTU clustering (otherwise get 1 OTUs for each orientation of same sequence). DADA2 includes a reorientation step so not necessary here
+	mvCMD = "mv %s %s/%s_1_bc_trimmed.fa " %(reorientedSequences, Output_folder, Output_prefix)
+	process = subprocess.Popen(mvCMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
+	process.communicate()
+# BLAST-based demultiplexing
 else:
 	print("Demultiplexing with BLAST")
 	if Dual_barcode:
