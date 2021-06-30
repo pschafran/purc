@@ -2270,7 +2270,7 @@ else:
 	fileExt = raw_sequences.split(".")[-1]
 	if fileExt == "gz":
 		fileExt = raw_sequences.split(".")[-2]
-	if fileExt in ["fasta", "fa", "fas", "fna", "faa"] and Clustering_method in ["ASV", "OTU"]:
+	if fileExt in ["fasta", "fa", "fas", "fna", "faa"] and Clustering_method in ["ASV", "BOTH"]:
 		print("Error: ASV inference requires a FASTQ file. Your input appears to be FASTA format. Change to 'Clustering_method = 1' in config file.")
 		sys.exit(1)
 
