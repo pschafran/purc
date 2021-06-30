@@ -22,7 +22,7 @@ Mode					= 1		# 0: Check concatemers and then full run
 								# 2: End purc after annotation, without doing clustering
 Multiplex_per_barcode	= 0		# 0: Each barcode contains only one sample
 								# 1: Each barcode contains multiple samples
-Dual_barcode			= 0		# 0: Barcodes only on one primer
+Dual_barcode			= 1		# 0: Barcodes only on one primer
 								# 1: Unique barcodes on both primers
 								# 2: Same barcode on both primers
 Barcode_detection		= 1		# 0: Search barcode in entire sequences; will produce "ErrMidBC" flag if barcodes are not at the ends of the sequence
@@ -31,7 +31,7 @@ Recycle_chimeric_seq	= 0		# 0: Do not recycle
 								# 1: Split chimeric sequences into respective locus
 Recycle_no_barcoded_seq	= 0		# 0: Do not recycle
 								# 1: Use Smith-Waterman local alignment (more sensitive) to find barcodes in those sequences that BLAST failed to detect barcode
-Clustering_method = 0		# 0: Use DADA2 ASV inference
+Clustering_method = 1		# 0: Use DADA2 ASV inference
 								# 1: Use Vsearch OTU clustering
 								# 2: Use both clustering methods
 Align					= 1		# 0: No aligning attempted. 1: Final consensus sequences will be aligned with MUSCLE
@@ -49,7 +49,7 @@ clustID2 				= 0.995 	# The similarity criterion for the second clustering
 clustID3 				= 0.990 	# The similarity criterion for the third clustering
 clustID4 				= 0.997 	# The similarity criterion for the FINAL clustering to remove identical/near identical clusters
 sizeThreshold1			= 1 		# The min. number of sequences/cluster necessary for that cluster to be retained (set to 2 to remove singletons, 3 to remove singletons and doubles, etc)
-sizeThreshold2 			= 			# The min. number of sequences/cluster necessary for that cluster to be retained (set to 2 to remove singletons, 3 to remove singletons and doubles, etc)
+sizeThreshold2 			= 4			# The min. number of sequences/cluster necessary for that cluster to be retained (set to 2 to remove singletons, 3 to remove singletons and doubles, etc)
 dynamicThreshold		= 10			# Threshold limit as percentage of largest cluster for each sample-locus. Overrides sizeThreshold2 (e.g set to 10 to remove clusters less than 10% the size of largest cluster)
 
 [Chimera-killing Parameters]
