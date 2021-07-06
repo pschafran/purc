@@ -62,12 +62,29 @@ import datetime
 import io
 import fileinput
 import platform
+
 try:
 	from Bio import SeqIO
 	from Bio import AlignIO
 	from Bio.Align import AlignInfo
 except:
 	sys.exit('ERROR: could not import BioPython; please install BioPython first')
+
+def convertTime(time): # returns a string with time.time converted tp minutes, hours, or days
+	if time > 60:
+		time = time/60
+		if time > 60:
+			time = time/60
+			if time > 24:
+				time = time/24
+				convertedTime = "%.2f days" % time
+			else:
+				convertedTime = "%.2f hours" % time
+		else:
+			convertedTime = "%.2f minutes" % time
+	else:
+		convertedTime = "%.2f seconds" % time
+	return convertedTime
 
 def parse_fasta(infile):
 	"""Reads in a fasta, returns a list of biopython seq objects"""
@@ -157,7 +174,7 @@ def ReverseComplement(seq):
 	letters = [basecomplement[base] for base in letters]
 	return ''.join(letters)
 
-def reorientSeqs(sequence_file, refseq_blastDB, num_threads): # function needed before lima demultiplexing to orient sequences so all are facing the same way. BLAST-based demultiplexing does this separately
+def reorientSeqs(sequence_file, refseq_blastDB, num_threads): # function needed after lima demultiplexing to orient sequences so all are facing the same way. BLAST-based demultiplexing does this within its function
 	print("Reorienting sequences based on references...")
 	filePrefix = ".".join(sequence_file.split(".")[:-1])
 	fileExt = sequence_file.split(".")[-1]
@@ -168,6 +185,8 @@ def reorientSeqs(sequence_file, refseq_blastDB, num_threads): # function needed 
 		fasta_sequence_file = sequence_file
 	# use BLAST against ref sequences to determine orientation of reads
 	blastoutfile = "blast_reorient_out.txt"
+	#print("Reorienting: %s" % fasta_sequence_file)
+	#print("BlastDB: %s" % refseq_blastDB)
 	blastCMD = "blastn -query %s -db %s -num_threads %s -max_target_seqs 1 -out %s -outfmt 6 -max_hsps 1" % (fasta_sequence_file, refseq_blastDB, num_threads, blastoutfile)
 	process = subprocess.Popen(blastCMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 	stdout,stderr = process.communicate()
@@ -1056,7 +1075,6 @@ def clusterIt(file, clustID, round, previousClusterToCentroid_dict, verbose_leve
 	elif round > 1:
 		usearch_cline = "%s --cluster_fast %s --id %f --gapopen 3I/1E --consout %s --uc %s --sizein --sizeout --threads %s --log %s" % (Usearch, file, clustID, outFile, outClustFile, num_threads, logFile)
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
-	process.wait()
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout
 	if verbose_level == 2:
@@ -1566,7 +1584,7 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
 				with open("%s_DADA2.log" % taxon_folder, "w") as logfile:
 					dadaCMD = "%s ASV.R" % RscriptPath
 					process = subprocess.Popen(dadaCMD, stdout=logfile, stderr=logfile, shell=True, text=True)
-					process.wait()
+					process.communicate()
 				## Count ASVs and store in LocusTaxonCountDict_clustd as {('C_dia_5316', 'ApP'): 28} for example ##
 				try:
 					clustered_seq_file = parse_fasta(taxon_folder + '_ASVs.fasta')
@@ -2270,7 +2288,7 @@ else:
 	fileExt = raw_sequences.split(".")[-1]
 	if fileExt == "gz":
 		fileExt = raw_sequences.split(".")[-2]
-	if fileExt in ["fasta", "fa", "fas", "fna", "faa"] and Clustering_method in ["ASV", "BOTH"]:
+	if fileExt in ["fasta", "fa", "fas", "fna", "faa"] and Clustering_method in ["ASV", "OTU"]:
 		print("Error: ASV inference requires a FASTQ file. Your input appears to be FASTA format. Change to 'Clustering_method = 1' in config file.")
 		sys.exit(1)
 
@@ -2492,7 +2510,7 @@ if platform.system() == 'Linux' and Lima_override == "0": # Add quotes around 0 
 						writeOut = 0
 					elif writeOut == 1:
 						open_bc_trimmed_file.write(line)
-	reorientedSequences = reorientSeqs("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), BLAST_DBs_folder + '/' + refseq_databasefile, num_threads) # Seqs need to have same orientation for OTU clustering (otherwise get 1 OTUs for each orientation of same sequence). DADA2 includes a reorientation step so not necessary here
+	reorientedSequences = reorientSeqs("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "%s/%s" %(BLAST_DBs_folder,refseq_databasefile), num_threads) # Seqs need to have same orientation for OTU clustering (otherwise get 1 OTUs for each orientation of same sequence). DADA2 includes a reorientation step so not necessary here
 	mvCMD = "mv %s %s/%s_1_bc_trimmed.fa " %(reorientedSequences, Output_folder, Output_prefix)
 	process = subprocess.Popen(mvCMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 	process.communicate()
@@ -2563,38 +2581,19 @@ if Clustering_method == "OTU":
 elif Clustering_method == "ASV":
 	LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
 elif Clustering_method == "BOTH":
-	otuStartTime = time.time()
-	OTU_LocusTaxonCountDict_clustd, OTU_LocusTaxonCountDict_chimera = IterativeClusterDechimera(annoFileName, clustID, clustID2, clustID3, sizeThreshold, sizeThreshold2)
-	otuStopTime = time.time()
-	otuRunTime = otuStopTime - otuStartTime
-	if otuRunTime > 60:
-		otuRunTime = otuRunTime/60
-		if otuRunTime > 60:
-			otuRunTime = otuRunTime/60
-			print("OTU Runtime: %.2f hours" % otuRunTime)
-			log.write("OTU Runtime: %.2f hours\n" % otuRunTime)
-		else:
-			print("OTU Runtime: %.2f minutes" % otuRunTime)
-			log.write("OTU Runtime: %.2f minutes\n" % otuRunTime)
-	else:
-		print("OTU Runtime: %.2f seconds" % otuRunTime)
-		log.write("OTU Runtime: %.2f seconds\n" % otuRunTime)
+	# ASV
 	asvStartTime = time.time()
 	ASV_LocusTaxonCountDict_clustd, ASV_LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
 	asvStopTime = time.time()
 	asvRunTime = asvStopTime - asvStartTime
-	if asvRunTime > 60:
-		asvRunTime = asvRunTime/60
-		if asvRunTime > 60:
-			asvRunTime = asvRunTime/60
-			print("ASV Runtime: %.2f hours" % asvRunTime)
-			log.write("ASV Runtime: %.2f hours\n" % asvRunTime)
-		else:
-			print("ASV Runtime: %.2f minutes" % asvRunTime)
-			log.write("ASV Runtime: %.2f minutes\n" % asvRunTime)
-	else:
-		print("ASV Runtime: %.2f seconds" % asvRunTime)
-		log.write("ASV Runtime: %.2f seconds\n" % asvRunTime)
+	print("ASV Runtime: %s" % convertedTime(asvRunTime))
+	# OTU
+	otuStartTime = time.time()
+	OTU_LocusTaxonCountDict_clustd, OTU_LocusTaxonCountDict_chimera = IterativeClusterDechimera(annoFileName, clustID, clustID2, clustID3, sizeThreshold, sizeThreshold2)
+	otuStopTime = time.time()
+	otuRunTime = otuStopTime - otuStartTime
+	print("OTU Runtime: %s" % convertedTime(otuRunTime))
+	# Combine outputs
 	LocusTaxonCountDict_clustd = {}
 	for locus_taxon in OTU_LocusTaxonCountDict_clustd:
 		LocusTaxonCountDict_clustd[locus_taxon] = {"OTU" : OTU_LocusTaxonCountDict_clustd[locus_taxon]}
