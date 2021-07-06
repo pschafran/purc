@@ -10,6 +10,7 @@
 * Input file path handling. Files no longer have to be in the working directory (output will still be written to working directory)
 * Input sequence file can be gzip compressed
 * Primer order in config now must match locus order
+* Multiple reference sequences for a locus must be in the same orientation
 * Dependencies expected to be in PATH by default
 
 ## **Overview** ##
@@ -46,7 +47,7 @@ conda env create -n purc --file purc_macos.yaml && conda activate purc
 # Linux
 conda env create -n purc --file purc_linux.yaml && conda activate purc
 ```
-If PURC fails to run it is likely due to dependency issues. See advanced installation at the bottom of this page. In addition to the main log file created in the working directory, R logs are created in each locus/sample directory in the output folder. 
+If PURC fails to run it is likely due to dependency issues. See advanced installation at the bottom of this page. In addition to the main log file created in the working directory, R logs are created in each locus/sample directory in the output folder.
 
 ### Step 2: Get files ready ###
 PURC requires the following files:
@@ -353,3 +354,4 @@ If you get an error message like "ERROR: Cython is not installed", install/updat
 ### Known Bugs ###
 * Inconsistent number of sequences reported during barcode removal (does not always equal total number of sequences)
 * CCS files without forward-slashes around ZMW code in read name will break lima
+* Fix vsearch output in log
