@@ -94,8 +94,8 @@ dependencies:
   - libxml2=2.9.12=h72842e0_0
   - lima=2.2.0=h9ee0642_0
   - lz4-c=1.9.3=h9c3ff4c_0
+  - mafft=7.480=h779adbc_0
   - make=4.3=hd18ef5c_1
-  - muscle=3.8.1551=h7d875b9_6
   - ncurses=6.2=h58526e2_4
   - openssl=1.1.1k=h7f98852_0
   - pango=1.48.5=hb8ff022_0

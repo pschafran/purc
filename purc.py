@@ -62,7 +62,6 @@ import datetime
 import io
 import fileinput
 import platform
-
 try:
 	from Bio import SeqIO
 	from Bio import AlignIO
@@ -70,7 +69,7 @@ try:
 except:
 	sys.exit('ERROR: could not import BioPython; please install BioPython first')
 
-def convertTime(time): # returns a string with time.time converted tp minutes, hours, or days
+def convertTime(time): # returns a string with time.time converted to minutes, hours, or days
 	if time > 60:
 		time = time/60
 		if time > 60:
@@ -923,7 +922,7 @@ def makeMapDict(mapping_file, locus, Multiplex_perBC_flag=True, DualBC_flag=Fals
 	map.close()
 	return MapDict
 
-def annotateIt(filetoannotate, outFile, failsFile, verbose_level, Multiplex_perBC_flag=True, DualBC_flag=False):
+def annotateIt(filetoannotate, outFile, failsFile, Multiplex_perBC_flag=True, DualBC_flag=False, verbose_level=0):
 	"""Uses the blast results (against the reference sequence database) to assign locus and taxon, and write sequences
 	for a particular locus as specified by map_locus; returns a dictionary containing taxon-locus seq counts"""
 
@@ -1020,7 +1019,7 @@ def sortIt_length(file, verbose_level=0):
 	log.write("sortIt_length")
 	"""Sorts clusters by seq length"""
 	outFile = re.sub(r"(.*)\..*", r"\1_Sl.fa", file) # Make the outfile name by cutting off the extension of the infile name, and adding "_S1.fa"
-	usearch_cline = "%s --sortbylength %s --output %s" %(Usearch, file, outFile)
+	usearch_cline = "%s --sortbylength %s --output %s --threads %s" %(Usearch, file, outFile, num_threads)
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
 	process.wait()
 	(out, err) = process.communicate() #the stdout and stderr
@@ -1037,7 +1036,7 @@ def sortIt_size(file, thresh, round, verbose_level=0):
     "round" is used to annotate the outfile name with S1, S2, etc. depending on which sort this is"""
 	outFile = re.sub(r"(.*)\.fa", r"\1Ss%s.fa" %(round), file)
 	logFile = outFile + ".sortIt_size.log"
-	usearch_cline = "%s --sortbysize %s --output %s --minsize %d --log %s" %(Usearch, file, outFile, thresh, logFile)
+	usearch_cline = "%s --sortbysize %s --output %s --minsize %d --log %s --threads %s" %(Usearch, file, outFile, thresh, logFile, num_threads)
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
 	process.wait()
 	(out, err) = process.communicate() #the stdout and stderr
@@ -1051,8 +1050,10 @@ def align_and_consensus(inputfile, output_prefix):
 	"""Align a fasta and output the consensus sequence; Note that consensus threshold can be modified"""
 	output_alignment = output_prefix.split(';')[0] + '_aligned.fa'
 	output_consensus = output_prefix.split(';')[0] + '_consensus.fa'
-	muscle_cline = '%s -in %s -out %s' % (Muscle, inputfile, output_alignment)
-	process = subprocess.Popen(muscle_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
+	#muscle_cline = '%s -in %s -out %s' % (Muscle, inputfile, output_alignment)
+	mafft_cline = '%s --auto --thread %s %s > %s' %(Mafft, num_threads, inputfile, output_alignment)
+	#process = subprocess.Popen(muscle_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
+	process = subprocess.Popen(mafft_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
 	process.wait()
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout
@@ -1154,6 +1155,18 @@ def muscleIt(file, verbose_level=0):
 	savestdout = sys.stdout
 	if verbose_level == 2:
 		log.write('\n**Muscle output on ' + str(file) + '**\n')
+		log.write(str(err))
+	return outFile
+
+def mafftIt(file, verbose_level=0):
+	"""Aligns the sequences using MAFFT"""
+	outFile = ".".join(file.split(".")[:-1]) + ".aligned.fa"
+	mafft_cline = '%s --auto --thread %s %s > %s' % (Mafft, num_threads, file, outFile)
+	process = subprocess.Popen(mafft_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
+	(out, err) = process.communicate() #the stdout and stderr
+	savestdout = sys.stdout
+	if verbose_level == 2:
+		log.write('\n**MAFFT output on ' + str(file) + '**\n')
 		log.write(str(err))
 	return outFile
 
@@ -1595,8 +1608,7 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
 							LocusTaxonCountDict_clustd[taxon_folder, locus_folder] = 1
 				except:
 					print("WARNING: No ASVs found for %s" % taxon_folder)
-					if verbose_level in [1,2]:
-						log.write(str(taxon_folder + '_ASVs.fasta ') + 'is an empty file\n')
+					log.write("WARNING: No ASVs found for %s" % taxon_folder)
 
 				## Count chimeras
 				try:
@@ -1607,8 +1619,8 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
 						except:
 							LocusTaxonCountDict_chimera[taxon_folder, locus_folder] = 1
 				except:
-					if verbose_level in [1,2]:
-						log.write(str(taxon_folder + '_chimeras.fasta ') + 'is an empty file\n')
+					if verbose_level in [2]:
+						log.write("No chimeras detected in %s\n" % taxon_folder)
 					LocusTaxonCountDict_chimera[taxon_folder, locus_folder] = 0
 				os.chdir("..")
 		locusCount += 1
@@ -2087,6 +2099,7 @@ class Alignment(object):
 ################################################ Setup ################################################
 ts = time.time()
 time_stamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
+print("Start Time: %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
 if len(sys.argv) < 2:
 	sys.exit(usage)
@@ -2128,6 +2141,7 @@ else:
 	Usearch = 'vsearch'
 	Cutadapt = 'cutadapt'
 	Muscle = 'muscle'
+	Mafft = 'mafft'
 	RscriptPath = 'Rscript'
 	log_file = 'purc_log_' + time_stamp + '.txt'
 
@@ -2191,6 +2205,11 @@ else:
 					Muscle = ppp_location + '/' + setting_argument
 				else:
 					Muscle = setting_argument
+			elif setting_name == 'MAFFT':
+				if setting_argument.startswith('Dependencies/'):
+					Mafft = ppp_location + '/' + setting_argument
+				else:
+					Mafft = setting_argument
 			elif setting_name == 'Rscript':
 				RscriptPath = setting_argument
 			elif setting_name == "Lima_override":
@@ -2337,6 +2356,7 @@ else:
 		sys.exit("Error: could not execute Rscript")
 
 	log = open(log_file, 'w')
+	log.write("Start Time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 	log.write(logo + '\n')
 	log.write("PURC called with: \n\t" + str(sys.argv) + "\n")
 	log.write('Usearch location: ' + str(Usearch) + '\n')
@@ -2460,7 +2480,7 @@ if mode == 0: # QC mode.
 		sys.exit('Error: concatemers-removal returned no sequence')
 
 ## Remove barcodes ##
-log.write('\n#Barcode Removal#\n')
+log.write('\n#Barcode Removal# %s \n' % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 if platform.system() == 'Linux' and Lima_override == "0": # Add quotes around 0 to activate this section
 	print("Demultiplexing with Lima")
 	dupesFound, BCpairdict = checkDuplicateBC(barcode_seq_filename) # Can't have duplicate barcodes (including reverse complements) in lima
@@ -2544,7 +2564,7 @@ log.write('\t...done\n\n')
 
 ## Remove primers ##
 if Clustering_method == "OTU" or Clustering_method == "BOTH":
-	log.write('#Primer Removal#\n')
+	log.write('#Primer Removal# %s \n' % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 	sys.stderr.write('Removing primers...\n')
 	primer_trimmed_file = Output_prefix + '_2_pr_trimmed.fa'
 	doCutAdapt(Fprims = Forward_primer, Rprims = Reverse_primer, InFile = Output_folder + '/' + Output_prefix + '_1_bc_trimmed.fa', OutFile = Output_folder + '/' + primer_trimmed_file)
@@ -2558,11 +2578,11 @@ elif Clustering_method == "ASV":
 
 
 ## Annotate the sequences with the taxon and locus names, based on the reference sequences ##
-log.write('#Sequence Annotation#\n')
+log.write('#Sequence Annotation# %s \n' % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 sys.stderr.write('Annotating seqs...\n')
 toAnnotate = primer_trimmed_file
 annoFileName = Output_prefix + '_3_annotated.fa'
-LocusTaxonCountDict_unclustd = annotateIt(filetoannotate = Output_folder + '/' + toAnnotate, outFile = Output_folder + '/' + annoFileName, Multiplex_perBC_flag = Multiplex_per_barcode, DualBC_flag = Dual_barcode, failsFile = Output_folder + '/' + Output_prefix + '_3_unclassifiable.fa', verbose_level = verbose_level)
+LocusTaxonCountDict_unclustd = annotateIt(filetoannotate = Output_folder + '/' + toAnnotate, outFile = Output_folder + '/' + annoFileName, Multiplex_perBC_flag = Multiplex_per_barcode, DualBC_flag = Dual_barcode, failsFile = Output_folder + '/' + Output_prefix + '_3_unclassifiable.fa')
 count_seq_annotated = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_3_annotated.fa')
 count_seq_unclassifiable = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_3_unclassifiable.fa')
 sys.stderr.write('\t' + str(count_seq_annotated) + ' sequences annotated\n')
@@ -2572,27 +2592,47 @@ if count_seq_annotated == str(0):
 	sys.exit('Error: annotation step returned no sequence')
 
 if mode == 2:
-	sys.exit('Done')
+	log.write("PURC completed!\n")
+	log.write("%s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+	print("PURC completed!")
+	print("%s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+	sys.exit(0)
 
 ## Iterative clustering and chimera-killing ##
 os.chdir(Output_folder) # move into the designated output folder
 if Clustering_method == "OTU":
+	otuStartTime = time.time()
 	LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera = IterativeClusterDechimera(annoFileName, clustID, clustID2, clustID3, sizeThreshold, sizeThreshold2)
+	otuStopTime = time.time()
+	otuRunTime = otuStopTime - otuStartTime
+	print("OTU Runtime: %s" % convertTime(otuRunTime))
+	log.write("OTU Runtime: %s\n" % convertTime(otuRunTime))
+	log.write("OTU stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 elif Clustering_method == "ASV":
+	asvStartTime = time.time()
 	LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
+	asvStopTime = time.time()
+	asvRunTime = asvStopTime - asvStartTime
+	print("ASV Runtime: %s" % convertTime(asvRunTime))
+	log.write("ASV Runtime: %s\n" % convertTime(asvRunTime))
+	log.write("ASV stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 elif Clustering_method == "BOTH":
 	# ASV
 	asvStartTime = time.time()
 	ASV_LocusTaxonCountDict_clustd, ASV_LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
 	asvStopTime = time.time()
 	asvRunTime = asvStopTime - asvStartTime
-	print("ASV Runtime: %s" % convertedTime(asvRunTime))
+	print("ASV Runtime: %s" % convertTime(asvRunTime))
+	log.write("ASV Runtime: %s\n" % convertTime(asvRunTime))
+	log.write("ASV stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 	# OTU
 	otuStartTime = time.time()
 	OTU_LocusTaxonCountDict_clustd, OTU_LocusTaxonCountDict_chimera = IterativeClusterDechimera(annoFileName, clustID, clustID2, clustID3, sizeThreshold, sizeThreshold2)
 	otuStopTime = time.time()
 	otuRunTime = otuStopTime - otuStartTime
-	print("OTU Runtime: %s" % convertedTime(otuRunTime))
+	print("OTU Runtime: %s" % convertTime(otuRunTime))
+	log.write("OTU Runtime: %s\n" % convertTime(otuRunTime))
+	log.write("OTU stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 	# Combine outputs
 	LocusTaxonCountDict_clustd = {}
 	for locus_taxon in OTU_LocusTaxonCountDict_clustd:
@@ -2604,7 +2644,7 @@ elif Clustering_method == "BOTH":
 			LocusTaxonCountDict_clustd[locus_taxon] = {"ASV" : ASV_LocusTaxonCountDict_clustd[locus_taxon]}
 
 ## Producing a summary ##
-log.write('#Run Summary#\n\n')
+log.write('#Run Summary# %s \n\n' % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 count_output = open(Output_prefix + '_5_counts.xls', 'w')
 count_output.write('Total input sequences:\t' + str(count_total_input_sequences) + '\n')
 log.write('Total input sequences:\t' + str(count_total_input_sequences) + '\n')
@@ -2764,4 +2804,7 @@ if Align == 1: # Aligning can be turned on/off in the configuration file
 	for file in fastas:
 		sys.stderr.write("Aligning " + file + "\n")
 		log.write("Aligning " + file + "\n")
-		outFile = muscleIt(file, verbose_level)
+		outFile = mafftIt(file, verbose_level)
+log.write("PURC completed!\nStop Time: %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+print("PURC completed!")
+print("Stop Time: %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))

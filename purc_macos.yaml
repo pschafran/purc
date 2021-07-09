@@ -119,13 +119,13 @@ dependencies:
   - llvm-openmp=11.1.0=hda6cdc1_1
   - llvm-tools=11.1.0=hd011deb_2
   - lz4-c=1.9.3=h046ec9c_0
+  - mafft=7.480=h779adbc_0
   - make=4.3=h22f3db7_1
   - markupsafe=2.0.1=py39h89e85a6_0
   - matplotlib-inline=0.1.2=pyhd8ed1ab_2
   - mistune=0.8.4=py39hcbf5805_1003
   - mpc=1.1.0=ha57cd0f_1009
   - mpfr=4.0.2=h72d8aaf_1
-  - muscle=3.8.1551=hb280591_6
   - nbclient=0.5.3=pyhd8ed1ab_0
   - nbconvert=6.0.7=py39h6e9494a_3
   - nbformat=5.1.3=pyhd8ed1ab_0

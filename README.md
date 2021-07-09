@@ -3,7 +3,7 @@
 #### Last updated 2021 June 22
 
 ## Major changes from v1 ##
-* PURC updated for compatibility with Python3 and macOS 10+
+* PURC updated for compatibility with Python3 and macOS 10.15+ (Catalina, Big Sur)
 * Usearch replaced with [vsearch](https://github.com/torognes/vsearch) for Linux and macOS
 * Amplicon sequence variant (ASVs) identification using [DADA2](https://benjjneb.github.io/dada2/index.html) introduced
 * Linux only: PacBio's [lima](https://github.com/pacificbiosciences/barcoding/) replaces BLAST methods for demultiplexing
@@ -274,7 +274,6 @@ UCHIME improves sensitivity and speed of chimera detection, Bioinformatics 27(16
 than the ones that enter the pipeline. However, if sequences are much shorter, that suggests that the primer-detection
 settings are too lax, and thus primers are being "found" in the middle of the sequences. If this happens, then that region and everything downstream will be erased. To fix this problem, you have to manual change the cutadapt settings in purc.py. There are instructions on how to do this in purc.py itself, around line 528.
 
-
 ### Who do I talk to? ###
 Peter Schafran ([ps997@cornell.edu](mailto:ps997@cornell.edu))
 
@@ -350,6 +349,13 @@ Now when R is started, the `.libPaths()` command should return:
 ```
 
 If you get an error message like "ERROR: Cython is not installed", install/update [Cython](http://docs.cython.org/src/quickstart/install.html) and try again.
+
+### Troubleshooting ###
+If PURC crashes or fails to produce results, in my experience the \#1 cause is forgetting to activate the conda environment! Occasionally conda seems to get 'confused' and restarting the environment can fix dependency issues. Run `conda activate base && conda activate purc`. If errors still persist, please contact [Peter](mailto:ps997@cornell.edu) or submit an issue here.
+
+### To do ###
+* Clean up handling of temp files (move to tmp dir, remove when finished running)
+* Illumina support
 
 ### Known Bugs ###
 * Inconsistent number of sequences reported during barcode removal (does not always equal total number of sequences)
