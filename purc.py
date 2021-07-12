@@ -62,6 +62,8 @@ import datetime
 import io
 import fileinput
 import platform
+import pickle
+
 try:
 	from Bio import SeqIO
 	from Bio import AlignIO
@@ -1520,8 +1522,15 @@ err <- learnErrors(drp, errorEstimationFunction=PacBioErrfun, BAND_SIZE=32, mult
 pdf("%s_error_profile.pdf")
 plotErrors(err)
 dev.off()
+''' % (Fprimer, Rprimer, minLen, maxLen, maxEE, "%%", "%%", sample, sample, sample))
+		if useOTUpriors == "TRUE":
+			otuPriors = [i.seq for i in SeqIO.parse("%s_Cluster_FinalconsensusSsC%sdCh_renamed.fa" % (sample, str(clustID4)), 'fasta')]
+			priors = ', '.join(['"{}"'.format(value) for value in otuPriors])
+			rscript.write("dd2 <- dada(drp, err=err, BAND_SIZE=32, multithread=TRUE, priors = c(%s))" % priors)
+		else:
+			rscipt.write("dd2 <- dada(drp, err=err, BAND_SIZE=32, multithread=TRUE)")
 
-dd2 <- dada(drp, err=err, BAND_SIZE=32, multithread=TRUE)
+		rscript.write('''
 st <- makeSequenceTable(dd2)
 
 # Identify chimeras
@@ -1560,7 +1569,7 @@ if (length(st.chim.seq) > 0){
 
 print(format(Sys.time()))
 quit()
-''' % (Fprimer, Rprimer, minLen, maxLen, maxEE, "%%", "%%", sample, sample, sample, sample, sample, sample, sample))
+''' % (sample, sample, sample, sample))
 
 def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath, verbose_level = 1):
 	log.write("IterativeClusterDechimera\n")
@@ -2116,6 +2125,7 @@ else:
 	ppp_location = os.getcwd()
 
 	## Setting up defaults ##
+	parameterDict = {"mode" : 1, "Check_chimeras" : False, "Multiplex_per_barcode" : False, "Dual_barcode" : False, "Search_ends_only" : True, "Recycle_bc" : False, "Align" : 0, "minLen" : 0, "maxLen" : 0, "maxEE" : 10, "clustID" : 0.997, "clustID2" : 0.995, "clustID3" : 0.990, "clustID4" : 0.997, "sizeThreshold" : 1, "sizeThreshold2" : 4, "abskew" : 1.9, "verbose_level" : 0, "num_threads" : 1, "barcode_databasefile" : 'barcode_blastdb', "refseq_databasefile" : 'refseq_blastdb',"log_file" : 'purc_log_' + time_stamp + '.txt', "useOTUpriors" : 'False', "Clustering_method" : "OTU" }
 	mode = 1
 	Check_chimeras = False
 	Multiplex_per_barcode = False
@@ -2144,6 +2154,7 @@ else:
 	Mafft = 'mafft'
 	RscriptPath = 'Rscript'
 	log_file = 'purc_log_' + time_stamp + '.txt'
+	useOTUpriors = "FALSE"
 
 	## Read-in the parameters and settings ##
 	for line in configuration:
@@ -2155,8 +2166,10 @@ else:
 			setting_argument = setting[1]
 			if setting_name == 'Mode':
 				mode = int(setting_argument)
+				parameterDict['mode'] = setting_argument
 			elif setting_name == 'Input_sequence_file':
 				raw_sequences = setting_argument
+				parameterDict['raw_sequences'] = setting_argument
 				if not os.path.isfile(raw_sequences):
 					sys.exit("Error: could not find " + raw_sequences)
 				else:
@@ -2164,23 +2177,30 @@ else:
 					print("Input sequence file: %s" % raw_sequences)
 			elif setting_name == "Align":
 				Align = int(setting_argument)
+				parameterDict['Align'] = setting_argument
 			elif setting_name == 'Output_prefix':
 				Output_prefix = setting_argument
+				parameterDict['Output_prefix'] = setting_argument
 			elif setting_name == 'Output_folder':
 				Output_folder = os.path.abspath(setting_argument)
+				parameterDict['Output_folder'] = setting_argument
 				print("Output folder: %s" % Output_folder)
 				BLAST_DBs_folder = Output_folder + '_BlastDBs'
 			elif setting_name == 'Barcode_blastDB':
 				barcode_databasefile = setting_argument
+				parameterDict['barcode_databasefile'] = setting_argument
 			elif setting_name == 'RefSeq_blastDB':
 				refseq_databasefile = setting_argument
+				parameterDict['refseq_databasefile'] = setting_argument
 			elif setting_name == 'Log_file':
 				if setting_argument == '':
 					log_file = 'purc_log_' + time_stamp + '.txt'
 				else:
 					log_file = setting_argument
+					parameterDict['log_file'] = setting_argument
 			elif setting_name == 'Locus_name':
 				locus_list = setting_argument.upper().replace(' ', '').replace('\t', '').split(',') #needs the upper() now that LocusTaxonCountDict_unclustd has the loci in uppercase
+				parameterDict['locus_list'] = locus_list
 			elif setting_name == 'Locus-barcode-taxon_map':
 				mapping_file_list_tmp = setting_argument.replace(' ', '').replace('\t', '').split(',')
 				mapping_file_list = []
@@ -2190,6 +2210,7 @@ else:
 						sys.exit("Error: could not find " + mapfile)
 					else:
 						mapping_file_list.append(mapfile)
+				parameterDict['mapping_file_list'] = mapping_file_list
 			elif setting_name == 'Usearch':
 				if setting_argument.startswith('Dependencies/'):
 					Usearch = ppp_location + '/' + setting_argument
@@ -2214,93 +2235,132 @@ else:
 				RscriptPath = setting_argument
 			elif setting_name == "Lima_override":
 				Lima_override = setting_argument
+				parameterDict['Lima_override'] = setting_argument
 			elif setting_name == "minLen":
 				minLen = setting_argument
+				parameterDict['minLen'] = setting_argument
 			elif setting_name == "maxLen":
 				maxLen = setting_argument
+				parameterDict['maxLen'] = setting_argument
 			elif setting_name == "maxEE":
 				maxEE = setting_argument
+				parameterDict['maxEE'] = setting_argument
+			elif setting_name == "Use_OTU_priors":
+				useOTUpriors = str(setting_argument).upper()
+				parameterDict['useOTUpriors'] = useOTUpriors
 			elif setting_name == 'clustID1':
 				clustID = float(setting_argument)
+				parameterDict['clustID'] = clustID
 			elif setting_name == 'clustID2':
 				clustID2 = float(setting_argument)
+				parameterDict['clustID2'] = clustID2
 			elif setting_name == 'clustID3':
 				clustID3 = float(setting_argument)
+				parameterDict['clustID3'] = clustID3
 			elif setting_name == 'clustID4':
 				clustID4 = float(setting_argument)
+				parameterDict['clustID4'] = clustID4
 			elif setting_name == 'sizeThreshold1':
 				sizeThreshold = float(setting_argument)
+				parameterDict['sizeThreshold'] = sizeThreshold
 			elif setting_name == 'sizeThreshold2':
 				sizeThreshold2 = float(setting_argument)
+				parameterDict['sizeThreshold2'] = sizeThreshold2
 			elif setting_name == 'abundance_skew':
 				abskew = str(setting_argument)
+				parameterDict['abskew'] = abskew
 			elif setting_name == 'Forward_primer':
 				Forward_primer = setting_argument.replace(' ', '').replace('\t', '').split(',')
+				parameterDict['Forward_primer'] = Forward_primer
 			elif setting_name == 'Reverse_primer':
 				Reverse_primer = setting_argument.replace(' ', '').replace('\t', '').split(',')
+				parameterDict['Reverse_primer'] = Reverse_primer
 			elif setting_name == 'seq_name_toErase':
 				seq_name_toErase = setting_argument
+				parameterDict['seq_name_toErase'] = seq_name_toErase
 			elif setting_name == 'Verbose_level':
 				verbose_level = int(setting_argument)
+				parameterDict['verbose_level'] = verbose_level
 			elif setting_name == 'Threads':
 				num_threads = int(setting_argument)
+				parameterDict['num_threads'] = num_threads
 			elif setting_name == 'Remove_intermediates':
 				remove_intermediates = int(setting_argument)
+				parameterDict['remove_intermediates'] = remove_intermediates
 			elif setting_name == 'in_Barcode_seq_file':
 				barcode_seq_filename = os.path.abspath(setting_argument)
+				parameterDict['barcode_seq_filename'] = setting_argument
 				if not os.path.isfile(barcode_seq_filename):
 					sys.exit("Error: could not find " + barcode_seq_filename)
 			elif setting_name == 'in_RefSeq_seq_file':
 				refseq_filename = os.path.abspath(setting_argument)
+				parameterDict['refseq_filename'] = setting_argument
 				if not os.path.isfile(refseq_filename):
 					sys.exit("Error: could not find " + refseq_filename)
 			elif setting_name == 'Dual_barcode':
 				if setting_argument == '0':
 					Dual_barcode = False
 					Lima_barcode_type = "single-side"
+					parameterDict['Dual_barcode'] = Dual_barcode
+					parameterDict['Lima_barcode_type'] = Lima_barcode_type
 				elif setting_argument == '1':
 					Dual_barcode = True
 					Lima_barcode_type = "different"
+					parameterDict['Dual_barcode'] = Dual_barcode
+					parameterDict['Lima_barcode_type'] = Lima_barcode_type
 				elif setting_argument == '2':
 					Dual_barcode = True
 					Lima_barcode_type = "same"
+					parameterDict['Dual_barcode'] = Dual_barcode
+					parameterDict['Lima_barcode_type'] = Lima_barcode_type
 				else:
 					sys.exit('Error: incorrect setting of Dual_barcode')
 			elif setting_name == 'Multiplex_per_barcode':
 				if setting_argument == '0':
 					Multiplex_per_barcode = False
+					parameterDict['Multiplex_per_barcode'] = Multiplex_per_barcode
 				elif setting_argument == '1':
 					Multiplex_per_barcode = True
+					parameterDict['Multiplex_per_barcode'] = Multiplex_per_barcode
 				else:
 					sys.exit('Error: incorrect setting of Multiplex_per_barcode')
 			elif setting_name == 'Barcode_detection':
 				if setting_argument == '0':
 					Search_ends_only = False
+					parameterDict['Search_ends_only'] = Search_ends_only
 				elif setting_argument == '1':
 					Search_ends_only = True
+					parameterDict['Search_ends_only'] = Search_ends_only
 				else:
 					sys.exit('Error: incorrect setting of Barcode_detection')
 			elif setting_name == 'Recycle_no_barcoded_seq':
 				if setting_argument == '0':
 					Recycle_bc = False
+					parameterDict['Recycle_bc'] = Recycle_bc
 				elif setting_argument == '1':
 					Recycle_bc = True
+					parameterDict['Recycle_bc'] = Recycle_bc
 				else:
 					sys.exit('Error: incorrect setting of Recycle_no_barcoded_seq')
 			elif setting_name == 'Recycle_chimeric_seq':
 				if setting_argument == '0':
 					Recycle_chimera = False
+					parameterDict['Recycle_chimera'] = Recycle_chimera
 				elif setting_argument == '1':
 					Recycle_chimera = True
+					parameterDict['Recycle_chimera'] = Recycle_chimera
 				else:
 					sys.exit('Error: incorrect setting of Recycle_chimeric_seq')
 			elif setting_name == 'Clustering_method':
 				if setting_argument == '0':
 					Clustering_method = "ASV"
+					parameterDict['Clustering_method'] = Clustering_method
 				elif setting_argument == '1':
 					Clustering_method = "OTU"
+					parameterDict['Clustering_method'] = Clustering_method
 				elif setting_argument == '2':
 					Clustering_method = "BOTH"
+					parameterDict['Clustering_method'] = Clustering_method
 				else:
 					sys.exit('Error: incorrect setting of Clustering_method')
 	# Check is sequence file type is compatible with clustering method
@@ -2309,6 +2369,11 @@ else:
 		fileExt = raw_sequences.split(".")[-2]
 	if fileExt in ["fasta", "fa", "fas", "fna", "faa"] and Clustering_method in ["ASV", "OTU"]:
 		print("Error: ASV inference requires a FASTQ file. Your input appears to be FASTA format. Change to 'Clustering_method = 1' in config file.")
+		sys.exit(1)
+
+	# Check if settings are compatible
+	if Clustering_method == "ASV" and useOTUpriors == "TRUE":
+		print("Error: Clustering_method = 2 must be set to use OTU priors for ASV inference.")
 		sys.exit(1)
 
 	# Check if dependencies are in place
@@ -2455,10 +2520,29 @@ sys.stderr.write('\t' + str(count_total_input_sequences) + ' sequences read\n')
 
 ## Make output folder ##
 if os.path.exists(Output_folder): # overwrite existing folder
-	shutil.rmtree(Output_folder)
-os.makedirs(Output_folder)
-
-if mode == 0: # QC mode.
+	try:
+		with open("%s/run_settings.pkl" % Output_folder, "rb") as previous_settings_file:
+			previousSettingsDict = pickle.load(previous_settings_file)
+			if parameterDict == previousSettingsDict:
+				with open("%s/checkpoint.txt" % Output_folder, "r") as checkpoint_file:
+					checkpoints_complete = []
+					for line in checkpoint_file:
+						checkpoints_complete.append(line.strip("\n"))
+			else:
+				print("Error: Config file settings don't match those used before. Change config file back to continue previous run.")
+				sys.exit(1)
+	except:
+		shutil.rmtree(Output_folder)
+		os.makedirs(Output_folder)
+		checkpoints_complete = []
+		with open("%s/run_settings.pkl" % Output_folder, "wb") as settings_file:
+			pickle.dump(parameterDict, settings_file)
+else:
+	os.makedirs(Output_folder)
+	checkpoints_complete = []
+	with open("%s/run_settings.pkl" % Output_folder, "wb") as settings_file:
+		pickle.dump(parameterDict, settings_file)
+if mode == 0 and "concatemerCheck" not in checkpoints_complete: # QC mode.
 	## Check chimeras ##
 	log.write('\n#Concatemers Removal#\n')
 	sys.stderr.write('Checking for inter-locus chimeric sequences (concatemers)...\n')
@@ -2478,161 +2562,256 @@ if mode == 0: # QC mode.
 	log.write('\t' + str(count_chimeric_sequences) + ' inter-locus chimeric sequences found\n')
 	if not check_fasta(fasta_sequences):
 		sys.exit('Error: concatemers-removal returned no sequence')
+	else:
+		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+			open_checkpoint_file.write("concatemerCheck\n")
+elif mode == 0 and "concatemerCheck" in checkpoints_complete:
+	log.write('\n#Concatemers Removal#\n')
+	log.write('Reusing previous concatemer results...\n')
+	print('Reusing previous concatemer results...\n')
+
 
 ## Remove barcodes ##
 log.write('\n#Barcode Removal# %s \n' % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-if platform.system() == 'Linux' and Lima_override == "0": # Add quotes around 0 to activate this section
-	print("Demultiplexing with Lima")
-	dupesFound, BCpairdict = checkDuplicateBC(barcode_seq_filename) # Can't have duplicate barcodes (including reverse complements) in lima
-	if dupesFound == 0:
-		limaOutputPrefix = "%s.demux.lima" % Output_prefix
-		if Lima_barcode_type == "same":
-			lima_symmetric(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
-		elif Lima_barcode_type == "different":
-			lima_dual(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
-		elif Lima_barcode_type == "single-side":
-			lima_singleend(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
-	elif dupesFound == 1: # work around if duplicated barcodes are found. Split duplicated and nonduplicated barcodes and check sequences separately.
-		lima_dual(raw_sequences, Lima_barcode_type, "nonduplicated_BCs.fasta", Output_folder, "nonduplicated_BCs")
-		lima_symmetric(raw_sequences, Lima_barcode_type, "deduplicated_BCs.fasta", Output_folder, "deduplicated_BCs")
-		nondupeseqs = SeqIO.parse("%s/nonduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
-		nondupeseqIDs = []
-		for seq in nondupeseqs:
-			nondupeseqIDs.append(seq.id.split("|")[1])
-		dedupeseqs = SeqIO.parse("%s/deduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
-		dedupeseqIDs = []
-		for seq in dedupeseqs:
-			dedupeseqIDs.append(seq.id.split("|")[1])
-
-		shared_seq_list = list(set(nondupeseqIDs) & set(dedupeseqIDs))
-		if len(shared_seq_list) > 0:
-			print("WARNING: %s sequences identified with both symmetric and asymmetric barcodes" % len(shared_seq_list))
-
-		# Retrieve sequences from asymmetric demultiplexing that weren't also found in symmetric demultiplexing
-		nondupeseqs = SeqIO.parse("%s/nonduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
-		write_nondupeseqs = [i for i in nondupeseqs if i.id not in nondupeseqIDs]
-		SeqIO.write(write_nondupeseqs, "%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "fasta")
-		# Retrieve sequences from symmetric demultiplexing that weren't also found in asymmetric demultiplexing. Rename second barcode in pair to original names so can be handled downstream.
-		with open("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "a") as open_bc_trimmed_file:
-			#dedupeseqs = SeqIO.parse("%s/deduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
-			with open("%s/deduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "r") as open_dedup_bcs:
-				writeOut = 0
-				for line in open_dedup_bcs:
-					if line.startswith(">") and line.strip(">\n").split("|")[1] not in shared_seq_list:
-						writeOut = 1
-						barcodes = line.strip(">\n").split("|")[0]
-						seqid = line.strip(">\n").split("|")[1]
-						barcode1 = barcodes.split("^")[0]
-						barcode2 = BCpairdict[barcode1]
-						newReadName = ">%s^%s|%s\n" %(barcode1, barcode2, seqid)
-						open_bc_trimmed_file.write(newReadName)
-					elif line.startswith(">") and line.strip(">\n").split("|")[1] in shared_seq_list:
-						writeOut = 0
-					elif writeOut == 1:
-						open_bc_trimmed_file.write(line)
-	reorientedSequences = reorientSeqs("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "%s/%s" %(BLAST_DBs_folder,refseq_databasefile), num_threads) # Seqs need to have same orientation for OTU clustering (otherwise get 1 OTUs for each orientation of same sequence). DADA2 includes a reorientation step so not necessary here
-	mvCMD = "mv %s %s/%s_1_bc_trimmed.fa " %(reorientedSequences, Output_folder, Output_prefix)
-	process = subprocess.Popen(mvCMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
-	process.communicate()
-# BLAST-based demultiplexing
+if "barcodeRemoval" in checkpoints_complete:
+	log.write('Reusing previous barcode trimmed files...\n')
+	print('Reusing previous barcode trimmed files...\n')
 else:
-	print("Demultiplexing with BLAST")
-	if Dual_barcode:
-		sys.stderr.write('Removing dual barcodes...\n')
-		DeBarcoder_dual(fasta_sequences, BLAST_DBs_folder + '/' + barcode_databasefile, SeqDict)
-	else:
-		sys.stderr.write('Removing barcodes...\n')
-		if not Search_ends_only:
-			DeBarcoder(fasta_sequences, BLAST_DBs_folder + '/' + barcode_databasefile, SeqDict, Output_folder, Output_prefix)
-		else:
-			DeBarcoder_ends(SeqDict, BLAST_DBs_folder + '/' + barcode_databasefile, Output_folder, Output_prefix, search_range=25)
-count_seq_w_bc = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_1_bc_trimmed.fa')
-count_seq_wo_bc = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_1_trashBin_no_bc.fa')
-count_seq_w_toomany_bc = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_1_trashBin_tooMany_bc.fa')
-sys.stderr.write('\t' + str(count_seq_w_bc) + ' sequences have barcode\n')
-sys.stderr.write('\t' + str(count_seq_wo_bc) + ' sequences have no barcode\n')
-sys.stderr.write('\t' + str(count_seq_w_toomany_bc) + ' sequences have too many barcodes\n')
-if count_seq_w_bc == str(0):
-	sys.exit('Error: barcode-removal returned no sequence')
+	if platform.system() == 'Linux' and Lima_override == "0": # Add quotes around 0 to activate this section
+		print("Demultiplexing with Lima")
+		dupesFound, BCpairdict = checkDuplicateBC(barcode_seq_filename) # Can't have duplicate barcodes (including reverse complements) in lima
+		if dupesFound == 0:
+			limaOutputPrefix = "%s.demux.lima" % Output_prefix
+			if Lima_barcode_type == "same":
+				lima_symmetric(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
+			elif Lima_barcode_type == "different":
+				lima_dual(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
+			elif Lima_barcode_type == "single-side":
+				lima_singleend(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
+		elif dupesFound == 1: # work around if duplicated barcodes are found. Split duplicated and nonduplicated barcodes and check sequences separately.
+			lima_dual(raw_sequences, Lima_barcode_type, "nonduplicated_BCs.fasta", Output_folder, "nonduplicated_BCs")
+			lima_symmetric(raw_sequences, Lima_barcode_type, "deduplicated_BCs.fasta", Output_folder, "deduplicated_BCs")
+			nondupeseqs = SeqIO.parse("%s/nonduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
+			nondupeseqIDs = []
+			for seq in nondupeseqs:
+				nondupeseqIDs.append(seq.id.split("|")[1])
+			dedupeseqs = SeqIO.parse("%s/deduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
+			dedupeseqIDs = []
+			for seq in dedupeseqs:
+				dedupeseqIDs.append(seq.id.split("|")[1])
 
-if Recycle_bc:
-	sys.stderr.write('Looking for barcodes in the no-barcode sequences, using Smith-Waterman pairwise alignment...\n')
-	SeqDict_no_bc = SeqIO.index(Output_folder + '/' + Output_prefix + '_1_trashBin_no_bc.fa', 'fasta') # Read in the raw sequences as dictionary, using biopython's function
-	count_seq_recycled = DeBarcoder_SWalign(SeqDict_no_bc, barcode_seq_filename, Output_folder, Output_prefix, search_range=25)
-	sys.stderr.write('\t' + str(count_seq_recycled) + ' sequences recycled from ' + str(count_seq_wo_bc) + ' sequences\n')
+			shared_seq_list = list(set(nondupeseqIDs) & set(dedupeseqIDs))
+			if len(shared_seq_list) > 0:
+				print("WARNING: %s sequences identified with both symmetric and asymmetric barcodes" % len(shared_seq_list))
+
+			# Retrieve sequences from asymmetric demultiplexing that weren't also found in symmetric demultiplexing
+			nondupeseqs = SeqIO.parse("%s/nonduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
+			write_nondupeseqs = [i for i in nondupeseqs if i.id not in nondupeseqIDs]
+			SeqIO.write(write_nondupeseqs, "%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "fasta")
+			# Retrieve sequences from symmetric demultiplexing that weren't also found in asymmetric demultiplexing. Rename second barcode in pair to original names so can be handled downstream.
+			with open("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "a") as open_bc_trimmed_file:
+				#dedupeseqs = SeqIO.parse("%s/deduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
+				with open("%s/deduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "r") as open_dedup_bcs:
+					writeOut = 0
+					for line in open_dedup_bcs:
+						if line.startswith(">") and line.strip(">\n").split("|")[1] not in shared_seq_list:
+							writeOut = 1
+							barcodes = line.strip(">\n").split("|")[0]
+							seqid = line.strip(">\n").split("|")[1]
+							barcode1 = barcodes.split("^")[0]
+							barcode2 = BCpairdict[barcode1]
+							newReadName = ">%s^%s|%s\n" %(barcode1, barcode2, seqid)
+							open_bc_trimmed_file.write(newReadName)
+						elif line.startswith(">") and line.strip(">\n").split("|")[1] in shared_seq_list:
+							writeOut = 0
+						elif writeOut == 1:
+							open_bc_trimmed_file.write(line)
+		reorientedSequences = reorientSeqs("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "%s/%s" %(BLAST_DBs_folder,refseq_databasefile), num_threads) # Seqs need to have same orientation for OTU clustering (otherwise get 1 OTUs for each orientation of same sequence). DADA2 includes a reorientation step so not necessary here
+		mvCMD = "mv %s %s/%s_1_bc_trimmed.fa " %(reorientedSequences, Output_folder, Output_prefix)
+		process = subprocess.Popen(mvCMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
+		process.communicate()
+	# BLAST-based demultiplexing
+	else:
+		print("Demultiplexing with BLAST")
+		if Dual_barcode:
+			sys.stderr.write('Removing dual barcodes...\n')
+			DeBarcoder_dual(fasta_sequences, BLAST_DBs_folder + '/' + barcode_databasefile, SeqDict)
+		else:
+			sys.stderr.write('Removing barcodes...\n')
+			if not Search_ends_only:
+				DeBarcoder(fasta_sequences, BLAST_DBs_folder + '/' + barcode_databasefile, SeqDict, Output_folder, Output_prefix)
+			else:
+				DeBarcoder_ends(SeqDict, BLAST_DBs_folder + '/' + barcode_databasefile, Output_folder, Output_prefix, search_range=25)
+	count_seq_w_bc = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_1_bc_trimmed.fa')
+	count_seq_wo_bc = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_1_trashBin_no_bc.fa')
+	count_seq_w_toomany_bc = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_1_trashBin_tooMany_bc.fa')
+	sys.stderr.write('\t' + str(count_seq_w_bc) + ' sequences have barcode\n')
+	sys.stderr.write('\t' + str(count_seq_wo_bc) + ' sequences have no barcode\n')
+	sys.stderr.write('\t' + str(count_seq_w_toomany_bc) + ' sequences have too many barcodes\n')
+	if count_seq_w_bc == str(0):
+		sys.exit('Error: barcode-removal returned no sequence')
+	else:
+		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+			open_checkpoint_file.write("barcodeRemoval\n")
+
+	if Recycle_bc:
+		sys.stderr.write('Looking for barcodes in the no-barcode sequences, using Smith-Waterman pairwise alignment...\n')
+		SeqDict_no_bc = SeqIO.index(Output_folder + '/' + Output_prefix + '_1_trashBin_no_bc.fa', 'fasta') # Read in the raw sequences as dictionary, using biopython's function
+		count_seq_recycled = DeBarcoder_SWalign(SeqDict_no_bc, barcode_seq_filename, Output_folder, Output_prefix, search_range=25)
+		sys.stderr.write('\t' + str(count_seq_recycled) + ' sequences recycled from ' + str(count_seq_wo_bc) + ' sequences\n')
 log.write('\t...done\n\n')
 
 ## Remove primers ##
-if Clustering_method == "OTU" or Clustering_method == "BOTH":
-	log.write('#Primer Removal# %s \n' % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-	sys.stderr.write('Removing primers...\n')
-	primer_trimmed_file = Output_prefix + '_2_pr_trimmed.fa'
-	doCutAdapt(Fprims = Forward_primer, Rprims = Reverse_primer, InFile = Output_folder + '/' + Output_prefix + '_1_bc_trimmed.fa', OutFile = Output_folder + '/' + primer_trimmed_file)
-	count_seq_pr_trimmed = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_2_pr_trimmed.fa')
-	sys.stderr.write('\t' + str(count_seq_pr_trimmed) + ' sequences survived after primer-trimming\n')
-	log.write('\t...done\n\n')
-	if count_seq_pr_trimmed == str(0):
-		sys.exit('Error: primer-removal returned no sequence')
-elif Clustering_method == "ASV":
-	primer_trimmed_file = Output_prefix + '_1_bc_trimmed.fa'
+log.write('#Primer Removal# %s \n' % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+if "primerRemoval" in checkpoints_complete:
+	log.write('Reusing previous primer trimmed files...\n')
+	print('Reusing previous primer trimmed files...\n')
+else:
+	if Clustering_method == "OTU" or Clustering_method == "BOTH":
+		sys.stderr.write('Removing primers...\n')
+		primer_trimmed_file = Output_prefix + '_2_pr_trimmed.fa'
+		doCutAdapt(Fprims = Forward_primer, Rprims = Reverse_primer, InFile = Output_folder + '/' + Output_prefix + '_1_bc_trimmed.fa', OutFile = Output_folder + '/' + primer_trimmed_file)
+		count_seq_pr_trimmed = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_2_pr_trimmed.fa')
+		sys.stderr.write('\t' + str(count_seq_pr_trimmed) + ' sequences survived after primer-trimming\n')
+		log.write('\t...done\n\n')
+		if count_seq_pr_trimmed == str(0):
+			sys.exit('Error: primer-removal returned no sequence')
+		else:
+			with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+				open_checkpoint_file.write("primerRemoval\n")
+	elif Clustering_method == "ASV":
+		primer_trimmed_file = Output_prefix + '_1_bc_trimmed.fa'
+		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+			open_checkpoint_file.write("primerRemoval\n")
 
 
 ## Annotate the sequences with the taxon and locus names, based on the reference sequences ##
 log.write('#Sequence Annotation# %s \n' % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-sys.stderr.write('Annotating seqs...\n')
-toAnnotate = primer_trimmed_file
-annoFileName = Output_prefix + '_3_annotated.fa'
-LocusTaxonCountDict_unclustd = annotateIt(filetoannotate = Output_folder + '/' + toAnnotate, outFile = Output_folder + '/' + annoFileName, Multiplex_perBC_flag = Multiplex_per_barcode, DualBC_flag = Dual_barcode, failsFile = Output_folder + '/' + Output_prefix + '_3_unclassifiable.fa')
-count_seq_annotated = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_3_annotated.fa')
-count_seq_unclassifiable = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_3_unclassifiable.fa')
-sys.stderr.write('\t' + str(count_seq_annotated) + ' sequences annotated\n')
-sys.stderr.write('\t' + str(count_seq_unclassifiable) + ' sequences cannot be classified\n')
-log.write('\t...done\n\n')
-if count_seq_annotated == str(0):
-	sys.exit('Error: annotation step returned no sequence')
+if "seqAnnotating" in checkpoints_complete:
+	log.write('Reusing previous annotated files...\n')
+	print('Reusing previous annotated files...\n')
+	annoFileName = Output_prefix + '_3_annotated.fa'
+else:
+	sys.stderr.write('Annotating seqs...\n')
+	toAnnotate = primer_trimmed_file
+	annoFileName = Output_prefix + '_3_annotated.fa'
+	LocusTaxonCountDict_unclustd = annotateIt(filetoannotate = Output_folder + '/' + toAnnotate, outFile = Output_folder + '/' + annoFileName, Multiplex_perBC_flag = Multiplex_per_barcode, DualBC_flag = Dual_barcode, failsFile = Output_folder + '/' + Output_prefix + '_3_unclassifiable.fa')
+	count_seq_annotated = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_3_annotated.fa')
+	count_seq_unclassifiable = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_3_unclassifiable.fa')
+	sys.stderr.write('\t' + str(count_seq_annotated) + ' sequences annotated\n')
+	sys.stderr.write('\t' + str(count_seq_unclassifiable) + ' sequences cannot be classified\n')
+	log.write('\t...done\n\n')
+	if count_seq_annotated == str(0):
+		sys.exit('Error: annotation step returned no sequence')
+	else:
+		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+			open_checkpoint_file.write("seqAnnotating\n")
 
-if mode == 2:
-	log.write("PURC completed!\n")
-	log.write("%s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-	print("PURC completed!")
-	print("%s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-	sys.exit(0)
+	if mode == 2:
+		log.write("PURC completed!\n")
+		log.write("%s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+		print("PURC completed!")
+		print("%s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+		sys.exit(0)
 
 ## Iterative clustering and chimera-killing ##
 os.chdir(Output_folder) # move into the designated output folder
 if Clustering_method == "OTU":
-	otuStartTime = time.time()
-	LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera = IterativeClusterDechimera(annoFileName, clustID, clustID2, clustID3, sizeThreshold, sizeThreshold2)
-	otuStopTime = time.time()
-	otuRunTime = otuStopTime - otuStartTime
-	print("OTU Runtime: %s" % convertTime(otuRunTime))
-	log.write("OTU Runtime: %s\n" % convertTime(otuRunTime))
-	log.write("OTU stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+	if "otuClustering" in checkpoints_complete:
+		log.write('Reusing previous OTU clustering results...\n')
+		print('Reusing previous OTU clustering results...\n')
+	else:
+		otuStartTime = time.time()
+		LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera = IterativeClusterDechimera(annoFileName, clustID, clustID2, clustID3, sizeThreshold, sizeThreshold2)
+		otuStopTime = time.time()
+		otuRunTime = otuStopTime - otuStartTime
+		print("OTU Runtime: %s" % convertTime(otuRunTime))
+		log.write("OTU Runtime: %s\n" % convertTime(otuRunTime))
+		log.write("OTU stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+			open_checkpoint_file.write("otuClustering\n")
 elif Clustering_method == "ASV":
-	asvStartTime = time.time()
-	LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
-	asvStopTime = time.time()
-	asvRunTime = asvStopTime - asvStartTime
-	print("ASV Runtime: %s" % convertTime(asvRunTime))
-	log.write("ASV Runtime: %s\n" % convertTime(asvRunTime))
-	log.write("ASV stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-elif Clustering_method == "BOTH":
+	if "asvInference" in checkpoints_complete:
+		log.write('Reusing previous ASV inference results...\n')
+		print('Reusing previous ASV inference results...\n')
+	else:
+		asvStartTime = time.time()
+		LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
+		asvStopTime = time.time()
+		asvRunTime = asvStopTime - asvStartTime
+		print("ASV Runtime: %s" % convertTime(asvRunTime))
+		log.write("ASV Runtime: %s\n" % convertTime(asvRunTime))
+		log.write("ASV stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+			open_checkpoint_file.write("asvInference\n")
+elif Clustering_method == "BOTH" and useOTUpriors == "FALSE":
 	# ASV
-	asvStartTime = time.time()
-	ASV_LocusTaxonCountDict_clustd, ASV_LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
-	asvStopTime = time.time()
-	asvRunTime = asvStopTime - asvStartTime
-	print("ASV Runtime: %s" % convertTime(asvRunTime))
-	log.write("ASV Runtime: %s\n" % convertTime(asvRunTime))
-	log.write("ASV stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+	if "asvInference" in checkpoints_complete:
+		log.write('Reusing previous ASV inference results...\n')
+		print('Reusing previous ASV inference results...\n')
+	else:
+		asvStartTime = time.time()
+		ASV_LocusTaxonCountDict_clustd, ASV_LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
+		asvStopTime = time.time()
+		asvRunTime = asvStopTime - asvStartTime
+		print("ASV Runtime: %s" % convertTime(asvRunTime))
+		log.write("ASV Runtime: %s\n" % convertTime(asvRunTime))
+		log.write("ASV stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+			open_checkpoint_file.write("asvInference\n")
 	# OTU
-	otuStartTime = time.time()
-	OTU_LocusTaxonCountDict_clustd, OTU_LocusTaxonCountDict_chimera = IterativeClusterDechimera(annoFileName, clustID, clustID2, clustID3, sizeThreshold, sizeThreshold2)
-	otuStopTime = time.time()
-	otuRunTime = otuStopTime - otuStartTime
-	print("OTU Runtime: %s" % convertTime(otuRunTime))
-	log.write("OTU Runtime: %s\n" % convertTime(otuRunTime))
-	log.write("OTU stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+	if "otuClustering" in checkpoints_complete:
+		log.write('Reusing previous OTU clustering results...\n')
+		print('Reusing previous OTU clustering results...\n')
+	else:
+		otuStartTime = time.time()
+		OTU_LocusTaxonCountDict_clustd, OTU_LocusTaxonCountDict_chimera = IterativeClusterDechimera(annoFileName, clustID, clustID2, clustID3, sizeThreshold, sizeThreshold2)
+		otuStopTime = time.time()
+		otuRunTime = otuStopTime - otuStartTime
+		print("OTU Runtime: %s" % convertTime(otuRunTime))
+		log.write("OTU Runtime: %s\n" % convertTime(otuRunTime))
+		log.write("OTU stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+			open_checkpoint_file.write("otuClustering\n")
+	# Combine outputs
+	LocusTaxonCountDict_clustd = {}
+	for locus_taxon in OTU_LocusTaxonCountDict_clustd:
+		LocusTaxonCountDict_clustd[locus_taxon] = {"OTU" : OTU_LocusTaxonCountDict_clustd[locus_taxon]}
+	for locus_taxon in ASV_LocusTaxonCountDict_clustd:
+		try:
+			LocusTaxonCountDict_clustd[locus_taxon].update({"ASV" : ASV_LocusTaxonCountDict_clustd[locus_taxon]})
+		except:
+			LocusTaxonCountDict_clustd[locus_taxon] = {"ASV" : ASV_LocusTaxonCountDict_clustd[locus_taxon]}
+
+elif Clustering_method == "BOTH" and useOTUpriors == "TRUE":
+	# OTU
+	if "otuClustering" in checkpoints_complete:
+		log.write('Reusing previous OTU clustering results...\n')
+		print('Reusing previous OTU clustering results...\n')
+	else:
+		otuStartTime = time.time()
+		OTU_LocusTaxonCountDict_clustd, OTU_LocusTaxonCountDict_chimera = IterativeClusterDechimera(annoFileName, clustID, clustID2, clustID3, sizeThreshold, sizeThreshold2)
+		otuStopTime = time.time()
+		otuRunTime = otuStopTime - otuStartTime
+		print("OTU Runtime: %s" % convertTime(otuRunTime))
+		log.write("OTU Runtime: %s\n" % convertTime(otuRunTime))
+		log.write("OTU stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+			open_checkpoint_file.write("otuClustering\n")
+	# ASV
+	if "asvInference" in checkpoints_complete:
+		log.write('Reusing previous ASV inference results...\n')
+		print('Reusing previous ASV inference results...\n')
+	else:
+		asvStartTime = time.time()
+		ASV_LocusTaxonCountDict_clustd, ASV_LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
+		asvStopTime = time.time()
+		asvRunTime = asvStopTime - asvStartTime
+		print("ASV Runtime: %s" % convertTime(asvRunTime))
+		log.write("ASV Runtime: %s\n" % convertTime(asvRunTime))
+		log.write("ASV stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+			open_checkpoint_file.write("asvInference\n")
 	# Combine outputs
 	LocusTaxonCountDict_clustd = {}
 	for locus_taxon in OTU_LocusTaxonCountDict_clustd:

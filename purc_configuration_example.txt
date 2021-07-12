@@ -40,6 +40,7 @@ Align					= 1		# 0: No aligning attempted. 1: Final consensus sequences will be 
 minLen				= 0	# The minimum length to keep a read (leave as 0 to use Tukey's outlier detection method)
 maxLen				= 0	# The maximum length to keep a read (leave as 0 to use Tukey's outlier detection method)
 maxEE				= 3 #  After truncation, reads with higher than maxEE "expected errors" will be discarded.
+Use_OTU_priors = TRUE # Set to TRUE to use OTU output sequences as priors for ASV inference; only compatible with Clustering_method = 2 (default FALSE)
 
 [Clustering Parameters]
 clustID1				= 0.997 	# The similarity criterion for the initial USEARCH clustering

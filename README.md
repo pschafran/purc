@@ -5,7 +5,7 @@
 ## Major changes from v1 ##
 * PURC updated for compatibility with Python3 and macOS 10.15+ (Catalina, Big Sur)
 * Usearch replaced with [vsearch](https://github.com/torognes/vsearch) for Linux and macOS
-* Amplicon sequence variant (ASVs) identification using [DADA2](https://benjjneb.github.io/dada2/index.html) introduced
+* Amplicon sequence variant (ASVs) inference using [DADA2](https://benjjneb.github.io/dada2/index.html) introduced
 * Linux only: PacBio's [lima](https://github.com/pacificbiosciences/barcoding/) replaces BLAST methods for demultiplexing
 * Input file path handling. Files no longer have to be in the working directory (output will still be written to working directory)
 * Input sequence file can be gzip compressed
