@@ -2691,6 +2691,8 @@ if "seqAnnotating" in checkpoints_complete:
 	log.write('Reusing previous annotated files...\n')
 	print('Reusing previous annotated files...\n')
 	annoFileName = Output_prefix + '_3_annotated.fa'
+	with open("%s/LocusTaxonCountDict_unclustd.pkl" % Output_folder, "rb") as picklefile:
+		LocusTaxonCountDict_unclustd = pickle.load(picklefile)
 else:
 	sys.stderr.write('Annotating seqs...\n')
 	toAnnotate = primer_trimmed_file
@@ -2706,6 +2708,8 @@ else:
 	else:
 		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
 			open_checkpoint_file.write("seqAnnotating\n")
+		with open("%s/LocusTaxonCountDict_unclustd.pkl" % Output_folder, "wb") as picklefile:
+			pickle.dump(LocusTaxonCountDict_unclustd, picklefile)
 
 	if mode == 2:
 		log.write("PURC completed!\n")
@@ -2720,6 +2724,10 @@ if Clustering_method == "OTU":
 	if "otuClustering" in checkpoints_complete:
 		log.write('Reusing previous OTU clustering results...\n')
 		print('Reusing previous OTU clustering results...\n')
+		with open("%s/OTU_LocusTaxonCountDict_clustd.pkl" % Output_folder, "rb") as picklefile:
+			LocusTaxonCountDict_clustd = pickle.load(picklefile)
+		with open("%s/OTU_LocusTaxonCountDict_chimera.pkl" % Output_folder, "rb") as picklefile:
+			LocusTaxonCountDict_chimera = pickle.load(picklefile)
 	else:
 		otuStartTime = time.time()
 		LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera = IterativeClusterDechimera(annoFileName, clustID, clustID2, clustID3, sizeThreshold, sizeThreshold2)
@@ -2730,10 +2738,18 @@ if Clustering_method == "OTU":
 		log.write("OTU stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
 			open_checkpoint_file.write("otuClustering\n")
+		with open("%s/OTU_LocusTaxonCountDict_clustd.pkl" % Output_folder, "wb") as picklefile:
+			pickle.dump(LocusTaxonCountDict_clustd, picklefile)
+		with open("%s/OTU_LocusTaxonCountDict_chimera.pkl" % Output_folder, "wb") as picklefile:
+			pickle.dump(LocusTaxonCountDict_chimera, picklefile)
 elif Clustering_method == "ASV":
 	if "asvInference" in checkpoints_complete:
 		log.write('Reusing previous ASV inference results...\n')
 		print('Reusing previous ASV inference results...\n')
+		with open("%s/ASV_LocusTaxonCountDict_clustd.pkl" % Output_folder, "rb") as picklefile:
+			LocusTaxonCountDict_clustd = pickle.load(picklefile)
+		with open("%s/ASV_LocusTaxonCountDict_chimera.pkl" % Output_folder, "rb") as picklefile:
+			LocusTaxonCountDict_chimera = pickle.load(picklefile)
 	else:
 		asvStartTime = time.time()
 		LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
@@ -2744,11 +2760,19 @@ elif Clustering_method == "ASV":
 		log.write("ASV stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
 			open_checkpoint_file.write("asvInference\n")
+		with open("%s/ASV_LocusTaxonCountDict_clustd.pkl" % Output_folder, "wb") as picklefile:
+			pickle.dump(LocusTaxonCountDict_clustd, picklefile)
+		with open("%s/ASV_LocusTaxonCountDict_chimera.pkl" % Output_folder, "wb") as picklefile:
+			pickle.dump(LocusTaxonCountDict_chimera, picklefile)
 elif Clustering_method == "BOTH" and useOTUpriors == "FALSE":
 	# ASV
 	if "asvInference" in checkpoints_complete:
 		log.write('Reusing previous ASV inference results...\n')
 		print('Reusing previous ASV inference results...\n')
+		with open("%s/ASV_LocusTaxonCountDict_clustd.pkl" % Output_folder, "rb") as picklefile:
+			ASV_LocusTaxonCountDict_clustd = pickle.load(picklefile)
+		with open("%s/ASV_LocusTaxonCountDict_chimera.pkl" % Output_folder, "rb") as picklefile:
+			ASV_LocusTaxonCountDict_chimera = pickle.load(picklefile)
 	else:
 		asvStartTime = time.time()
 		ASV_LocusTaxonCountDict_clustd, ASV_LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
@@ -2759,10 +2783,18 @@ elif Clustering_method == "BOTH" and useOTUpriors == "FALSE":
 		log.write("ASV stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
 			open_checkpoint_file.write("asvInference\n")
+		with open("%s/ASV_LocusTaxonCountDict_clustd.pkl" % Output_folder, "wb") as picklefile:
+			pickle.dump(ASV_LocusTaxonCountDict_clustd, picklefile)
+		with open("%s/ASV_LocusTaxonCountDict_chimera.pkl" % Output_folder, "wb") as picklefile:
+			pickle.dump(ASV_LocusTaxonCountDict_chimera, picklefile)
 	# OTU
 	if "otuClustering" in checkpoints_complete:
 		log.write('Reusing previous OTU clustering results...\n')
 		print('Reusing previous OTU clustering results...\n')
+		with open("%s/OTU_LocusTaxonCountDict_clustd.pkl" % Output_folder, "rb") as picklefile:
+			OTU_LocusTaxonCountDict_clustd = pickle.load(picklefile)
+		with open("%s/OTU_LocusTaxonCountDict_chimera.pkl" % Output_folder, "rb") as picklefile:
+			OTU_LocusTaxonCountDict_chimera = pickle.load(picklefile)
 	else:
 		otuStartTime = time.time()
 		OTU_LocusTaxonCountDict_clustd, OTU_LocusTaxonCountDict_chimera = IterativeClusterDechimera(annoFileName, clustID, clustID2, clustID3, sizeThreshold, sizeThreshold2)
@@ -2773,6 +2805,10 @@ elif Clustering_method == "BOTH" and useOTUpriors == "FALSE":
 		log.write("OTU stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
 			open_checkpoint_file.write("otuClustering\n")
+		with open("%s/OTU_LocusTaxonCountDict_clustd.pkl" % Output_folder, "wb") as picklefile:
+			pickle.dump(OTU_LocusTaxonCountDict_clustd, picklefile)
+		with open("%s/OTU_LocusTaxonCountDict_chimera.pkl" % Output_folder, "wb") as picklefile:
+			pickle.dump(OTU_LocusTaxonCountDict_chimera, picklefile)
 	# Combine outputs
 	LocusTaxonCountDict_clustd = {}
 	for locus_taxon in OTU_LocusTaxonCountDict_clustd:
@@ -2788,6 +2824,10 @@ elif Clustering_method == "BOTH" and useOTUpriors == "TRUE":
 	if "otuClustering" in checkpoints_complete:
 		log.write('Reusing previous OTU clustering results...\n')
 		print('Reusing previous OTU clustering results...\n')
+		with open("%s/OTU_LocusTaxonCountDict_clustd.pkl" % Output_folder, "rb") as picklefile:
+			OTU_LocusTaxonCountDict_clustd = pickle.load(picklefile)
+		with open("%s/OTU_LocusTaxonCountDict_chimera.pkl" % Output_folder, "rb") as picklefile:
+			OTU_LocusTaxonCountDict_chimera = pickle.load(picklefile)
 	else:
 		otuStartTime = time.time()
 		OTU_LocusTaxonCountDict_clustd, OTU_LocusTaxonCountDict_chimera = IterativeClusterDechimera(annoFileName, clustID, clustID2, clustID3, sizeThreshold, sizeThreshold2)
@@ -2798,10 +2838,18 @@ elif Clustering_method == "BOTH" and useOTUpriors == "TRUE":
 		log.write("OTU stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
 			open_checkpoint_file.write("otuClustering\n")
+		with open("%s/OTU_LocusTaxonCountDict_clustd.pkl" % Output_folder, "wb") as picklefile:
+			pickle.dump(OTU_LocusTaxonCountDict_clustd, picklefile)
+		with open("%s/OTU_LocusTaxonCountDict_chimera.pkl" % Output_folder, "wb") as picklefile:
+			pickle.dump(OTU_LocusTaxonCountDict_chimera, picklefile)
 	# ASV
 	if "asvInference" in checkpoints_complete:
 		log.write('Reusing previous ASV inference results...\n')
 		print('Reusing previous ASV inference results...\n')
+		with open("%s/ASV_LocusTaxonCountDict_clustd.pkl" % Output_folder, "rb") as picklefile:
+			ASV_LocusTaxonCountDict_clustd = pickle.load(picklefile)
+		with open("%s/ASV_LocusTaxonCountDict_chimera.pkl" % Output_folder, "rb") as picklefile:
+			ASV_LocusTaxonCountDict_chimera = pickle.load(picklefile)
 	else:
 		asvStartTime = time.time()
 		ASV_LocusTaxonCountDict_clustd, ASV_LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
@@ -2812,6 +2860,10 @@ elif Clustering_method == "BOTH" and useOTUpriors == "TRUE":
 		log.write("ASV stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
 			open_checkpoint_file.write("asvInference\n")
+		with open("%s/ASV_LocusTaxonCountDict_clustd.pkl" % Output_folder, "wb") as picklefile:
+			pickle.dump(ASV_LocusTaxonCountDict_clustd, picklefile)
+		with open("%s/ASV_LocusTaxonCountDict_chimera.pkl" % Output_folder, "wb") as picklefile:
+			pickle.dump(ASV_LocusTaxonCountDict_chimera, picklefile)
 	# Combine outputs
 	LocusTaxonCountDict_clustd = {}
 	for locus_taxon in OTU_LocusTaxonCountDict_clustd:
