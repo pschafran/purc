@@ -5,7 +5,7 @@ logo = """
 |                            PURC                           |
 |        Pipeline for Untangling Reticulate Complexes       |
 |                        version 2                          |
-|           https://bitbucket.org/crothfels/purc            |
+|        https://bitbucket.org/peter_schafran/purc          |
 |															|
 |      Fay-Wei Li & Carl J Rothfels & Peter W Schafran      |
 -------------------------------------------------------------
@@ -21,34 +21,49 @@ For more info, try: ./purc.py -help
 """
 
 citation = """
-This script relies heavily on USEARCH, MUSCLE, and BLAST.
+This script relies heavily on VSEARCH, DADA2, MAFFT, LIMA, and BLAST.
 If this script assisted with a publication, please cite the following papers
-(or updated citations, depending on the versions of USEARCH, etc., used).
+(or updated citations, depending on the versions of VSEARCH, etc., used).
 
-PURC:
--Rothfels, C.J., K.M. Pryer, and F-W. Li. 2016. Next-generation polyploid
+PURC v1
+-Rothfels, C.J., K.M. Pryer, and F-W. Li. 2017. Next-generation polyploid
 phylogenetics: rapid resolution of hybrid polyploid complexes using PacBio
-single-molecule sequencing. New Phytologist
+single-molecule sequencing. New Phytologist 213: 413-429.
 
-USEARCH/UCLUST:
+BLAST
+-Camacho, C., G. Coulouris, V. Avagyan, N. Ma, J. Papadopoulos, et al. 2009.
+BLAST+: Architecture and applications. BMC Bioinformatics 10: 421.
+
+Cutadapt
+-Martin, M. 2011. Cutadapt removes adapter sequences from high-throughput sequencing reads.
+EMBnet.journal 17:10-12.
+
+DADA2
+-Callahan, B.J., P.J. McMurdie, M.J. Rosen, A.W. Han, A.J.A. Johnson, and Susan P. Holmes.
+2016. DADA2: High-resolution sample inference from Illumina amplicon data.
+Nature Methods 13: 581-583.
+
+MAFFT
+-Katoh, K., and D.M. Standley. 2013. MAFFT multiple sequence alignment software version 7:
+improvements in performace and usability. Molecular Biology and Evolution 30: 772-780.
+
+VSEARCH
+-Rognes, T., T. Flouri, B. Nichols, C. Quince, and F. Mahé. 2016. VSEARCH: a versatile
+open source tool for metagenomics. PeerJ 4:e2584.
+
+
+Deprecated PURC v1 dependencies:
+MUSCLE
+-Edgar, R.C. 2004. MUSCLE: Multiple sequence alignment with high accuracy and high throughput.
+Nucleic Acids Research 32:1792-1797.
+
+USEARCH/UCLUST
 -Edgar, R.C. 2010. Search and clustering orders of magnitude faster than BLAST.
 Bioinformatics 26(19), 2460-2461.
 
 UCHIME:
 -Edgar, R.C., B.J. Haas, J.C. Clemente, C. Quince, R. Knight. 2011.
 UCHIME improves sensitivity and speed of chimera detection, Bioinformatics 27(16), 2194-2200.
-
-Cutadapt:
--Martin, M. 2011. Cutadapt removes adapter sequences from high-throughput sequencing reads.
-EMBnet.journal 17:10-12.
-
-MUSCLE:
--Edgar, R.C. 2004. MUSCLE: Multiple sequence alignment with high accuracy and high throughput.
-Nucleic Acids Research 32:1792-1797.
-
-BLAST:
--Camacho, C., G. Coulouris, V. Avagyan, N. Ma, J. Papadopoulos, et al. 2009.
-BLAST+: Architecture and applications. BMC Bioinformatics 10: 421.
 """
 
 import re
@@ -1148,17 +1163,17 @@ def deChimeIt(file, round, abskew=1.9, verbose_level=0):
 			chimera_count = chimera_count + 1
 	return outFile, chimera_count
 
-def muscleIt(file, verbose_level=0):
-	"""Aligns the sequences using MUSCLE"""
-	outFile = ".".join(file.split(".")[:-1]) + ".aligned.fa"
-	muscle_cline = '%s -in %s -out %s' % (Muscle, file, outFile)
-	process = subprocess.Popen(muscle_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
-	(out, err) = process.communicate() #the stdout and stderr
-	savestdout = sys.stdout
-	if verbose_level == 2:
-		log.write('\n**Muscle output on ' + str(file) + '**\n')
-		log.write(str(err))
-	return outFile
+#def muscleIt(file, verbose_level=0):
+#	"""Aligns the sequences using MUSCLE"""
+#	outFile = ".".join(file.split(".")[:-1]) + ".aligned.fa"
+#	muscle_cline = '%s -in %s -out %s' % (Muscle, file, outFile)
+#	process = subprocess.Popen(muscle_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
+#	(out, err) = process.communicate() #the stdout and stderr
+#	savestdout = sys.stdout
+#	if verbose_level == 2:
+#		log.write('\n**Muscle output on ' + str(file) + '**\n')
+#		log.write(str(err))
+#	return outFile
 
 def mafftIt(file, verbose_level=0):
 	"""Aligns the sequences using MAFFT"""
