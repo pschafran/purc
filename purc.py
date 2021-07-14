@@ -1443,8 +1443,8 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 
 	return LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera
 
-def writeASV(sample, Fprimer, Rprimer, minLen, maxLen, maxEE):
-	with open("ASV.R", "w") as rscript:
+def writeASV(sample, Fprimer, Rprimer, minLen, maxLen, maxEE): # Writes a custom R script for each sample to run DADA2
+	with open("%s_DADA2.R" % sample, "w") as rscript:
 		rscript.write('''print(format(Sys.time()))
 
 # load libraries
@@ -1604,7 +1604,7 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
 				subset_fasta_seqs_from_fastq("%s.fa" % taxon_folder, raw_fastq_sequences)
 				writeASV(taxon_folder, Forward_primer[locusCount], Reverse_primer[locusCount], minLen, maxLen, maxEE)
 				with open("%s_DADA2.log" % taxon_folder, "w") as logfile:
-					dadaCMD = "%s ASV.R" % RscriptPath
+					dadaCMD = "%s %s_DADA2.R" %(RscriptPath, taxon_folder)
 					process = subprocess.Popen(dadaCMD, stdout=logfile, stderr=logfile, shell=True, text=True)
 					process.communicate()
 				## Count ASVs and store in LocusTaxonCountDict_clustd as {('C_dia_5316', 'ApP'): 28} for example ##
@@ -1647,7 +1647,7 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
 		for taxon_folder in taxonForThisLocus: # have to go into each barcode folder in each locus folder
 			if os.path.isdir(taxon_folder): # the glob might have found some files as well as folders
 				os.chdir(taxon_folder)
-				files_to_add_reconsensus = glob.glob("*_ASVs.fasta")
+				files_to_add_reconsensus = glob.glob("*_ASVs.fa")
 				for file in files_to_add_reconsensus:
 					shutil.copyfileobj(open(file,'r'), outputfile_reconsensus) #Add each file to the final output
 
