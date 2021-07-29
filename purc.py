@@ -1543,7 +1543,7 @@ dev.off()
 			priors = ', '.join(['"{}"'.format(value) for value in otuPriors])
 			rscript.write("dd2 <- dada(drp, err=err, BAND_SIZE=32, multithread=TRUE, priors = c(%s))" % priors)
 		else:
-			rscipt.write("dd2 <- dada(drp, err=err, BAND_SIZE=32, multithread=TRUE)")
+			rscript.write("dd2 <- dada(drp, err=err, BAND_SIZE=32, multithread=TRUE)")
 
 		rscript.write('''
 st <- makeSequenceTable(dd2)
