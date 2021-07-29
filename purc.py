@@ -2899,6 +2899,12 @@ if mode == 0:
 	count_output.write('Concatemers (multi-locus seqs):\t' + str(count_chimeric_sequences) + '\n')
 	log.write('Concatemers (multi-locus seqs):\t' + str(count_chimeric_sequences) + '\n')
 
+count_seq_w_bc = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_1_bc_trimmed.fa')
+count_seq_wo_bc = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_1_trashBin_no_bc.fa')
+count_seq_w_toomany_bc = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_1_trashBin_tooMany_bc.fa')
+count_seq_annotated = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_3_annotated.fa')
+count_seq_unclassifiable = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_3_unclassifiable.fa')
+
 count_output.write('Sequences with barcodes:\t' + str(count_seq_w_bc) + '\n')
 count_output.write('Sequences without barcodes:\t' + str(count_seq_wo_bc) + '\n')
 count_output.write('Sequences with too many barcodes:\t' + str(count_seq_w_toomany_bc) + '\n')
