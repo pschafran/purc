@@ -56,12 +56,12 @@ abundance_skew			= 1.9
 [Lima Override]
 Lima_override = 1 # Set to 1 to use BLAST-based demultiplexing instead of Lima (Linux only)
 
-[Dependencies]
-Usearch 				= vsearch								# The name of (or path to) Usearch executable; Here assumed to be accessible through the shell's PATH
-Cutadapt				= cutadapt								# The name of (or path to) Cutadapt executable; Here assumed to be accessible through the shell's PATH
-MAFFT 					= mafft								# The name of (or path to) MAFFT executable; can replace with alternative MAFFT presets (e.g. ginsi, linsi, fftns)
-Rscript					= Rscript								# The name of (or path to) Rscript executable; Here assumed to be accessible through the shell's PATH
-blastn 					= blastn								# The name of (or path to) blastn executable; Here assumed to be accessible through the shell's PATH
+[Dependencies] # by default assumed to be available in the shell's PATH
+Usearch 				= vsearch								# The name of (or path to) Usearch executable
+Cutadapt				= cutadapt								# The name of (or path to) Cutadapt executable
+MAFFT 					= mafft								# The name of (or path to) MAFFT executable
+Rscript					= Rscript								# The name of (or path to) Rscript executable
+blastn 					= blastn								# The name of (or path to) blastn executable
 
 
 [Miscellaneous]

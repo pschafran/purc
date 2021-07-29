@@ -2895,6 +2895,7 @@ count_output = open(Output_prefix + '_5_counts.xls', 'w')
 count_output.write('Total input sequences:\t' + str(count_total_input_sequences) + '\n')
 log.write('Total input sequences:\t' + str(count_total_input_sequences) + '\n')
 if mode == 0:
+	count_chimeric_sequences = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_0_chimeras.fa')
 	count_output.write('Concatemers (multi-locus seqs):\t' + str(count_chimeric_sequences) + '\n')
 	log.write('Concatemers (multi-locus seqs):\t' + str(count_chimeric_sequences) + '\n')
 
