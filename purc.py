@@ -2486,7 +2486,7 @@ filePrefix = ".".join(raw_sequences.split(".")[:-1])
 if fileExt == "gz":
 	fileType = filePrefix.split(".")[-1]
 	if os.path.isfile(filePrefix):
-		print("WARNING: Unzipped file with same name already exists. Will use what I assume to be the uncompressed version of the read file..." % (raw_sequences))
+		print("WARNING: Unzipped file with same name already exists. Will use what I assume to be the uncompressed version of the read file...")
 		#gunzipCmd = "gunzip -c -k %s > tmp_sequences.%s" %(raw_sequences, fileType)
 		#process = subprocess.Popen(gunzipCmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 		#process.wait()
