@@ -33,7 +33,7 @@ Recycle_no_barcoded_seq	= 0		# 0: Do not recycle
 Clustering_method = 0			# 0: Use DADA2 ASV inference
 								# 1: Use Vsearch OTU clustering
 								# 2: Use both clustering methods
-Align					= 1		# 0: No aligning attempted. 1: Final consensus sequences will be aligned with MUSCLE
+Align					= 1		# 0: No aligning attempted. 1: Final consensus sequences will be aligned with MAFFT
 
 ***Miscellaneous***
 [DADA Filtering Parameters]
@@ -57,7 +57,7 @@ abundance_skew			= 1.9
 Lima_override = 1 # Set to 1 to use BLAST-based demultiplexing instead of Lima (Linux only)
 
 [Dependencies] # by default assumed to be available in the shell's PATH
-Usearch 				= vsearch								# The name of (or path to) Usearch executable
+Vsearch 				= vsearch								# The name of (or path to) Vsearch executable
 Cutadapt				= cutadapt								# The name of (or path to) Cutadapt executable
 MAFFT 					= mafft								# The name of (or path to) MAFFT executable
 Rscript					= Rscript								# The name of (or path to) Rscript executable
