@@ -1036,7 +1036,7 @@ def sortIt_length(file, verbose_level=0):
 	log.write("sortIt_length")
 	"""Sorts clusters by seq length"""
 	outFile = re.sub(r"(.*)\..*", r"\1_Sl.fa", file) # Make the outfile name by cutting off the extension of the infile name, and adding "_S1.fa"
-	usearch_cline = "%s --sortbylength %s --output %s --threads %s" %(Usearch, file, outFile, num_threads)
+	usearch_cline = "%s --sortbylength %s --output %s --threads %s" %(Vsearch, file, outFile, num_threads)
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
 	process.wait()
 	(out, err) = process.communicate() #the stdout and stderr
@@ -1053,7 +1053,7 @@ def sortIt_size(file, thresh, round, verbose_level=0):
     "round" is used to annotate the outfile name with S1, S2, etc. depending on which sort this is"""
 	outFile = re.sub(r"(.*)\.fa", r"\1Ss%s.fa" %(round), file)
 	logFile = outFile + ".sortIt_size.log"
-	usearch_cline = "%s --sortbysize %s --output %s --minsize %d --log %s --threads %s" %(Usearch, file, outFile, thresh, logFile, num_threads)
+	usearch_cline = "%s --sortbysize %s --output %s --minsize %d --log %s --threads %s" %(Vsearch, file, outFile, thresh, logFile, num_threads)
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
 	process.wait()
 	(out, err) = process.communicate() #the stdout and stderr
@@ -1089,9 +1089,9 @@ def clusterIt(file, clustID, round, previousClusterToCentroid_dict, verbose_leve
 	outClustFile = re.sub(r"(.*).fa", r"\1clusts%s.uc" %(round), file)
 	logFile = outFile + ".clusterIt.log"
 	if round == 1:
-		usearch_cline = "%s --cluster_fast %s --id %f --gapopen 3I/1E --consout %s --uc %s --sizeout --threads %s --log %s" % (Usearch, file, clustID, outFile, outClustFile, num_threads, logFile)
+		usearch_cline = "%s --cluster_fast %s --id %f --gapopen 3I/1E --consout %s --uc %s --sizeout --threads %s --log %s" % (Vsearch, file, clustID, outFile, outClustFile, num_threads, logFile)
 	elif round > 1:
-		usearch_cline = "%s --cluster_fast %s --id %f --gapopen 3I/1E --consout %s --uc %s --sizein --sizeout --threads %s --log %s" % (Usearch, file, clustID, outFile, outClustFile, num_threads, logFile)
+		usearch_cline = "%s --cluster_fast %s --id %f --gapopen 3I/1E --consout %s --uc %s --sizein --sizeout --threads %s --log %s" % (Vsearch, file, clustID, outFile, outClustFile, num_threads, logFile)
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout
@@ -1142,10 +1142,10 @@ def deChimeIt(file, round, abskew=1.9, verbose_level=0):
 	outFile = re.sub(r"(.*)\.fa", r"\1dCh%s.fa" %(round), file) # The rs indicate "raw" and thus python's escaping gets turned off
 	outFile_uchime = re.sub(r"(.*)\.fa", r"\1dCh%s.uchime" %(round), file) # The rs indicate "raw" and thus python's escaping gets turned off
 	logFile = outFile + ".deChimeIt.log"
-	usearch_cline = "%s --uchime_denovo %s --abskew %s --nonchimeras %s --uchimeout %s --log %s" % (Usearch, file, abskew, outFile, outFile_uchime, logFile)
+	usearch_cline = "%s --uchime_denovo %s --abskew %s --nonchimeras %s --uchimeout %s --log %s" % (Vsearch, file, abskew, outFile, outFile_uchime, logFile)
 
 	## To make the chimera-killing more stringent, change the usearch command line (above) to something like:
-	# usearch_cline = "%s -uchime_denovo %s -abskew 1.1 -minh 0.2 -xn 3 -dn 0.5 -nonchimeras %s -uchimeout %s" % (Usearch, file, outFile, outFile_uchime)
+	# usearch_cline = "%s -uchime_denovo %s -abskew 1.1 -minh 0.2 -xn 3 -dn 0.5 -nonchimeras %s -uchimeout %s" % (Vsearch, file, outFile, outFile_uchime)
 
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
 	(out, err) = process.communicate() #the stdout and stderr
@@ -1377,17 +1377,17 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 				all_consensus_seq.close()
 
 				## Do final clustering and chimera-killing ##
-				usearch_cline = "%s --sortbysize %s --output %s" %(Usearch, taxon_folder + '_Cluster_Finalconsensus.fa', taxon_folder + '_Cluster_FinalconsensusSs.fa')
+				usearch_cline = "%s --sortbysize %s --output %s" %(Vsearch, taxon_folder + '_Cluster_Finalconsensus.fa', taxon_folder + '_Cluster_FinalconsensusSs.fa')
 				process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 				process.wait()
 				(out, err) = process.communicate() #the stdout and stderr
 
-				usearch_cline = "%s --cluster_fast %s --id %f --gapopen 3I/1E --consout %s --uc %s --sizein --sizeout" % (Usearch, taxon_folder + '_Cluster_FinalconsensusSs.fa', clustID4, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + '.fa', taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + '.uc')
+				usearch_cline = "%s --cluster_fast %s --id %f --gapopen 3I/1E --consout %s --uc %s --sizein --sizeout" % (Vsearch, taxon_folder + '_Cluster_FinalconsensusSs.fa', clustID4, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + '.fa', taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + '.uc')
 				process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 				process.wait()
 				(out, err) = process.communicate() #the stdout and stderr
 
-				usearch_cline = "%s --uchime_denovo %s --abskew %s --nonchimeras %s --uchimeout %s" % (Usearch, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + '.fa', abskew, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.fa', taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.uchime')
+				usearch_cline = "%s --uchime_denovo %s --abskew %s --nonchimeras %s --uchimeout %s" % (Vsearch, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + '.fa', abskew, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.fa', taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.uchime')
 				process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 				process.wait()
 				(out, err) = process.communicate() #the stdout and stderr
@@ -1567,9 +1567,11 @@ if (length(st.nochim) > 0){
 	outputNames <- vector()
 	for (i in 1:dim(st.nochim)[2]){
 		newName <- paste("%s_ASV", i, sep = "")
+		size <- paste("size=", st.nochim[i], sep = "")
+		newName <- paste(newName, size, sep = "_")
 		outputNames <- c(outputNames, newName)
 	}
-	uniquesToFasta(st.nochim, "%s_ASVs.fasta", ids=outputNames)
+	uniquesToFasta(st.nochim, "%s_ASVs.fa", ids=outputNames)
 } else { print("WARNING: No ASVs found!")}
 
 # Output chimeras if any
@@ -1579,7 +1581,7 @@ if (length(st.chim.seq) > 0){
 		newName <- paste("%s_chimera", i, sep = "")
 		chimeraNames <- c(chimeraNames, newName)
 	}
-	uniquesToFasta(st.chim.seq, "%s_chimeras.fasta", ids=chimeraNames)
+	uniquesToFasta(st.chim.seq, "%s_chimeras.fa", ids=chimeraNames)
 } else { print("No chimeras detected")}
 
 print(format(Sys.time()))
@@ -1624,7 +1626,7 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
 					process.communicate()
 				## Count ASVs and store in LocusTaxonCountDict_clustd as {('C_dia_5316', 'ApP'): 28} for example ##
 				try:
-					clustered_seq_file = parse_fasta(taxon_folder + '_ASVs.fasta')
+					clustered_seq_file = parse_fasta(taxon_folder + '_ASVs.fa')
 					for each_seq in clustered_seq_file:
 						try:
 							LocusTaxonCountDict_clustd[taxon_folder, locus_folder] += 1  # {('C_dia_5316', 'ApP'): 28} for example
@@ -1636,7 +1638,7 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
 
 				## Count chimeras
 				try:
-					chimera_seq_file = parse_fasta(taxon_folder + '_chimeras.fasta')
+					chimera_seq_file = parse_fasta(taxon_folder + '_chimeras.fa')
 					for each_seq in chimera_seq_file:
 						try:
 							LocusTaxonCountDict_chimera[taxon_folder, locus_folder] += 1  # {('C_dia_5316', 'ApP'): 28} for example
@@ -2163,7 +2165,7 @@ else:
 	barcode_databasefile = 'barcode_blastdb'
 	refseq_databasefile = 'refseq_blastdb'
 	seq_name_toErase = ''
-	Usearch = 'vsearch'
+	Vsearch = 'vsearch'
 	Cutadapt = 'cutadapt'
 	Muscle = 'muscle'
 	Mafft = 'mafft'
@@ -2226,11 +2228,11 @@ else:
 					else:
 						mapping_file_list.append(mapfile)
 				parameterDict['mapping_file_list'] = mapping_file_list
-			elif setting_name == 'Usearch':
+			elif setting_name == 'Vsearch':
 				if setting_argument.startswith('Dependencies/'):
-					Usearch = ppp_location + '/' + setting_argument
+					Vsearch = ppp_location + '/' + setting_argument
 				else:
-					Usearch = setting_argument
+					Vsearch = setting_argument
 			elif setting_name == 'Cutadapt':
 				if setting_argument.startswith('Dependencies/'):
 					Cutadapt = ppp_location + '/' + setting_argument
@@ -2401,8 +2403,8 @@ else:
 	if not str(out).startswith("MUSCLE"):
 		sys.exit("Error: could not execute Muscle")
 
-	# Check if Vsearch can be executed (left Usearch name rather than rename variables)
-	usearch_cline = '%s --version' % (Usearch)
+	# Check if Vsearch can be executed (left Vsearch name rather than rename variables)
+	usearch_cline = '%s --version' % (Vsearch)
 	#print(usearch_cline)
 	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 	(out, err) = process.communicate() #the stdout and stderr
@@ -2439,7 +2441,7 @@ else:
 	log.write("Start Time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 	log.write(logo + '\n')
 	log.write("PURC called with: \n\t" + str(sys.argv) + "\n")
-	log.write('Usearch location: ' + str(Usearch) + '\n')
+	log.write('Vsearch location: ' + str(Vsearch) + '\n')
 	log.write('Cutadapt location: ' + str(Cutadapt) + '\n')
 	log.write('Muscle location: ' + str(Muscle) + '\n')
 	log.write("Settings for this run:\n" + "\tSequence file:\t" + str(raw_sequences) + "\n\tLoci:\t" + '\t'.join(locus_list) + '\n')
@@ -2486,7 +2488,7 @@ filePrefix = ".".join(raw_sequences.split(".")[:-1])
 if fileExt == "gz":
 	fileType = filePrefix.split(".")[-1]
 	if os.path.isfile(filePrefix):
-		print("WARNING: Unzipped file with same name already exists. Will use what I assume to be the uncompressed version of the read file...")
+		print("WARNING: Unzipped file with same name already exists. Will use what I assume is the uncompressed version of the read file...")
 		#gunzipCmd = "gunzip -c -k %s > tmp_sequences.%s" %(raw_sequences, fileType)
 		#process = subprocess.Popen(gunzipCmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 		#process.wait()
