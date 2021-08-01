@@ -1,6 +1,6 @@
 # PURC: Pipeline for Untangling Reticulate Complexes
 # v2.0
-#### Last updated 2021 June 22
+#### Last updated 2021 July 29
 
 ## Major changes from v1 ##
 * PURC updated for compatibility with Python3 and macOS 10.15+ (Catalina, Big Sur)
@@ -353,7 +353,7 @@ If you get an error message like "ERROR: Cython is not installed", install/updat
 ### Troubleshooting ###
 If PURC crashes or fails to produce results, in my experience the \#1 cause is forgetting to activate the conda environment! Occasionally conda seems to get 'confused' and restarting the environment can fix dependency issues. Run `conda activate base && conda activate purc`. If errors still persist, please contact [Peter](mailto:ps997@cornell.edu) or submit an issue here.
 
-If PURC hangs at the lima stage, this can be due to incorrectly formatted CCS read names. Lima expects something like these. In particular, it seems to need the slashes around the number between p0 and ccs, which represents the source ZMW on the PacBio flow cell. 
+If PURC hangs at the lima stage, this can be due to incorrectly formatted CCS read names. Lima expects something like these. In particular, it seems to need the slashes around the number between p0 and ccs, which represents the source ZMW on the PacBio flow cell.
 ```
 @m170705_030709_42153_c101215362550000001823280111021773_s1_p0/133442/ccs
 @m170707_051554_42153_c101215362550000001823280111021776_s1_p0/48934/ccs
