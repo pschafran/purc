@@ -2440,6 +2440,33 @@ else:
 	if not str(err).replace(' ','').startswith("R"):
 		sys.exit("Error: could not execute Rscript")
 
+	## Make output folder or read in previously completed steps ##
+	if os.path.exists(Output_folder): # overwrite existing folder
+		try:
+			with open("%s/tmp/run_settings.pkl" % Output_folder, "rb") as previous_settings_file:
+				previousSettingsDict = pickle.load(previous_settings_file)
+				if parameterDict == previousSettingsDict:
+					with open("%s/tmp/checkpoint.txt" % Output_folder, "r") as checkpoint_file:
+						checkpoints_complete = []
+						for line in checkpoint_file:
+							checkpoints_complete.append(line.strip("\n"))
+				else:
+					print("Error: Config file settings don't match those used before. Change config file back to continue previous run.")
+					sys.exit(1)
+		except:
+			shutil.rmtree(Output_folder)
+			os.makedirs(Output_folder)
+			os.makedirs("%s/tmp" % Output_folder)
+			checkpoints_complete = []
+			with open("%s/tmp/run_settings.pkl" % Output_folder, "wb") as settings_file:
+				pickle.dump(parameterDict, settings_file)
+	else:
+		os.makedirs(Output_folder)
+		os.makedirs("%s/tmp" % Output_folder)
+		checkpoints_complete = []
+		with open("%s/tmp/run_settings.pkl" % Output_folder, "wb") as settings_file:
+			pickle.dump(parameterDict, settings_file)
+
 	log = open("%s/%s" %(Output_folder,log_file), 'w')
 	log.write("Start Time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 	log.write(logo + '\n')
@@ -2539,32 +2566,7 @@ except:
 count_total_input_sequences = len(SeqDict)
 sys.stderr.write('\t' + str(count_total_input_sequences) + ' sequences read\n')
 
-## Make output folder ##
-if os.path.exists(Output_folder): # overwrite existing folder
-	try:
-		with open("%s/tmp/run_settings.pkl" % Output_folder, "rb") as previous_settings_file:
-			previousSettingsDict = pickle.load(previous_settings_file)
-			if parameterDict == previousSettingsDict:
-				with open("%s/tmp/checkpoint.txt" % Output_folder, "r") as checkpoint_file:
-					checkpoints_complete = []
-					for line in checkpoint_file:
-						checkpoints_complete.append(line.strip("\n"))
-			else:
-				print("Error: Config file settings don't match those used before. Change config file back to continue previous run.")
-				sys.exit(1)
-	except:
-		shutil.rmtree(Output_folder)
-		os.makedirs(Output_folder)
-		os.makedirs("%s/tmp" % Output_folder)
-		checkpoints_complete = []
-		with open("%s/tmp/run_settings.pkl" % Output_folder, "wb") as settings_file:
-			pickle.dump(parameterDict, settings_file)
-else:
-	os.makedirs(Output_folder)
-	os.makedirs("%s/tmp" % Output_folder)
-	checkpoints_complete = []
-	with open("%s/tmp/run_settings.pkl" % Output_folder, "wb") as settings_file:
-		pickle.dump(parameterDict, settings_file)
+
 if mode == 0 and "concatemerCheck" not in checkpoints_complete: # QC mode.
 	## Check chimeras ##
 	log.write('\n#Concatemers Removal#\n')
