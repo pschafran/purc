@@ -1440,7 +1440,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 	## Put all the sequences together ##
 	sys.stderr.write('\n\nPutting all the sequences together...\n\n')
 	for locus_folder in all_folders_loci: # Looping through each of the locus folders
-		outputfile_name_reconsensus = Output_prefix + '_4_' + str(locus_folder) + '_clustered_reconsensus.fa'
+		outputfile_name_reconsensus = Output_prefix + '_4_' + str(locus_folder) + '_OTUs.fa'
 		outputfile_reconsensus = open(outputfile_name_reconsensus, 'w')
 
 		os.chdir(locus_folder)
@@ -1656,7 +1656,7 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
 	## Put all the sequences together ##
 	sys.stderr.write('\n\nPutting all the sequences together...\n\n')
 	for locus_folder in all_folders_loci: # Looping through each of the locus folders
-		outputfile_name_reconsensus = Output_prefix + '_4_' + str(locus_folder) + '_clustered_reconsensus.fa'
+		outputfile_name_reconsensus = Output_prefix + '_4_' + str(locus_folder) + '_ASVs.fa'
 		outputfile_reconsensus = open(outputfile_name_reconsensus, 'w')
 
 		os.chdir(locus_folder)
@@ -2389,7 +2389,7 @@ else:
 		sys.exit(1)
 
 	# Check if settings are compatible
-	if Clustering_method == "ASV" and useOTUpriors == "TRUE":
+	if Clustering_method != "BOTH" and useOTUpriors == "TRUE":
 		print("Error: Clustering_method = 2 must be set to use OTU priors for ASV inference.")
 		sys.exit(1)
 
@@ -3022,7 +3022,10 @@ if Clustering_method != "BOTH":
 	count_output.write('\n**Allele/copy/cluster/whatever count by locus**\n')
 	log.write('\n**Allele/copy/cluster/whatever count by locus**\n')
 	for each_locus in sorted(locus_list):
-		file_name = Output_prefix + '_4_' + str(each_locus) + '_clustered_reconsensus.fa'
+		if Clustering_method == "OTU":
+			file_name = Output_prefix + '_4_' + str(each_locus) + '_OTUs.fa'
+		elif Clustering_method == "ASV":
+			file_name = Output_prefix + '_4_' + str(each_locus) + '_ASVs.fa'
 		try: #I'm hoping that this will stop the program from crashing if a locus has no sequences
 			seq_no = len(parse_fasta(file_name))
 			count_output.write(str(each_locus) + '\t' + str(seq_no) + '\n')
@@ -3047,7 +3050,7 @@ for each_locus in sorted(locus_list):
 		try:
 			if Clustering_method == "OTU":
 				count_output.write('\t' + each_taxon + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][0]) + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][1]) + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][2]) + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][3]) + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus][4]))
-			elif Clustering_method =="ASV":
+			elif Clustering_method == "ASV":
 				count_output.write('\t' + each_taxon + '\t' + str(LocusTaxonCountDict_chimera[each_taxon, each_locus]))
 		except:
 			count_output.write('\t' + each_taxon)
@@ -3056,7 +3059,12 @@ for each_locus in sorted(locus_list):
 count_output.close()
 ## Aligning the sequences ##
 if Align == 1: # Aligning can be turned on/off in the configuration file
-	fastas = glob.glob("*_clustered_reconsensus.fa")
+	fastas = glob.glob("*_OTUs.fa")
+	for file in fastas:
+		sys.stderr.write("Aligning " + file + "\n")
+		log.write("Aligning " + file + "\n")
+		outFile = mafftIt(file, verbose_level)
+	fastas = glob.glob("*_ASVs.fa")
 	for file in fastas:
 		sys.stderr.write("Aligning " + file + "\n")
 		log.write("Aligning " + file + "\n")
