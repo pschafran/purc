@@ -315,8 +315,8 @@ def makeBlastDB(inFileName, outDBname):
 	"""Makes a blast database from the input file"""
 
 	# remove any '-' in the sequence, so that BLAST won't freak out
-	path = "/".join(inFileName.strip("\n").split("/")[:-1])
-	basename = inFileName.strip("\n").split("/")[-1]
+	path = "/".join(inFileName.split("/")[:-1])
+	basename = inFileName.split("/")[-1]
 	seq_no_hyphen = open("%s/tmp/%s.nohyphen.fasta" % (Output_folder, basename), 'w')
 	makeDBfail = "FALSE"
 	for i in parse_fasta(inFileName):
@@ -329,8 +329,7 @@ def makeBlastDB(inFileName, outDBname):
 	if makeDBfail == "TRUE":
 		sys.exit(1)
 	seq_no_hyphen.close()
-	makeblastdb_cmd = "makeblastdb -in %s/tmp/%s.nohyphen.fasta -dbtype nucl -parse_seqids -out %s" % (Output_folder, outDBname)
-	print(makeblastdb_cmd)
+	makeblastdb_cmd = "makeblastdb -in %s/tmp/%s.nohyphen.fasta -dbtype nucl -parse_seqids -out %s" % (Output_folder, basename, outDBname)
 	process = subprocess.Popen(makeblastdb_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text = True)
 	(out, err) = process.communicate()
 	#print err, out
