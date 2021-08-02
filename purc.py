@@ -132,8 +132,6 @@ def rename_fastq(infile):
 	path = "/".join(prefix.split("/")[:-1])
 	filename = prefix.split("/")[-1]
 	outfile = "%s/tmp/%s_renamed.fastq" %(Output_folder, filename)
-	print(infile)
-	print(outfile)
 	with open(infile, "r") as open_infile:
 		with open(outfile, "w") as open_outfile:
 			linecount = 0
@@ -332,8 +330,8 @@ def makeBlastDB(inFileName, outDBname):
 		sys.exit(1)
 	seq_no_hyphen.close()
 	makeblastdb_cmd = "makeblastdb -in %s/tmp/%s.nohyphen.fasta -dbtype nucl -parse_seqids -out %s" % (Output_folder, outDBname)
+	print(makeblastdb_cmd)
 	process = subprocess.Popen(makeblastdb_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text = True)
-	process.wait()
 	(out, err) = process.communicate()
 	#print err, out
 	if verbose_level in [1, 2]:
