@@ -2539,9 +2539,12 @@ if fileType in ["fasta", "fas", "fa", "fna", "faa"]:
 elif fileType in ["fastq", "fq"]:
 	try:
 		fastq_sequences = rename_fastq(raw_sequences)
+	except:
+		sys.exit("ERROR: failed to rename %s" % raw_sequences)
+	try:
 		fasta_sequences = convert_fastq_to_fasta(fastq_sequences)
 	except:
-		sys.exit("ERROR: failed to convert and rename %s" % raw_sequences)
+		sys.exit("ERROR: failed to convert %s" % raw_sequences)
 else:
 	sys.exit("ERROR: Sequence file type not recognized. Expects standard file extensions (.fasta, .fa, .fastq, .fq)")
 
