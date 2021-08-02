@@ -317,7 +317,9 @@ def makeBlastDB(inFileName, outDBname):
 	"""Makes a blast database from the input file"""
 
 	# remove any '-' in the sequence, so that BLAST won't freak out
-	seq_no_hyphen = open("%s/tmp/%s.nohyphen.fasta" % (Output_folder, inFileName), 'w')
+	path = "/".join(inFileName.strip("\n").split("/")[:-1])
+	basename = inFileName.strip("\n").split("/")[-1]
+	seq_no_hyphen = open("%s/tmp/%s.nohyphen.fasta" % (Output_folder, basename), 'w')
 	makeDBfail = "FALSE"
 	for i in parse_fasta(inFileName):
 		new_seq = str(i.seq).replace('-','')
