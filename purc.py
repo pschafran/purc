@@ -115,7 +115,7 @@ def parse_fastq(infile):
 def rename_fasta(infile):
 	"""Makes sure there are no ';' or '='' or '/'' characters in the fasta file, so that they won't confuse blast"""
 	prefix = infile.replace('.fasta', '').replace('.fas', '').replace('.fa', '').replace('.txt', '')
-	outfile = prefix + '_renamed.fasta'
+	outfile = "%s/tmp/%s_renamed.fasta" %(Output_folder, prefix)
 	sed_cmd = "sed 's/;/_/g;s/=/_/g;s/\//_/g' %s > %s" % (infile, outfile)
 	process = subprocess.Popen(sed_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 	process.wait()
@@ -126,7 +126,7 @@ def rename_fastq(infile):
 	"""Makes sure there are no ';' or '='' or '/'' characters in the fastq file"""
 	replace = [';', '=', '/']
 	prefix = infile.replace('.fastq', '').replace('.fq', '')
-	outfile = prefix + '_renamed.fastq'
+	outfile = "%s/tmp/%s_renamed.fastq" %(Output_folder, prefix)
 	with open(infile, "r") as open_infile:
 		with open(outfile, "w") as open_outfile:
 			linecount = 0
@@ -200,7 +200,7 @@ def reorientSeqs(sequence_file, refseq_blastDB, num_threads): # function needed 
 	else:
 		fasta_sequence_file = sequence_file
 	# use BLAST against ref sequences to determine orientation of reads
-	blastoutfile = "blast_reorient_out.txt"
+	blastoutfile = "%s/tmp/blast_reorient_out.txt" % Output_folder
 	#print("Reorienting: %s" % fasta_sequence_file)
 	#print("BlastDB: %s" % refseq_blastDB)
 	blastCMD = "blastn -query %s -db %s -num_threads %s -max_target_seqs 1 -out %s -outfmt 6 -max_hsps 1" % (fasta_sequence_file, refseq_blastDB, num_threads, blastoutfile)
@@ -216,13 +216,13 @@ def reorientSeqs(sequence_file, refseq_blastDB, num_threads): # function needed 
 			if send < sstart:
 				reorientList.append(seqname)
 	if len(reorientList) >= 1:
-		with open("reorient_list.txt", "w") as open_orient_list:
+		with open("%s/tmp/reorient_list.txt" % Output_folder, "w") as open_orient_list:
 			for name in reorientList:
 				open_orient_list.write("%s\n" % name)
 		print("\tReorienting %s sequences..." % len(reorientList))
 		fastaSeqs = SeqIO.parse(fasta_sequence_file, 'fasta')
-		with open("%s.reoriented.fa" % filePrefix, "w") as open_out_fasta:
-			print("\tWriting reoriented sequences to %s " %("%s_reoriented.fa" % filePrefix))
+		with open("%s/tmp/%s.reoriented.fa" %(Output_folder, filePrefix), "w") as open_out_fasta:
+			print("\tWriting reoriented sequences to %s/tmp/%s.reoriented.fa" %(Output_folder, filePrefix))
 			for read in fastaSeqs:
 				if read.id in reorientList:
 					open_out_fasta.write(">%s\n" % read.id)
@@ -230,11 +230,11 @@ def reorientSeqs(sequence_file, refseq_blastDB, num_threads): # function needed 
 				else:
 					open_out_fasta.write(">%s\n" % read.id)
 					open_out_fasta.write("%s\n" % read.seq)
-		reorientedSequences = "%s.reoriented.fa" % filePrefix
+		reorientedSequences = "%s/tmp/%s.reoriented.fa" %(Output_folder, filePrefix)
 		if fileExt in ["fastq", "fq"]:
 			with open(fastq_sequence_file, "r") as open_fastq_file:
-				with open("%s.reoriented.fq" % filePrefix, "w") as open_out_fastq:
-					print("\tWriting reoriented sequences to %s " %("%s_reoriented.fq" % filePrefix))
+				with open("%s/tmp/%s.reoriented.fq" %(Output_folder,filePrefix), "w") as open_out_fastq:
+					print("\tWriting reoriented sequences to %s/tmp/%s.reoriented.fq" % (Output_folder, filePrefix))
 					lineCount = 0
 					reverseLine = 0
 					for line in open_fastq_file:
@@ -259,7 +259,7 @@ def reorientSeqs(sequence_file, refseq_blastDB, num_threads): # function needed 
 								open_out_fastq.write("%s\n" % reversed_qscore)
 							else:
 								open_out_fastq.write(line)
-			reorientedSequences = "%s.reoriented.fq" % filePrefix
+			reorientedSequences = "%s/tmp/%s.reoriented.fq" %(Output_folder, filePrefix)
 	else:
 		reorientedSequences = sequence_file
 	return reorientedSequences
@@ -302,24 +302,27 @@ def checkDuplicateBC(barcode_seq_filename):
 	nonduplicatedBC = [i for i in BCdict if i.id not in deduplicatedBClist]
 	BCdict = SeqIO.parse(barcode_seq_filename, 'fasta') # easiest way to get back to top of file
 	deduplicatedBC = [i for i in BCdict if i.id in deduplicatedBClist]
-	SeqIO.write(nonduplicatedBC, "nonduplicated_BCs.fasta", "fasta")
-	SeqIO.write(deduplicatedBC, "deduplicated_BCs.fasta", "fasta")
+	SeqIO.write(nonduplicatedBC, "%s/tmp/nonduplicated_BCs.fasta" % Output_folder, "fasta")
+	SeqIO.write(deduplicatedBC, "%s/tmp/deduplicated_BCs.fasta" % Output_folder, "fasta")
 	return dupesFound,BCpairdict
 
 def makeBlastDB(inFileName, outDBname):
 	"""Makes a blast database from the input file"""
 
 	# remove any '-' in the sequence, so that BLAST won't freak out
-	seq_no_hyphen = open(inFileName + '.nohyphen.fasta', 'w')
+	seq_no_hyphen = open("%s/tmp/%s.nohyphen.fasta" % (Output_folder, inFileName), 'w')
+	makeDBfail = "FALSE"
 	for i in parse_fasta(inFileName):
 		new_seq = str(i.seq).replace('-','')
 		seq_no_hyphen.write('>' + str(i.id) + '\n' + new_seq + '\n')
 		if len(i.id) > 50:
 			print("ERROR: %s has sequence name too long for BLAST. Reduce to < 50 characters" % inFileName)
 			print("Offending line: %s" % i.id)
-			sys.exit(1)
+			makeDBfail = "TRUE"
+	if makeDBfail == "TRUE":
+		sys.exit(1)
 	seq_no_hyphen.close()
-	makeblastdb_cmd = "makeblastdb -in %s -dbtype nucl -parse_seqids -out %s" % (inFileName + '.nohyphen.fasta', outDBname)
+	makeblastdb_cmd = "makeblastdb -in %s/tmp/%s.nohyphen.fasta -dbtype nucl -parse_seqids -out %s" % (Output_folder, outDBname)
 	process = subprocess.Popen(makeblastdb_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text = True)
 	process.wait()
 	(out, err) = process.communicate()
@@ -2437,7 +2440,7 @@ else:
 	if not str(err).replace(' ','').startswith("R"):
 		sys.exit("Error: could not execute Rscript")
 
-	log = open(log_file, 'w')
+	log = open("%s/%s" %(Output_folder,log_file), 'w')
 	log.write("Start Time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 	log.write(logo + '\n')
 	log.write("PURC called with: \n\t" + str(sys.argv) + "\n")
@@ -2539,10 +2542,10 @@ sys.stderr.write('\t' + str(count_total_input_sequences) + ' sequences read\n')
 ## Make output folder ##
 if os.path.exists(Output_folder): # overwrite existing folder
 	try:
-		with open("%s/run_settings.pkl" % Output_folder, "rb") as previous_settings_file:
+		with open("%s/tmp/run_settings.pkl" % Output_folder, "rb") as previous_settings_file:
 			previousSettingsDict = pickle.load(previous_settings_file)
 			if parameterDict == previousSettingsDict:
-				with open("%s/checkpoint.txt" % Output_folder, "r") as checkpoint_file:
+				with open("%s/tmp/checkpoint.txt" % Output_folder, "r") as checkpoint_file:
 					checkpoints_complete = []
 					for line in checkpoint_file:
 						checkpoints_complete.append(line.strip("\n"))
@@ -2552,13 +2555,15 @@ if os.path.exists(Output_folder): # overwrite existing folder
 	except:
 		shutil.rmtree(Output_folder)
 		os.makedirs(Output_folder)
+		os.makedirs("%s/tmp" % Output_folder)
 		checkpoints_complete = []
-		with open("%s/run_settings.pkl" % Output_folder, "wb") as settings_file:
+		with open("%s/tmp/run_settings.pkl" % Output_folder, "wb") as settings_file:
 			pickle.dump(parameterDict, settings_file)
 else:
 	os.makedirs(Output_folder)
+	os.makedirs("%s/tmp" % Output_folder)
 	checkpoints_complete = []
-	with open("%s/run_settings.pkl" % Output_folder, "wb") as settings_file:
+	with open("%s/tmp/run_settings.pkl" % Output_folder, "wb") as settings_file:
 		pickle.dump(parameterDict, settings_file)
 if mode == 0 and "concatemerCheck" not in checkpoints_complete: # QC mode.
 	## Check chimeras ##
@@ -2581,7 +2586,7 @@ if mode == 0 and "concatemerCheck" not in checkpoints_complete: # QC mode.
 	if not check_fasta(fasta_sequences):
 		sys.exit('Error: concatemers-removal returned no sequence')
 	else:
-		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+		with open("%s/tmp/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
 			open_checkpoint_file.write("concatemerCheck\n")
 elif mode == 0 and "concatemerCheck" in checkpoints_complete:
 	log.write('\n#Concatemers Removal#\n')
@@ -2607,8 +2612,8 @@ else:
 			elif Lima_barcode_type == "single-side":
 				lima_singleend(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
 		elif dupesFound == 1: # work around if duplicated barcodes are found. Split duplicated and nonduplicated barcodes and check sequences separately.
-			lima_dual(raw_sequences, Lima_barcode_type, "nonduplicated_BCs.fasta", Output_folder, "nonduplicated_BCs")
-			lima_symmetric(raw_sequences, Lima_barcode_type, "deduplicated_BCs.fasta", Output_folder, "deduplicated_BCs")
+			lima_dual(raw_sequences, Lima_barcode_type, "%s/tmp/nonduplicated_BCs.fasta" % Output_folder, Output_folder, "nonduplicated_BCs")
+			lima_symmetric(raw_sequences, Lima_barcode_type, "%s/tmp/deduplicated_BCs.fasta" % Output_folder, Output_folder, "deduplicated_BCs")
 			nondupeseqs = SeqIO.parse("%s/nonduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
 			nondupeseqIDs = []
 			for seq in nondupeseqs:
@@ -2669,7 +2674,7 @@ else:
 	if count_seq_w_bc == str(0):
 		sys.exit('Error: barcode-removal returned no sequence')
 	else:
-		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+		with open("%s/tmp/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
 			open_checkpoint_file.write("barcodeRemoval\n")
 
 	if Recycle_bc:
@@ -2695,11 +2700,11 @@ else:
 		if count_seq_pr_trimmed == str(0):
 			sys.exit('Error: primer-removal returned no sequence')
 		else:
-			with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+			with open("%s/tmp/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
 				open_checkpoint_file.write("primerRemoval\n")
 	elif Clustering_method == "ASV":
 		primer_trimmed_file = Output_prefix + '_1_bc_trimmed.fa'
-		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+		with open("%s/tmp/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
 			open_checkpoint_file.write("primerRemoval\n")
 
 
@@ -2709,7 +2714,7 @@ if "seqAnnotating" in checkpoints_complete:
 	log.write('Reusing previous annotated files...\n')
 	print('Reusing previous annotated files...\n')
 	annoFileName = Output_prefix + '_3_annotated.fa'
-	with open("%s/LocusTaxonCountDict_unclustd.pkl" % Output_folder, "rb") as picklefile:
+	with open("%s/tmp/LocusTaxonCountDict_unclustd.pkl" % Output_folder, "rb") as picklefile:
 		LocusTaxonCountDict_unclustd = pickle.load(picklefile)
 else:
 	sys.stderr.write('Annotating seqs...\n')
@@ -2724,9 +2729,9 @@ else:
 	if count_seq_annotated == str(0):
 		sys.exit('Error: annotation step returned no sequence')
 	else:
-		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+		with open("%s/tmp/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
 			open_checkpoint_file.write("seqAnnotating\n")
-		with open("%s/LocusTaxonCountDict_unclustd.pkl" % Output_folder, "wb") as picklefile:
+		with open("%s/tmp/LocusTaxonCountDict_unclustd.pkl" % Output_folder, "wb") as picklefile:
 			pickle.dump(LocusTaxonCountDict_unclustd, picklefile)
 
 	if mode == 2:
@@ -2742,9 +2747,9 @@ if Clustering_method == "OTU":
 	if "otuClustering" in checkpoints_complete:
 		log.write('Reusing previous OTU clustering results...\n')
 		print('Reusing previous OTU clustering results...\n')
-		with open("%s/OTU_LocusTaxonCountDict_clustd.pkl" % Output_folder, "rb") as picklefile:
+		with open("%s/tmp/OTU_LocusTaxonCountDict_clustd.pkl" % Output_folder, "rb") as picklefile:
 			LocusTaxonCountDict_clustd = pickle.load(picklefile)
-		with open("%s/OTU_LocusTaxonCountDict_chimera.pkl" % Output_folder, "rb") as picklefile:
+		with open("%s/tmp/OTU_LocusTaxonCountDict_chimera.pkl" % Output_folder, "rb") as picklefile:
 			LocusTaxonCountDict_chimera = pickle.load(picklefile)
 	else:
 		otuStartTime = time.time()
@@ -2754,19 +2759,19 @@ if Clustering_method == "OTU":
 		print("OTU Runtime: %s" % convertTime(otuRunTime))
 		log.write("OTU Runtime: %s\n" % convertTime(otuRunTime))
 		log.write("OTU stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+		with open("%s/tmp/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
 			open_checkpoint_file.write("otuClustering\n")
-		with open("%s/OTU_LocusTaxonCountDict_clustd.pkl" % Output_folder, "wb") as picklefile:
+		with open("%s/tmp/OTU_LocusTaxonCountDict_clustd.pkl" % Output_folder, "wb") as picklefile:
 			pickle.dump(LocusTaxonCountDict_clustd, picklefile)
-		with open("%s/OTU_LocusTaxonCountDict_chimera.pkl" % Output_folder, "wb") as picklefile:
+		with open("%s/tmp/OTU_LocusTaxonCountDict_chimera.pkl" % Output_folder, "wb") as picklefile:
 			pickle.dump(LocusTaxonCountDict_chimera, picklefile)
 elif Clustering_method == "ASV":
 	if "asvInference" in checkpoints_complete:
 		log.write('Reusing previous ASV inference results...\n')
 		print('Reusing previous ASV inference results...\n')
-		with open("%s/ASV_LocusTaxonCountDict_clustd.pkl" % Output_folder, "rb") as picklefile:
+		with open("%s/tmp/ASV_LocusTaxonCountDict_clustd.pkl" % Output_folder, "rb") as picklefile:
 			LocusTaxonCountDict_clustd = pickle.load(picklefile)
-		with open("%s/ASV_LocusTaxonCountDict_chimera.pkl" % Output_folder, "rb") as picklefile:
+		with open("%s/tmp/ASV_LocusTaxonCountDict_chimera.pkl" % Output_folder, "rb") as picklefile:
 			LocusTaxonCountDict_chimera = pickle.load(picklefile)
 	else:
 		asvStartTime = time.time()
@@ -2776,20 +2781,20 @@ elif Clustering_method == "ASV":
 		print("ASV Runtime: %s" % convertTime(asvRunTime))
 		log.write("ASV Runtime: %s\n" % convertTime(asvRunTime))
 		log.write("ASV stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+		with open("%s/tmp/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
 			open_checkpoint_file.write("asvInference\n")
-		with open("%s/ASV_LocusTaxonCountDict_clustd.pkl" % Output_folder, "wb") as picklefile:
+		with open("%s/tmp/ASV_LocusTaxonCountDict_clustd.pkl" % Output_folder, "wb") as picklefile:
 			pickle.dump(LocusTaxonCountDict_clustd, picklefile)
-		with open("%s/ASV_LocusTaxonCountDict_chimera.pkl" % Output_folder, "wb") as picklefile:
+		with open("%s/tmp/ASV_LocusTaxonCountDict_chimera.pkl" % Output_folder, "wb") as picklefile:
 			pickle.dump(LocusTaxonCountDict_chimera, picklefile)
 elif Clustering_method == "BOTH" and useOTUpriors == "FALSE":
 	# ASV
 	if "asvInference" in checkpoints_complete:
 		log.write('Reusing previous ASV inference results...\n')
 		print('Reusing previous ASV inference results...\n')
-		with open("%s/ASV_LocusTaxonCountDict_clustd.pkl" % Output_folder, "rb") as picklefile:
+		with open("%s/tmp/ASV_LocusTaxonCountDict_clustd.pkl" % Output_folder, "rb") as picklefile:
 			ASV_LocusTaxonCountDict_clustd = pickle.load(picklefile)
-		with open("%s/ASV_LocusTaxonCountDict_chimera.pkl" % Output_folder, "rb") as picklefile:
+		with open("%s/tmp/ASV_LocusTaxonCountDict_chimera.pkl" % Output_folder, "rb") as picklefile:
 			ASV_LocusTaxonCountDict_chimera = pickle.load(picklefile)
 	else:
 		asvStartTime = time.time()
@@ -2799,19 +2804,19 @@ elif Clustering_method == "BOTH" and useOTUpriors == "FALSE":
 		print("ASV Runtime: %s" % convertTime(asvRunTime))
 		log.write("ASV Runtime: %s\n" % convertTime(asvRunTime))
 		log.write("ASV stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+		with open("%s/tmp/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
 			open_checkpoint_file.write("asvInference\n")
-		with open("%s/ASV_LocusTaxonCountDict_clustd.pkl" % Output_folder, "wb") as picklefile:
+		with open("%s/tmp/ASV_LocusTaxonCountDict_clustd.pkl" % Output_folder, "wb") as picklefile:
 			pickle.dump(ASV_LocusTaxonCountDict_clustd, picklefile)
-		with open("%s/ASV_LocusTaxonCountDict_chimera.pkl" % Output_folder, "wb") as picklefile:
+		with open("%s/tmp/ASV_LocusTaxonCountDict_chimera.pkl" % Output_folder, "wb") as picklefile:
 			pickle.dump(ASV_LocusTaxonCountDict_chimera, picklefile)
 	# OTU
 	if "otuClustering" in checkpoints_complete:
 		log.write('Reusing previous OTU clustering results...\n')
 		print('Reusing previous OTU clustering results...\n')
-		with open("%s/OTU_LocusTaxonCountDict_clustd.pkl" % Output_folder, "rb") as picklefile:
+		with open("%s/tmp/OTU_LocusTaxonCountDict_clustd.pkl" % Output_folder, "rb") as picklefile:
 			OTU_LocusTaxonCountDict_clustd = pickle.load(picklefile)
-		with open("%s/OTU_LocusTaxonCountDict_chimera.pkl" % Output_folder, "rb") as picklefile:
+		with open("%s/tmp/OTU_LocusTaxonCountDict_chimera.pkl" % Output_folder, "rb") as picklefile:
 			OTU_LocusTaxonCountDict_chimera = pickle.load(picklefile)
 	else:
 		otuStartTime = time.time()
@@ -2821,11 +2826,11 @@ elif Clustering_method == "BOTH" and useOTUpriors == "FALSE":
 		print("OTU Runtime: %s" % convertTime(otuRunTime))
 		log.write("OTU Runtime: %s\n" % convertTime(otuRunTime))
 		log.write("OTU stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+		with open("%s/tmp/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
 			open_checkpoint_file.write("otuClustering\n")
-		with open("%s/OTU_LocusTaxonCountDict_clustd.pkl" % Output_folder, "wb") as picklefile:
+		with open("%s/tmp/OTU_LocusTaxonCountDict_clustd.pkl" % Output_folder, "wb") as picklefile:
 			pickle.dump(OTU_LocusTaxonCountDict_clustd, picklefile)
-		with open("%s/OTU_LocusTaxonCountDict_chimera.pkl" % Output_folder, "wb") as picklefile:
+		with open("%s/tmp/OTU_LocusTaxonCountDict_chimera.pkl" % Output_folder, "wb") as picklefile:
 			pickle.dump(OTU_LocusTaxonCountDict_chimera, picklefile)
 	# Combine outputs
 	LocusTaxonCountDict_clustd = {}
@@ -2842,9 +2847,9 @@ elif Clustering_method == "BOTH" and useOTUpriors == "TRUE":
 	if "otuClustering" in checkpoints_complete:
 		log.write('Reusing previous OTU clustering results...\n')
 		print('Reusing previous OTU clustering results...\n')
-		with open("%s/OTU_LocusTaxonCountDict_clustd.pkl" % Output_folder, "rb") as picklefile:
+		with open("%s/tmp/OTU_LocusTaxonCountDict_clustd.pkl" % Output_folder, "rb") as picklefile:
 			OTU_LocusTaxonCountDict_clustd = pickle.load(picklefile)
-		with open("%s/OTU_LocusTaxonCountDict_chimera.pkl" % Output_folder, "rb") as picklefile:
+		with open("%s/tmp/OTU_LocusTaxonCountDict_chimera.pkl" % Output_folder, "rb") as picklefile:
 			OTU_LocusTaxonCountDict_chimera = pickle.load(picklefile)
 	else:
 		otuStartTime = time.time()
@@ -2854,19 +2859,19 @@ elif Clustering_method == "BOTH" and useOTUpriors == "TRUE":
 		print("OTU Runtime: %s" % convertTime(otuRunTime))
 		log.write("OTU Runtime: %s\n" % convertTime(otuRunTime))
 		log.write("OTU stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+		with open("%s/tmp/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
 			open_checkpoint_file.write("otuClustering\n")
-		with open("%s/OTU_LocusTaxonCountDict_clustd.pkl" % Output_folder, "wb") as picklefile:
+		with open("%s/tmp/OTU_LocusTaxonCountDict_clustd.pkl" % Output_folder, "wb") as picklefile:
 			pickle.dump(OTU_LocusTaxonCountDict_clustd, picklefile)
-		with open("%s/OTU_LocusTaxonCountDict_chimera.pkl" % Output_folder, "wb") as picklefile:
+		with open("%s/tmp/OTU_LocusTaxonCountDict_chimera.pkl" % Output_folder, "wb") as picklefile:
 			pickle.dump(OTU_LocusTaxonCountDict_chimera, picklefile)
 	# ASV
 	if "asvInference" in checkpoints_complete:
 		log.write('Reusing previous ASV inference results...\n')
 		print('Reusing previous ASV inference results...\n')
-		with open("%s/ASV_LocusTaxonCountDict_clustd.pkl" % Output_folder, "rb") as picklefile:
+		with open("%s/tmp/ASV_LocusTaxonCountDict_clustd.pkl" % Output_folder, "rb") as picklefile:
 			ASV_LocusTaxonCountDict_clustd = pickle.load(picklefile)
-		with open("%s/ASV_LocusTaxonCountDict_chimera.pkl" % Output_folder, "rb") as picklefile:
+		with open("%s/tmp/ASV_LocusTaxonCountDict_chimera.pkl" % Output_folder, "rb") as picklefile:
 			ASV_LocusTaxonCountDict_chimera = pickle.load(picklefile)
 	else:
 		asvStartTime = time.time()
@@ -2876,11 +2881,11 @@ elif Clustering_method == "BOTH" and useOTUpriors == "TRUE":
 		print("ASV Runtime: %s" % convertTime(asvRunTime))
 		log.write("ASV Runtime: %s\n" % convertTime(asvRunTime))
 		log.write("ASV stop time: %s\n" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-		with open("%s/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+		with open("%s/tmp/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
 			open_checkpoint_file.write("asvInference\n")
-		with open("%s/ASV_LocusTaxonCountDict_clustd.pkl" % Output_folder, "wb") as picklefile:
+		with open("%s/tmp/ASV_LocusTaxonCountDict_clustd.pkl" % Output_folder, "wb") as picklefile:
 			pickle.dump(ASV_LocusTaxonCountDict_clustd, picklefile)
-		with open("%s/ASV_LocusTaxonCountDict_chimera.pkl" % Output_folder, "wb") as picklefile:
+		with open("%s/tmp/ASV_LocusTaxonCountDict_chimera.pkl" % Output_folder, "wb") as picklefile:
 			pickle.dump(ASV_LocusTaxonCountDict_chimera, picklefile)
 	# Combine outputs
 	LocusTaxonCountDict_clustd = {}
