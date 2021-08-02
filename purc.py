@@ -198,6 +198,7 @@ def ReverseComplement(seq):
 def reorientSeqs(sequence_file, refseq_blastDB, num_threads): # function needed after lima demultiplexing to orient sequences so all are facing the same way. BLAST-based demultiplexing does this within its function
 	print("Reorienting sequences based on references...")
 	filePrefix = ".".join(sequence_file.split(".")[:-1])
+	basename = filePrefix.split("/")[-1]
 	fileExt = sequence_file.split(".")[-1]
 	if fileExt in ["fastq", "fq"]:
 		fastq_sequence_file = sequence_file
@@ -226,8 +227,8 @@ def reorientSeqs(sequence_file, refseq_blastDB, num_threads): # function needed 
 				open_orient_list.write("%s\n" % name)
 		print("\tReorienting %s sequences..." % len(reorientList))
 		fastaSeqs = SeqIO.parse(fasta_sequence_file, 'fasta')
-		with open("%s/tmp/%s.reoriented.fa" %(Output_folder, filePrefix), "w") as open_out_fasta:
-			print("\tWriting reoriented sequences to %s/tmp/%s.reoriented.fa" %(Output_folder, filePrefix))
+		with open("%s/tmp/%s.reoriented.fa" %(Output_folder, basename), "w") as open_out_fasta:
+			print("\tWriting reoriented sequences to %s/tmp/%s.reoriented.fa" %(Output_folder, basename))
 			for read in fastaSeqs:
 				if read.id in reorientList:
 					open_out_fasta.write(">%s\n" % read.id)
@@ -235,11 +236,11 @@ def reorientSeqs(sequence_file, refseq_blastDB, num_threads): # function needed 
 				else:
 					open_out_fasta.write(">%s\n" % read.id)
 					open_out_fasta.write("%s\n" % read.seq)
-		reorientedSequences = "%s/tmp/%s.reoriented.fa" %(Output_folder, filePrefix)
+		reorientedSequences = "%s/tmp/%s.reoriented.fa" %(Output_folder, basename)
 		if fileExt in ["fastq", "fq"]:
 			with open(fastq_sequence_file, "r") as open_fastq_file:
-				with open("%s/tmp/%s.reoriented.fq" %(Output_folder,filePrefix), "w") as open_out_fastq:
-					print("\tWriting reoriented sequences to %s/tmp/%s.reoriented.fq" % (Output_folder, filePrefix))
+				with open("%s/tmp/%s.reoriented.fq" %(Output_folder,basename), "w") as open_out_fastq:
+					print("\tWriting reoriented sequences to %s/tmp/%s.reoriented.fq" % (Output_folder, basename))
 					lineCount = 0
 					reverseLine = 0
 					for line in open_fastq_file:
@@ -264,7 +265,7 @@ def reorientSeqs(sequence_file, refseq_blastDB, num_threads): # function needed 
 								open_out_fastq.write("%s\n" % reversed_qscore)
 							else:
 								open_out_fastq.write(line)
-			reorientedSequences = "%s/tmp/%s.reoriented.fq" %(Output_folder, filePrefix)
+			reorientedSequences = "%s/tmp/%s.reoriented.fq" %(Output_folder, basename)
 	else:
 		reorientedSequences = sequence_file
 	return reorientedSequences
