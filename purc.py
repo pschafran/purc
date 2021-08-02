@@ -115,7 +115,10 @@ def parse_fastq(infile):
 def rename_fasta(infile):
 	"""Makes sure there are no ';' or '='' or '/'' characters in the fasta file, so that they won't confuse blast"""
 	prefix = infile.replace('.fasta', '').replace('.fas', '').replace('.fa', '').replace('.txt', '')
-	outfile = "%s/tmp/%s_renamed.fasta" %(Output_folder, prefix)
+	path = "/".join(prefix.split("/")[:-1])
+	filename = prefix.split("/")[-1]
+	outfile = "%s/%s/tmp/%s_renamed.fasta" %(path,Output_folder, prefix)
+	#outfile = "%s/tmp/%s_renamed.fasta" %(Output_folder, prefix)
 	sed_cmd = "sed 's/;/_/g;s/=/_/g;s/\//_/g' %s > %s" % (infile, outfile)
 	process = subprocess.Popen(sed_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 	process.wait()
@@ -126,7 +129,11 @@ def rename_fastq(infile):
 	"""Makes sure there are no ';' or '='' or '/'' characters in the fastq file"""
 	replace = [';', '=', '/']
 	prefix = infile.replace('.fastq', '').replace('.fq', '')
-	outfile = "%s/tmp/%s_renamed.fastq" %(Output_folder, prefix)
+	path = "/".join(prefix.split("/")[:-1])
+	filename = prefix.split("/")[-1]
+	outfile = "%s/%s/tmp/%s_renamed.fastq" %(path,Output_folder, prefix)
+	print(infile)
+	print(outfile)
 	with open(infile, "r") as open_infile:
 		with open(outfile, "w") as open_outfile:
 			linecount = 0
