@@ -117,7 +117,7 @@ def rename_fasta(infile):
 	prefix = infile.replace('.fasta', '').replace('.fas', '').replace('.fa', '').replace('.txt', '')
 	path = "/".join(prefix.split("/")[:-1])
 	filename = prefix.split("/")[-1]
-	outfile = "%s/%s/tmp/%s_renamed.fasta" %(path,Output_folder, prefix)
+	outfile = "%s/tmp/%s_renamed.fasta" %(Output_folder, filename)
 	#outfile = "%s/tmp/%s_renamed.fasta" %(Output_folder, prefix)
 	sed_cmd = "sed 's/;/_/g;s/=/_/g;s/\//_/g' %s > %s" % (infile, outfile)
 	process = subprocess.Popen(sed_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
@@ -131,7 +131,7 @@ def rename_fastq(infile):
 	prefix = infile.replace('.fastq', '').replace('.fq', '')
 	path = "/".join(prefix.split("/")[:-1])
 	filename = prefix.split("/")[-1]
-	outfile = "%s/%s/tmp/%s_renamed.fastq" %(path,Output_folder, prefix)
+	outfile = "%s/tmp/%s_renamed.fastq" %(Output_folder, filename)
 	print(infile)
 	print(outfile)
 	with open(infile, "r") as open_infile:
