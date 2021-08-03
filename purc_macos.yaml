@@ -119,7 +119,7 @@ dependencies:
   - llvm-openmp=11.1.0=hda6cdc1_1
   - llvm-tools=11.1.0=hd011deb_2
   - lz4-c=1.9.3=h046ec9c_0
-  - mafft=7.480=h779adbc_0
+  - mafft=7.480=hb4d813b_0
   - make=4.3=h22f3db7_1
   - markupsafe=2.0.1=py39h89e85a6_0
   - matplotlib-inline=0.1.2=pyhd8ed1ab_2
