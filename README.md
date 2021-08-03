@@ -4,11 +4,13 @@
 
 ## Major changes from v1 ##
 * PURC updated for compatibility with Python3 and macOS 10.15+ (Catalina, Big Sur)
-* Usearch replaced with [vsearch](https://github.com/torognes/vsearch) for Linux and macOS
+* Usearch replaced with [vsearch](https://github.com/torognes/vsearch)
 * Amplicon sequence variant (ASVs) inference using [DADA2](https://benjjneb.github.io/dada2/index.html) introduced
 * Linux only: PacBio's [lima](https://github.com/pacificbiosciences/barcoding/) replaces BLAST methods for demultiplexing
-* Input file path handling. Files no longer have to be in the working directory (output will still be written to working directory)
-* Input sequence file can be gzip compressed
+* Better input file path handling. Files no longer have to be in the working directory (output will still be written to working directory)
+* Runtime ~5-10 times faster (dataset dependent)
+* Input sequence file can be FASTQ and can be gzip compressed
+* Interrupted runs can be resumed from last completed stage
 * Primer order in config now must match locus order
 * Multiple reference sequences for a locus must be in the same orientation
 * Dependencies expected to be in PATH by default
@@ -364,9 +366,10 @@ If PURC hangs at the lima stage, this can be due to incorrectly formatted CCS re
 
 ### To do ###
 * Clean up handling of temp files (move to tmp dir, remove when finished running)
-* Illumina support
+* Illumina support for ASVs
+* Dynamic threshold (i.e. by percentage) for dropping OTUs during clustering
 
 ### Known Bugs ###
 * Inconsistent number of sequences reported during barcode removal (does not always equal total number of sequences)
-* CCS files without forward-slashes around ZMW code in read name will break lima
+* CCS files without forward-slashes around ZMW code in read name cause lima to hang
 * Fix vsearch output in log
