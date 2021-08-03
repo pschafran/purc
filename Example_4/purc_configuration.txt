@@ -40,7 +40,7 @@ Align					= 1		# 0: No aligning attempted. 1: Final consensus sequences will be 
 minLen				= 0	# The minimum length to retain a read, applied to all samples (leave as 0 to apply Tukey's outlier test to individual samples)
 maxLen				= 0	# The maximum length to retain a read, applied to all samples (leave as 0 to apply Tukey's outlier test to individual samples)
 maxEE				= 5 #  After truncation, reads with higher than maxEE "expected errors" will be discarded.
-Use_OTU_priors = TRUE # Set to TRUE to use OTU output sequences as priors for ASV inference; only compatible with Clustering_method = 2 (default FALSE)
+Use_OTU_priors = FALSE # Set to TRUE to use OTU output sequences as priors for ASV inference; only compatible with Clustering_method = 2 (default FALSE)
 
 
 [OTU Clustering Parameters]
