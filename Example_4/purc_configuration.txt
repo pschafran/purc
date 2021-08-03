@@ -39,10 +39,12 @@ Align					= 1		# 0: No aligning attempted. 1: Final consensus sequences will be 
 [DADA Filtering Parameters]
 minLen				= 0	# The minimum length to retain a read, applied to all samples (leave as 0 to apply Tukey's outlier test to individual samples)
 maxLen				= 0	# The maximum length to retain a read, applied to all samples (leave as 0 to apply Tukey's outlier test to individual samples)
-maxEE				= 10 #  After truncation, reads with higher than maxEE "expected errors" will be discarded.
+maxEE				= 5 #  After truncation, reads with higher than maxEE "expected errors" will be discarded.
+Use_OTU_priors = TRUE # Set to TRUE to use OTU output sequences as priors for ASV inference; only compatible with Clustering_method = 2 (default FALSE)
+
 
 [OTU Clustering Parameters]
-clustID1				= 0.997 	# The similarity criterion for the initial USEARCH clustering
+clustID1				= 0.997 	# The similarity criterion for the initial VSEARCH clustering
 clustID2 				= 0.995 	# The similarity criterion for the second clustering
 clustID3 				= 0.990 	# The similarity criterion for the third clustering
 clustID4 				= 0.997 	# The similarity criterion for the FINAL clustering to remove identical/near identical clusters
@@ -57,12 +59,12 @@ abundance_skew			= 1.9
 [Lima Override]
 Lima_override = 0 # Set to 1 to use BLAST-based demultiplexing instead of Lima (Linux only)
 
-[Dependencies]
-Usearch 				= vsearch								# The name of (or path to) Usearch executable; Here assumed to be accessible through the shell's PATH
-Cutadapt				= cutadapt							# The name of (or path to) Cutadapt executable; Here assumed to be accessible through the shell's PATH
-Muscle 					= muscle								# The name of (or path to) Muscle executable; Here assumed to be accessible through the shell's PATH
-Rscript					= Rscript								# The name of (or path to) Rscript executable; Here assumed to be accessible through the shell's PATH
-blastn 					= blastn								# The name of (or path to) Rscript executable; Here assumed to be accessible through the shell's PATH
+[Dependencies] # by default assumed to be available in the shell's PATH
+Vsearch 				= vsearch								# The name of (or path to) Vsearch executable
+Cutadapt				= cutadapt								# The name of (or path to) Cutadapt executable
+MAFFT 					= mafft								# The name of (or path to) MAFFT executable
+Rscript					= Rscript								# The name of (or path to) Rscript executable
+blastn 					= blastn								# The name of (or path to) blastn executable
 
 [Miscellaneous]
 Threads					= 8						# The number of threads for running BLAST
