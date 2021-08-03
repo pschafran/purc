@@ -1046,8 +1046,8 @@ def sortIt_length(file, verbose_level=0):
 	log.write("sortIt_length")
 	"""Sorts clusters by seq length"""
 	outFile = re.sub(r"(.*)\..*", r"\1_Sl.fa", file) # Make the outfile name by cutting off the extension of the infile name, and adding "_S1.fa"
-	usearch_cline = "%s --sortbylength %s --output %s --threads %s" %(Vsearch, file, outFile, num_threads)
-	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
+	vsearch_cline = "%s --sortbylength %s --output %s --threads %s" %(Vsearch, file, outFile, num_threads)
+	process = subprocess.Popen(vsearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
 	process.wait()
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout
@@ -1063,8 +1063,8 @@ def sortIt_size(file, thresh, round, verbose_level=0):
     "round" is used to annotate the outfile name with S1, S2, etc. depending on which sort this is"""
 	outFile = re.sub(r"(.*)\.fa", r"\1Ss%s.fa" %(round), file)
 	logFile = outFile + ".sortIt_size.log"
-	usearch_cline = "%s --sortbysize %s --output %s --minsize %d --log %s --threads %s" %(Vsearch, file, outFile, thresh, logFile, num_threads)
-	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
+	vsearch_cline = "%s --sortbysize %s --output %s --minsize %d --log %s --threads %s" %(Vsearch, file, outFile, thresh, logFile, num_threads)
+	process = subprocess.Popen(vsearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
 	process.wait()
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout
@@ -1099,10 +1099,10 @@ def clusterIt(file, clustID, round, previousClusterToCentroid_dict, verbose_leve
 	outClustFile = re.sub(r"(.*).fa", r"\1clusts%s.uc" %(round), file)
 	logFile = outFile + ".clusterIt.log"
 	if round == 1:
-		usearch_cline = "%s --cluster_fast %s --id %f --gapopen 3I/1E --consout %s --uc %s --sizeout --threads %s --log %s" % (Vsearch, file, clustID, outFile, outClustFile, num_threads, logFile)
+		vsearch_cline = "%s --cluster_fast %s --id %f --gapopen 3I/1E --consout %s --uc %s --sizeout --threads %s --log %s" % (Vsearch, file, clustID, outFile, outClustFile, num_threads, logFile)
 	elif round > 1:
-		usearch_cline = "%s --cluster_fast %s --id %f --gapopen 3I/1E --consout %s --uc %s --sizein --sizeout --threads %s --log %s" % (Vsearch, file, clustID, outFile, outClustFile, num_threads, logFile)
-	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
+		vsearch_cline = "%s --cluster_fast %s --id %f --gapopen 3I/1E --consout %s --uc %s --sizein --sizeout --threads %s --log %s" % (Vsearch, file, clustID, outFile, outClustFile, num_threads, logFile)
+	process = subprocess.Popen(vsearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout
 	if verbose_level == 2:
@@ -1152,12 +1152,12 @@ def deChimeIt(file, round, abskew=1.9, verbose_level=0):
 	outFile = re.sub(r"(.*)\.fa", r"\1dCh%s.fa" %(round), file) # The rs indicate "raw" and thus python's escaping gets turned off
 	outFile_uchime = re.sub(r"(.*)\.fa", r"\1dCh%s.uchime" %(round), file) # The rs indicate "raw" and thus python's escaping gets turned off
 	logFile = outFile + ".deChimeIt.log"
-	usearch_cline = "%s --uchime_denovo %s --abskew %s --nonchimeras %s --uchimeout %s --log %s" % (Vsearch, file, abskew, outFile, outFile_uchime, logFile)
+	vsearch_cline = "%s --uchime_denovo %s --abskew %s --nonchimeras %s --uchimeout %s --log %s" % (Vsearch, file, abskew, outFile, outFile_uchime, logFile)
 
-	## To make the chimera-killing more stringent, change the usearch command line (above) to something like:
-	# usearch_cline = "%s -uchime_denovo %s -abskew 1.1 -minh 0.2 -xn 3 -dn 0.5 -nonchimeras %s -uchimeout %s" % (Vsearch, file, outFile, outFile_uchime)
+	## To make the chimera-killing more stringent, change the vsearch command line (above) to something like:
+	# vsearch_cline = "%s -uchime_denovo %s -abskew 1.1 -minh 0.2 -xn 3 -dn 0.5 -nonchimeras %s -uchimeout %s" % (Vsearch, file, outFile, outFile_uchime)
 
-	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
+	process = subprocess.Popen(vsearch_cline, stdout=subprocess.PIPE, stderr=log, shell=True, text=True)
 	(out, err) = process.communicate() #the stdout and stderr
 	savestdout = sys.stdout
 	if verbose_level in [1, 2]:
@@ -1387,18 +1387,18 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 				all_consensus_seq.close()
 
 				## Do final clustering and chimera-killing ##
-				usearch_cline = "%s --sortbysize %s --output %s" %(Vsearch, taxon_folder + '_Cluster_Finalconsensus.fa', taxon_folder + '_Cluster_FinalconsensusSs.fa')
-				process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
+				vsearch_cline = "%s --sortbysize %s --output %s" %(Vsearch, taxon_folder + '_Cluster_Finalconsensus.fa', taxon_folder + '_Cluster_FinalconsensusSs.fa')
+				process = subprocess.Popen(vsearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 				process.wait()
 				(out, err) = process.communicate() #the stdout and stderr
 
-				usearch_cline = "%s --cluster_fast %s --id %f --gapopen 3I/1E --consout %s --uc %s --sizein --sizeout" % (Vsearch, taxon_folder + '_Cluster_FinalconsensusSs.fa', clustID4, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + '.fa', taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + '.uc')
-				process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
+				vsearch_cline = "%s --cluster_fast %s --id %f --gapopen 3I/1E --consout %s --uc %s --sizein --sizeout" % (Vsearch, taxon_folder + '_Cluster_FinalconsensusSs.fa', clustID4, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + '.fa', taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + '.uc')
+				process = subprocess.Popen(vsearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 				process.wait()
 				(out, err) = process.communicate() #the stdout and stderr
 
-				usearch_cline = "%s --uchime_denovo %s --abskew %s --nonchimeras %s --uchimeout %s" % (Vsearch, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + '.fa', abskew, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.fa', taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.uchime')
-				process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
+				vsearch_cline = "%s --uchime_denovo %s --abskew %s --nonchimeras %s --uchimeout %s" % (Vsearch, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + '.fa', abskew, taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.fa', taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.uchime')
+				process = subprocess.Popen(vsearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 				process.wait()
 				(out, err) = process.communicate() #the stdout and stderr
 
@@ -2177,7 +2177,7 @@ else:
 	seq_name_toErase = ''
 	Vsearch = 'vsearch'
 	Cutadapt = 'cutadapt'
-	Muscle = 'muscle'
+	#Muscle = 'muscle'
 	Mafft = 'mafft'
 	RscriptPath = 'Rscript'
 	log_file = 'purc_log_' + time_stamp + '.txt'
@@ -2248,11 +2248,11 @@ else:
 					Cutadapt = ppp_location + '/' + setting_argument
 				else:
 					Cutadapt = setting_argument
-			elif setting_name == 'Muscle':
-				if setting_argument.startswith('Dependencies/'):
-					Muscle = ppp_location + '/' + setting_argument
-				else:
-					Muscle = setting_argument
+			#elif setting_name == 'Muscle':
+			#	if setting_argument.startswith('Dependencies/'):
+			#		Muscle = ppp_location + '/' + setting_argument
+			#	else:
+			#		Muscle = setting_argument
 			elif setting_name == 'MAFFT':
 				if setting_argument.startswith('Dependencies/'):
 					Mafft = ppp_location + '/' + setting_argument
@@ -2406,17 +2406,17 @@ else:
 	# Check if dependencies are in place
 	sys.stderr.write('Checking dependencies...\n')
 	# Check if muscle can be executed
-	muscle_cline = '%s -version' % (Muscle)
+	#muscle_cline = '%s -version' % (Muscle)
 	#print(muscle_cline)
-	process = subprocess.Popen(muscle_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
-	(out, err) = process.communicate() #the stdout and stderr
-	if not str(out).startswith("MUSCLE"):
-		sys.exit("Error: could not execute Muscle")
+	#process = subprocess.Popen(muscle_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
+	#(out, err) = process.communicate() #the stdout and stderr
+	#if not str(out).startswith("MUSCLE"):
+	#	sys.exit("Error: could not execute Muscle")
 
 	# Check if Vsearch can be executed (left Vsearch name rather than rename variables)
-	usearch_cline = '%s --version' % (Vsearch)
-	#print(usearch_cline)
-	process = subprocess.Popen(usearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
+	vsearch_cline = '%s --version' % (Vsearch)
+	#print(vsearch_cline)
+	process = subprocess.Popen(vsearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
 	(out, err) = process.communicate() #the stdout and stderr
 	if not str(err).startswith("vsearch"):
 		sys.exit("Error: could not execute vsearch")
@@ -2480,7 +2480,7 @@ else:
 	log.write("PURC called with: \n\t" + str(sys.argv) + "\n")
 	log.write('Vsearch location: ' + str(Vsearch) + '\n')
 	log.write('Cutadapt location: ' + str(Cutadapt) + '\n')
-	log.write('Muscle location: ' + str(Muscle) + '\n')
+	#log.write('Muscle location: ' + str(Muscle) + '\n')
 	log.write("Settings for this run:\n" + "\tSequence file:\t" + str(raw_sequences) + "\n\tLoci:\t" + '\t'.join(locus_list) + '\n')
 	log.write("\tMapping files: " + ', '.join(mapping_file_list) + '\n')
 	log.write("\tForward primers: " + ', '.join(Forward_primer) + '\n')
