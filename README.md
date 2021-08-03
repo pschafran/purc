@@ -38,7 +38,7 @@ PURC should run on most recent versions of macOS and Linux. Windows support is d
 To download the program, enter your terminal, move to the directory where you want to download it, and clone from the repo. For example:
 ```bash
 cd ~
-git clone https://bitbucket.org/peter_schafran/purc.git && cd purc
+curl -L https://bitbucket.org/peter_schafran/purc/raw/574b216db65e6a5f7475aa5b019299f8c05a73a7/purc_v2.tar.gz -O && tar -xzf purc_v2.tar.gz && cd purc
 ```
 ### Step 1: Setup ###
 PURC consists of purc.py (and another variation--purc_recluster.py--that we describe below) and relies on a number of dependencies. We recommend using the [Miniconda](https://conda.io/en/latest/miniconda.html) package manager for installing dependencies. Once installed (and the terminal rebooted), you should be able to run on of these commands to install dependencies, depending on your operating system:
