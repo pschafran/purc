@@ -17,7 +17,7 @@ Reverse_primer			= GAAATACCTGATTTGTAACCTA	# 5'-3' Order must match locus_name an
 
 ***Setting up PURC run***
 [PPP_Configuration]
-Mode					= 0		# 0: Check concatemers and then full run
+Mode					= 1		# 0: Check concatemers and then full run
 								# 1: Skip concatemer-checking
 Multiplex_per_barcode	= 0		# 0: Each barcode contains only one sample
 								# 1: Each barcode contains multiple samples

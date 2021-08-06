@@ -366,10 +366,13 @@ If PURC hangs at the lima stage, this can be due to incorrectly formatted CCS re
 
 ### To do ###
 * Clean up handling of temp files (move to tmp dir, remove when finished running)
-* Illumina support for ASVs
+* Paired-end Illumina support for OTUs and ASVs
 * Dynamic threshold (i.e. by percentage) for dropping OTUs during clustering
+* Add output files for relative adundance of ASVs/OTUs within each sample
+* Add read length filtering before OTU processing
+* Simple command line input alternative for config file
 
 ### Known Bugs ###
 * Inconsistent number of sequences reported during barcode removal (does not always equal total number of sequences)
 * CCS files without forward-slashes around ZMW code in read name cause lima to hang
-* Fix vsearch output in log
+* Fix vsearch and mafft output to log

@@ -1426,7 +1426,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 
 				## Rename sequences in the final fasta: add taxon name ##
 				with open(taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh.fa', "r") as renamingFile:
-					with open(taxon_folder + '_Cluster_FinalconsensusSsC' + str(clustID4) + 'dCh_renamed.fa', "w") as renamedFile:
+					with open(taxon_folder + '_OTUs.fa', "w") as renamedFile:
 						for line in renamingFile:
 							if line.startswith(">"):
 								line = re.sub(r"centroid=","",line)
@@ -1439,7 +1439,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 
 				## Remove intermediate files if requsted ##
 				if remove_intermediates == 1:
-					filt_to_remove = list(set(glob.glob('*')) - set(glob.glob('*_renamed.fa')) - set(glob.glob(taxon_folder+'.fa')))
+					filt_to_remove = list(set(glob.glob('*')) - set(glob.glob('*_OTUs.fa')) - set(glob.glob(taxon_folder+'.fa')) - set(glob.glob(taxon_folder+'.fastq')) - set(glob.glob(taxon_folder+'.R')) - set(glob.glob('*ASVs.fa')) - set(glob.glob('*.pdf')) - set(glob.glob('*.log')))
 					for file in filt_to_remove:
 						os.remove(file)
 
@@ -1458,7 +1458,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 		for taxon_folder in taxonForThisLocus: # have to go into each barcode folder in each locus folder
 			if os.path.isdir(taxon_folder): # the glob might have found some files as well as folders
 				os.chdir(taxon_folder)
-				files_to_add_reconsensus = glob.glob("*_Cluster_FinalconsensusSsC*_renamed.fa")
+				files_to_add_reconsensus = glob.glob("*_OTUs.fa")
 				for file in files_to_add_reconsensus:
 					shutil.copyfileobj(open(file,'r'), outputfile_reconsensus) #Add each file to the final output
 
@@ -1549,7 +1549,7 @@ plotErrors(err)
 dev.off()
 ''' % (Fprimer, Rprimer, minLen, maxLen, maxEE, "%%", "%%", sample, sample, sample))
 		if useOTUpriors == "TRUE":
-			otuPriors = [i.seq for i in SeqIO.parse("%s_Cluster_FinalconsensusSsC%sdCh_renamed.fa" % (sample, str(clustID4)), 'fasta')]
+			otuPriors = [i.seq for i in SeqIO.parse("%s_OTUs.fa" % sample, 'fasta')]
 			priors = ', '.join(['"{}"'.format(value) for value in otuPriors])
 			rscript.write("dd2 <- dada(drp, err=err, BAND_SIZE=32, multithread=TRUE, priors = c(%s))" % priors)
 		else:
@@ -1599,7 +1599,7 @@ quit()
 ''' % (sample, sample, sample, sample))
 
 def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath, verbose_level = 1):
-	log.write("IterativeClusterDechimera\n")
+	log.write("DADA2\n")
 	## Split sequences into separate files/folders for each locus ##
 	sys.stderr.write('Splitting sequences into a folder/file for each locus...\n')
 	locusCounts = SplitBy(annotd_seqs_file = annoFileName, split_by = "locus", Multiplex_perBC_flag = Multiplex_per_barcode)
@@ -3074,6 +3074,176 @@ for each_locus in sorted(locus_list):
 
 		count_output.write('\n')
 count_output.close()
+
+
+# Create Proportion List
+
+otuFastas = glob.glob("*_OTUs.fa")
+asvFastas = glob.glob("*_ASVs.fa")
+otuLocusList = []
+asvLocusList = []
+
+sizeDict = {}
+if len(otuFastas) >= 1:
+	for file in otuFastas:
+		locus = file.strip("%s_4_" % Output_prefix).strip("_OTUs.fa")
+		otuLocusList.append(locus)
+		with open(file, "r") as infile:
+			for line in infile:
+				if line.startswith(">"):
+					sample = line.strip(">\n").split("_Cluster")[0]
+					sizeTmp = line.strip(">\n").split(";")[1]
+					size = int(sizeTmp.split("=")[1])
+					try:
+						sizeDict[sample]["OTU"][locus].append(size)
+					except:
+						try:
+							sizeDict[sample]["OTU"].update({locus : [size]})
+						except:
+							try:
+								sizeDict[sample].update({"OTU" : {locus : [size]}})
+							except:
+								sizeDict.update({sample : {"OTU" : {locus : [size]}}})
+if len(asvFastas) >= 1:
+	for file in asvFastas:
+		locus = file.strip("%s_4_" % Output_prefix).strip("_ASVs.fa")
+		asvLocusList.append(locus)
+		with open(file, "r") as infile:
+			for line in infile:
+				if line.startswith(">"):
+					sample = line.strip(">\n").split("_ASV")[0]
+					size = int(line.strip(">\n").split("_size=")[1])
+					try:
+						sizeDict[sample]["ASV"][locus].append(size)
+					except:
+						try:
+							sizeDict[sample]["ASV"].update({locus : [size]})
+						except:
+							try:
+								sizeDict[sample].update({"ASV" : {locus : [size]}})
+							except:
+								sizeDict.update({sample : {"ASV" : {locus : [size]}}})
+with open("%s_5_proportions.tsv" % Output_prefix, "w") as outfile:
+	otuLocusString = ""
+	if len(otuLocusList) >= 1:
+		for otuLocus in otuLocusList:
+			otuLocusString = "%s%s-OTUs\t" %(otuLocusString, otuLocus)
+	asvLocusString = ""
+	if len(asvLocusList) >= 1:
+		for asvLocus in asvLocusList:
+			asvLocusString ="%s%s-ASVs\t" %(asvLocusString, asvLocus)
+	outfile.write("Sample\t%s%s\n" %(otuLocusString, asvLocusString))
+	for sample in sorted(sizeDict.keys()):
+		outfile.write("%s\t" % sample)
+		try:
+			for locus in sizeDict[sample]['OTU']:
+				try:
+					counter = 1
+					for i in sizeDict[sample]['OTU'][locus]:
+						if counter > 1:
+							outfile.write(",")
+						outfile.write("%s" %i)
+						counter += 1
+					outfile.write("\t")
+				except:
+					outfile.write("\t")
+		except:
+			outfile.write("\t" * len(otuLocusList))
+		try:
+			for locus in sizeDict[sample]["ASV"]:
+				try:
+					counter = 1
+					for i in sizeDict[sample]["ASV"][locus]:
+						if counter > 1:
+							outfile.write(",")
+						outfile.write("%s" %i)
+						counter += 1
+					outfile.write("\t")
+				except:
+					outfile.write("\t")
+		except:
+			outfile.write("\t" * len(otuLocusList))
+		outfile.write("\n")
+
+with open("tmp/proportions.R", "w") as propRscript:
+	propRscript.write('''
+library(ggplot2)
+library(cowplot)
+library(ggrepel)
+props <- read.delim("%s_5_proportions.tsv", sep = "\t", header = TRUE)
+
+
+len <- dim(props)[1]
+width <- dim(props)[2]
+
+plotList <- list()
+counter = 0
+for (row in 1:len){
+  counter = counter + 1
+  sample <- props[row,1]
+  titlePlot <- ggplot() +
+    annotate("text", x = -1000,y = 1,size = 5,label = sample)+
+    theme_void()
+  plotList[[counter]] <- titlePlot
+  for (col in c(2,3)){
+    counter = counter + 1
+    if (col == 2){
+      clusterMethod <- "OTUs"
+    } else if (col == 3) { clusterMethod <- "ASVs"}
+    else if (col == 4) {clusterMethod <- "ASVs No Priors"}
+    numbers <- props[row,col]
+    for (j in strsplit(numbers,",")){
+      newList <- c()
+      for (k in j){
+        newList <- c(newList,as.numeric(k))
+        data <- data.frame(
+          group=LETTERS[1:length(newList)],
+          value=sort(newList, decreasing = TRUE)
+          )
+      }
+    }
+  # Get the positions
+    df2 <- data %>%
+      mutate(csum = rev(cumsum(rev(value))),
+             pos = value/2 + lead(csum, 1),
+             pos = if_else(is.na(pos), value/2, pos))
+  if (counter < 5){
+  pie <- ggplot(df2, aes(x="", y=value, fill=group)) +
+    geom_bar(stat="identity", width=1, color=rgb(0,0,0,0)) +
+    coord_polar("y", start=0, direction = -1) +
+    theme_void() +
+    theme(legend.position="none") +
+    ggtitle(clusterMethod) +
+    theme(plot.title = element_text(hjust = 0.5)) +
+    #geom_text(aes(label = value), position = position_stack(vjust = 0.5)) +
+    geom_label_repel(data = df2, aes(y = pos, label = value), size = 4.5, nudge_x = 1, show.legend = FALSE) +
+    #scale_y_continuous(breaks = df2$pos, labels = df$group) +
+    scale_fill_brewer(palette = "Pastel1")
+  } else {
+    pie <- ggplot(data, aes(x="", y=value, fill=group)) +
+      geom_bar(stat="identity", width=1, color=rgb(0,0,0,0)) +
+      coord_polar("y", start=0, direction = -1) +
+      theme_void() +
+      theme(legend.position="none") +
+      ggtitle("") +
+      theme(plot.title = element_text(hjust = 0.5)) +
+      geom_label_repel(data = df2, aes(y = pos, label = value), size = 4.5, nudge_x = 1, show.legend = FALSE) +
+      scale_fill_brewer(palette = "Pastel1")
+  }
+  plotList[[counter]] <- pie
+  }
+}
+pdf("%s_5_proportions.pdf", 8.5, 11)
+for (i in seq(1, length(plotList), 24)) {
+  print(plot_grid(plotlist = plotList[i:(i+23)], ncol = 3, rel_widths = c(3,1,1,1)))
+}
+dev.off()
+	''' % (Output_prefix, Output_prefix))
+propPlotCMD = "%s tmp/proportions.R" %(RscriptPath)
+process = subprocess.Popen(propPlotCMD, stdout=log, stderr=log, shell=True, text=True)
+process.communicate()
+
+
 ## Aligning the sequences ##
 if Align == 1: # Aligning can be turned on/off in the configuration file
 	fastas = glob.glob("*_OTUs.fa")
