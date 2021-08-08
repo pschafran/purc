@@ -3160,10 +3160,10 @@ with open("%s_5_proportions.tsv" % Output_prefix, "w") as outfile:
 							outfile.write(",")
 						outfile.write("%s" %i)
 						counter += 1
-					if locusCounter < len(sizeDict[sample]["ASV"].keys())
+					if locusCounter < len(sizeDict[sample]["ASV"].keys()):
 						outfile.write("\t")
 				except:
-					if locusCounter < len(sizeDict[sample]["ASV"].keys())
+					if locusCounter < len(sizeDict[sample]["ASV"].keys()):
 						outfile.write("\t")
 		except:
 			outfile.write("\n")
