@@ -4,7 +4,7 @@ logo = """
 -------------------------------------------------------------
 |                       purc_recluster                      |
 |        Pipeline for Untangling Reticulate Complexes       |
-|                        version 1.0                        |
+|                        version 2.0                        |
 |            https://bitbucket.org/crothfels/ppp            |
 |															|
 |      Fay-Wei Li & Carl J Rothfels & Peter W Schafran      |
@@ -16,7 +16,7 @@ usage = """
 
 Use this script to recluster the alleles/homeologs from a previous PURC run.
 
-Example: ./purc_recluster.py -f purc_3_annotated.fa -o recluster -c 0.997 0.995 0.99 0.997 -s 1 4 --clean
+Example: ./purc_recluster.py -f purc_3_annotated.fa -o recluster -c 0.997 0.995 0.99 0.997 -s 1 4 --clean -m OTU
 
 """
 
@@ -525,7 +525,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 
 				## Remove intermediate files if requsted ##
 				if args.clean:
-					filt_to_remove = list(set(glob.glob('*')) - set(glob.glob('*_renamed.fa')) - set(glob.glob(taxon_folder+'.fa')))
+					filt_to_remove = list(set(glob.glob('*')) - set(glob.glob('*_OTUs.fa')) - set(glob.glob(taxon_folder+'.fa')))
 					for file in filt_to_remove:
 						os.remove(file)
 
@@ -538,7 +538,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 	for locus_folder in all_folders_loci: # Looping through each of the locus folders
 		#outputfile_name = str(locus_folder) + '_clustered.txt' # "locus_folder" is also the name of the locus
 		#outputfile = open(outputfile_name, 'w')
-		outputfile_name_reconsensus = str(locus_folder) + '_clustered_reconsensus.fa'
+		outputfile_name_reconsensus = str(locus_folder) + '_OTUs.fa'
 		outputfile_reconsensus = open(outputfile_name_reconsensus, 'w')
 
 		os.chdir(locus_folder)
@@ -549,7 +549,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 				#files_to_add = glob.glob("*Ss4.fa")
 				#for file in files_to_add:
 				#	shutil.copyfileobj(open(file,'rb'), outputfile) #Add each file to the final output
-				files_to_add_reconsensus = glob.glob("*_Cluster_FinalconsensusSsC*_renamed.fa")
+				files_to_add_reconsensus = glob.glob("*_OTUs.fa")
 				for file in files_to_add_reconsensus:
 					shutil.copyfileobj(open(file,'rb'), outputfile_reconsensus) #Add each file to the final output
 
@@ -561,7 +561,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
 
 def mafftIt(file, verbose_level=0):
 	"""Aligns the sequences using MUSCLE"""
-	outFile = re.sub(r"(.*)\..*", r"\1.afa", file) # The rs indicate "raw" and thus python's escaping gets turned off
+	outFile = re.sub(r"(.*)\..*", r"\1.aligned.fa", file) # The rs indicate "raw" and thus python's escaping gets turned off
 	mafft_cline = '%s --auto %s > %s' % (Mafft, file, outFile)
 	process = subprocess.Popen(mafft_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 	(out, err) = process.communicate() #the stdout and stderr
@@ -673,12 +673,12 @@ required.add_argument('-f','--annotated_file', type=str, action="store", metavar
 required.add_argument('-o','--output_folder', type=str, action="store", metavar='\b', required=True,
                help='The output folder')
 optional.add_argument('-c','--clustering_identities', type=float, nargs=4, metavar='\b',
-               help='The similarity criterion for the first, second, third and forth USEARCH clustering',
+               help='The similarity criterion for the first, second, third and fourth USEARCH clustering',
                default=[0.997, 0.995, 0.99, 0.997])
 optional.add_argument('-s','--size_threshold', type=int, nargs=2, metavar='\b',
                     help='The min. number of sequences/cluster necessary for that cluster to be retained (set to 2 to remove singletons, 3 to remove singletons and doubles, etc)',
                     default=[1, 4])
-required.add_argument('-m', '--method', type=str, action="store", metavar="\b", required=True, help='Method to use for clustering sequences (OTU or ASV)',default='OTU')
+optional.add_argument('-m', '--method', type=str, action="store", metavar="\b", help='Method to use for clustering sequences (OTU or ASV). Reserved for future use',default='OTU')
 optional.add_argument('--minimum_length', type=int, action="store",metavar="\b", help="Minimum read length for ASV inference (0 = autodetect)", default=0)
 optional.add_argument('--maximum_length', type=int, action="store",metavar="\b", help="Maximum read length for ASV inference (0 = autodetect)", default=0)
 optional.add_argument('--maximum_errors', type=int, action="store",metavar="\b", help="Maximum number of expected errors allows in a read for ASV inference", default=5)
@@ -713,9 +713,9 @@ num_threads = args.thread_number[0]
 specimen_to_cluster = args.specimen_to_cluster
 locus_to_cluster = args.locus_to_cluster
 
-if clusteringMethod == "OTU" and clustID not in globals() or clustID2 not in globals or clustID3 not in globals or clustID4 not in globals or sizeThreshold not in globals() or sizeThreshold2 not in globals():
-	print("ERROR: OTU clustering requires --clustering_identities and --size_threshold to be set")
-	sys.exit(1)
+if clusteringMethod == "OTU" and clustID not in globals() or clustID2 not in globals() or clustID3 not in globals() or clustID4 not in globals() or sizeThreshold not in globals() or sizeThreshold2 not in globals():
+	print("ERROR: OTU clustering requires all entries in --clustering_identities and --size_threshold to be set")
+	sys.exit(usage)
 
 #purc_location = os.path.dirname(os.path.abspath( __file__ ))
 Vsearch = 'vsearch'
@@ -849,7 +849,7 @@ for each_locus in locus_list:
 	#log.write('\n')
 
 ## Aligning the sequences ##
-fastas = glob.glob("*_renamed.fa")
+fastas = glob.glob("*_OTUs.fa")
 for file in fastas:
 	sys.stderr.write("Aligning " + file + "\n")
 	log.write("Aligning " + file + "\n")

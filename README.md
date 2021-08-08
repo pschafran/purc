@@ -350,10 +350,21 @@ Now when R is started, the `.libPaths()` command should return:
 [1] "/home/ps997/miniconda3/envs/purc/lib/R/library"
 ```
 
-If you get an error message like "ERROR: Cython is not installed", install/update [Cython](http://docs.cython.org/src/quickstart/install.html) and try again.
-
 ### Troubleshooting ###
-If PURC crashes or fails to produce results, in my experience the \#1 cause is forgetting to activate the conda environment! Occasionally conda seems to get 'confused' and restarting the environment can fix dependency issues. Run `conda activate base && conda activate purc`. If errors still persist, please contact [Peter](mailto:ps997@cornell.edu) or submit an issue here.
+If PURC crashes or fails to produce results, the \#1 cause for me is forgetting to activate the `purc` conda environment! Occasionally conda seems to get 'confused' and restarting the environment can fix dependency issues. Run `conda activate base && conda activate purc`. If errors still persist, please contact [Peter](mailto:ps997@cornell.edu) or submit an issue here.
+
+#### Permission denied error ####
+If you get an error saying "./purc.py: Permission denied", this may be due to file permissions. Run the command `ls -lah` and you may see:
+```
+-rw-r--r--  1 user user 138K Jul 29 12:45 purc.py
+```
+where the `x` executable flag is missing. Try the command `chmod a+x purc.py` to make it executable. Then `ls -lah` should return:
+```
+-rwxr-xr-x  1 user user 138K Jul 29 12:45 purc.py
+```
+Now try it again!
+
+#### PURC hangs at lima ####
 
 If PURC hangs at the lima stage, this can be due to incorrectly formatted CCS read names. Lima expects something like these. In particular, it seems to need the slashes around the number between p0 and ccs, which represents the source ZMW on the PacBio flow cell.
 ```
@@ -363,6 +374,9 @@ If PURC hangs at the lima stage, this can be due to incorrectly formatted CCS re
 @m170705_030709_42153_c101215362550000001823280111021773_s1_p0/22270/ccs
 @m170705_030709_42153_c101215362550000001823280111021773_s1_p0/94288/ccs
 ```
+
+#### Cython ####
+If you get an error message like "ERROR: Cython is not installed", install/update [Cython](http://docs.cython.org/src/quickstart/install.html) and try again.
 
 ### To do ###
 * Clean up handling of temp files (move to tmp dir, remove when finished running)

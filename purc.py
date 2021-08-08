@@ -299,7 +299,7 @@ def checkDuplicateBC(barcode_seq_filename):
 				BCpairdict.update({BCseqdict[rc][0] : i.id})
 	duplicateBClist = set(duplicateBClist)
 	if dupesFound == 1:
-		print("Remove duplicates to run lima, or change config file to use BLAST demultiplexing (lima_override = 1)")
+		print("Remove duplicates to run lima, or change config file to use BLAST demultiplexing (Lima_override = 1)")
 		print("Will attempt to run by splitting same/different dual barcodes then rejoining before annotation")
 	for seq in BCseqdict:
 		if len(BCseqdict[seq]) > 1:
@@ -2612,7 +2612,7 @@ if "barcodeRemoval" in checkpoints_complete:
 	log.write('Reusing previous barcode trimmed files...\n')
 	print('Reusing previous barcode trimmed files...\n')
 else:
-	if platform.system() == 'Linux' and Lima_override == "0": # Add quotes around 0 to activate this section
+	if platform.system() == 'Linux' and Lima_override == "0": 
 		print("Demultiplexing with Lima")
 		dupesFound, BCpairdict = checkDuplicateBC(barcode_seq_filename) # Can't have duplicate barcodes (including reverse complements) in lima
 		if dupesFound == 0:
