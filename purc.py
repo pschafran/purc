@@ -3200,7 +3200,7 @@ for (row in 1:len){
       }
     }
   # Get the positions
-  df2 <- data %>%
+  df2 <- data %s>%s
       mutate(csum = rev(cumsum(rev(value))),
              pos = value/2 + lead(csum, 1),
              pos = if_else(is.na(pos), value/2, pos))
@@ -3243,7 +3243,7 @@ for (i in seq(1, length(plotList), pageLength)) {
   print(plot_grid(plotlist = plotList[i:(i+(pageLength-1))], ncol = width, rel_widths = relwidths))
 }
 dev.off()
-	''' % (Output_prefix, Output_prefix))
+	''' % (Output_prefix, "%", "%", Output_prefix))
 propPlotCMD = "%s tmp/proportions.R" %(RscriptPath)
 process = subprocess.Popen(propPlotCMD, stdout=log, stderr=log, shell=True, text=True)
 process.communicate()
