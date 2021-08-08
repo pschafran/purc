@@ -3178,6 +3178,7 @@ library(dplyr)
 props <- read.delim("%s_5_proportions.tsv", sep = "\t", header = TRUE)
 len <- dim(props)[1]
 width <- dim(props)[2]
+width <- width-1
 plotList <- list()
 counter = 0
 for (row in 1:len){
@@ -3237,10 +3238,10 @@ relwidths = c(3)
 for (i in 1:width){
   relwidths = c(relwidths,1)
 }
-pageLength = width*6
+plotsPerPage = width*6
 pdf("%s_5_proportions.pdf", 8.5, 11)
-for (i in seq(1, length(plotList), pageLength)) {
-  print(plot_grid(plotlist = plotList[i:(i+(pageLength-1))], ncol = width, rel_widths = relwidths))
+for (i in seq(1, length(plotList), plotsPerPage)) {
+  print(plot_grid(plotlist = plotList[i:(i+(plotsPerPage-1))], ncol = width, rel_widths = relwidths))
 }
 dev.off()
 	''' % (Output_prefix, "%", "%", Output_prefix))
