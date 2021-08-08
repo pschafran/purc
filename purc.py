@@ -3207,29 +3207,24 @@ for (row in 1:len){
              pos = if_else(is.na(pos), value/2, pos))
   if (counter < 5){
   pie <- ggplot(df2, aes(x="", y=value, fill=group)) +
-    geom_bar(stat="identity", width=1, color = "black") +
+    geom_bar(stat="identity", width=1) +
     coord_polar("y", start=0, direction = -1) +
     theme_void() +
     theme(legend.position="none") +
     ggtitle(clusterMethod) +
     theme(plot.title = element_text(hjust = 0.5)) +
-    #geom_text(aes(label = value), position = position_stack(vjust = 0.5)) +
     geom_label_repel(data = df2, aes(y = pos, label = value), size = 4.5, nudge_x = 1, show.legend = FALSE) +
-    scale_fill_manual(values = c("white","white"))
-    #scale_y_continuous(breaks = df2$pos, labels = df$group) +
-    #scale_fill_brewer(palette = "Pastel1")
+	scale_fill_brewer(palette = "Pastel1")
   } else {
     pie <- ggplot(data, aes(x="", y=value, fill=group)) +
-      geom_bar(stat="identity", width=1, color=rgb(0,0,0,0)) +
+      geom_bar(stat="identity", width=1) +
       coord_polar("y", start=0, direction = -1) +
       theme_void() +
       theme(legend.position="none") +
       ggtitle("") +
       theme(plot.title = element_text(hjust = 0.5)) +
       geom_label_repel(data = df2, aes(y = pos, label = value), size = 4.5, nudge_x = 1, show.legend = FALSE) +
-      scale_fill_manual(values = c("white","white")) +
-      scale_color_manual()
-      #scale_fill_brewer(palette = "Pastel1")
+      scale_fill_brewer(palette = "Pastel1")
   }
   plotList[[counter]] <- pie
   }
