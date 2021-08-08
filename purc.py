@@ -3150,7 +3150,9 @@ with open("%s_5_proportions.tsv" % Output_prefix, "w") as outfile:
 		except:
 			outfile.write("\t" * len(otuLocusList))
 		try:
+			locusCounter = 0
 			for locus in sizeDict[sample]["ASV"]:
+				locusCounter += 1
 				try:
 					counter = 1
 					for i in sizeDict[sample]["ASV"][locus]:
@@ -3158,11 +3160,13 @@ with open("%s_5_proportions.tsv" % Output_prefix, "w") as outfile:
 							outfile.write(",")
 						outfile.write("%s" %i)
 						counter += 1
-					outfile.write("\t")
+					if locusCounter < len(sizeDict[sample]["ASV"].keys())
+						outfile.write("\t")
 				except:
-					outfile.write("\t")
+					if locusCounter < len(sizeDict[sample]["ASV"].keys())
+						outfile.write("\t")
 		except:
-			outfile.write("\t" * len(otuLocusList))
+			outfile.write("\n")
 		outfile.write("\n")
 # Make plot of proportions
 with open("tmp/proportions.R", "w") as propRscript:
