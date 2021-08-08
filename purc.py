@@ -2612,7 +2612,7 @@ if "barcodeRemoval" in checkpoints_complete:
 	log.write('Reusing previous barcode trimmed files...\n')
 	print('Reusing previous barcode trimmed files...\n')
 else:
-	if platform.system() == 'Linux' and Lima_override == "0": 
+	if platform.system() == 'Linux' and Lima_override == "0":
 		print("Demultiplexing with Lima")
 		dupesFound, BCpairdict = checkDuplicateBC(barcode_seq_filename) # Can't have duplicate barcodes (including reverse complements) in lima
 		if dupesFound == 0:
@@ -3164,18 +3164,15 @@ with open("%s_5_proportions.tsv" % Output_prefix, "w") as outfile:
 		except:
 			outfile.write("\t" * len(otuLocusList))
 		outfile.write("\n")
-
+# Make plot of proportions
 with open("tmp/proportions.R", "w") as propRscript:
 	propRscript.write('''
 library(ggplot2)
 library(cowplot)
 library(ggrepel)
 props <- read.delim("%s_5_proportions.tsv", sep = "\t", header = TRUE)
-
-
 len <- dim(props)[1]
 width <- dim(props)[2]
-
 plotList <- list()
 counter = 0
 for (row in 1:len){
@@ -3203,13 +3200,13 @@ for (row in 1:len){
       }
     }
   # Get the positions
-    df2 <- data %>%
+  df2 <- data %>%
       mutate(csum = rev(cumsum(rev(value))),
              pos = value/2 + lead(csum, 1),
              pos = if_else(is.na(pos), value/2, pos))
   if (counter < 5){
   pie <- ggplot(df2, aes(x="", y=value, fill=group)) +
-    geom_bar(stat="identity", width=1, color=rgb(0,0,0,0)) +
+    geom_bar(stat="identity", width=1, color = "black") +
     coord_polar("y", start=0, direction = -1) +
     theme_void() +
     theme(legend.position="none") +
@@ -3217,8 +3214,9 @@ for (row in 1:len){
     theme(plot.title = element_text(hjust = 0.5)) +
     #geom_text(aes(label = value), position = position_stack(vjust = 0.5)) +
     geom_label_repel(data = df2, aes(y = pos, label = value), size = 4.5, nudge_x = 1, show.legend = FALSE) +
+    scale_fill_manual(values = c("white","white"))
     #scale_y_continuous(breaks = df2$pos, labels = df$group) +
-    scale_fill_brewer(palette = "Pastel1")
+    #scale_fill_brewer(palette = "Pastel1")
   } else {
     pie <- ggplot(data, aes(x="", y=value, fill=group)) +
       geom_bar(stat="identity", width=1, color=rgb(0,0,0,0)) +
@@ -3228,14 +3226,21 @@ for (row in 1:len){
       ggtitle("") +
       theme(plot.title = element_text(hjust = 0.5)) +
       geom_label_repel(data = df2, aes(y = pos, label = value), size = 4.5, nudge_x = 1, show.legend = FALSE) +
-      scale_fill_brewer(palette = "Pastel1")
+      scale_fill_manual(values = c("white","white")) +
+      scale_color_manual()
+      #scale_fill_brewer(palette = "Pastel1")
   }
   plotList[[counter]] <- pie
   }
 }
+relwidths = c(3)
+for (i in 1:width){
+  relwidths = c(relwidths,1)
+}
+pageLength = width*6
 pdf("%s_5_proportions.pdf", 8.5, 11)
-for (i in seq(1, length(plotList), 24)) {
-  print(plot_grid(plotlist = plotList[i:(i+23)], ncol = 3, rel_widths = c(3,1,1,1)))
+for (i in seq(1, length(plotList), pageLength)) {
+  print(plot_grid(plotlist = plotList[i:(i+(pageLength-1))], ncol = width, rel_widths = relwidths))
 }
 dev.off()
 	''' % (Output_prefix, Output_prefix))

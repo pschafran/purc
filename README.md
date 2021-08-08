@@ -385,6 +385,7 @@ If you get an error message like "ERROR: Cython is not installed", install/updat
 * Add output files for relative adundance of ASVs/OTUs within each sample
 * Add read length filtering before OTU processing
 * Simple command line input alternative for config file
+* Kmer-based method for identifying likely errors?
 
 ### Known Bugs ###
 * Inconsistent number of sequences reported during barcode removal (does not always equal total number of sequences)
