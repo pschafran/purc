@@ -3170,6 +3170,7 @@ with open("tmp/proportions.R", "w") as propRscript:
 library(ggplot2)
 library(cowplot)
 library(ggrepel)
+library(dplyr)
 props <- read.delim("%s_5_proportions.tsv", sep = "\t", header = TRUE)
 len <- dim(props)[1]
 width <- dim(props)[2]
