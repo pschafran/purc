@@ -3126,13 +3126,30 @@ if len(asvFastas) >= 1:
 with open("%s_5_proportions.tsv" % Output_prefix, "w") as outfile:
 	otuLocusString = ""
 	if len(otuLocusList) >= 1:
+		otuLocusCounter = 1
 		for otuLocus in otuLocusList:
-			otuLocusString = "%s%s-OTUs\t" %(otuLocusString, otuLocus)
+			if otuLocusCounter < len(otuLocusList):
+				otuLocusString = "%s%s-OTUs\t" %(otuLocusString, otuLocus)
+			else:
+				otuLocusString = "%s%s-OTUs" %(otuLocusString, otuLocus)
+			otuLocusCounter += 1
 	asvLocusString = ""
 	if len(asvLocusList) >= 1:
+		asvLocusCounter = 1
 		for asvLocus in asvLocusList:
-			asvLocusString ="%s%s-ASVs\t" %(asvLocusString, asvLocus)
-	outfile.write("Sample\t%s%s\n" %(otuLocusString, asvLocusString))
+			if asvLocusCounter < len(asvLocusList):
+				asvLocusString ="%s%s-ASVs\t" %(asvLocusString, asvLocus)
+			else:
+				asvLocusString ="%s%s-ASVs" %(asvLocusString, asvLocus)
+			asvLocusCounter+=1
+	if len(otuLocusList) >= 1 and len(asvLocusList) >= 1:
+		outfile.write("Sample\t%s\t%s\n" %(otuLocusString, asvLocusString))
+	elif len(otuLocusList) >= 1 and len(asvLocusList) == 0:
+		outfile.write("Sample\t%s\n" %(otuLocusString))
+	elif len(otuLocusList) == 0 and len(asvLocusList) >= 1:
+		outfile.write("Sample\t%s\n" %(asvLocusString))
+	else:
+		print("WARNING: No OTUs or ASVs found in results")
 	for sample in sorted(sizeDict.keys()):
 		outfile.write("%s\t" % sample)
 		try:
@@ -3144,9 +3161,9 @@ with open("%s_5_proportions.tsv" % Output_prefix, "w") as outfile:
 							outfile.write(",")
 						outfile.write("%s" %i)
 						counter += 1
-					outfile.write("\t")
+					outfile.write("\t") #### TODO: Fix this section so trailing tabs are created when only OTUs or ASVs are present
 				except:
-					outfile.write("\t")
+					outfile.write("0\t")
 		except:
 			outfile.write("\t" * len(otuLocusList))
 		try:
@@ -3178,7 +3195,6 @@ library(dplyr)
 props <- read.delim("%s_5_proportions.tsv", sep = "\t", header = TRUE)
 len <- dim(props)[1]
 width <- dim(props)[2]
-width <- width-1
 plotList <- list()
 counter = 0
 for (row in 1:len){
