@@ -1,6 +1,6 @@
 # PURC: Pipeline for Untangling Reticulate Complexes
 # v2.0
-#### Last updated 2021 July 29
+#### Last updated 2021 August 8
 
 ## Major changes from v1 ##
 * PURC updated for compatibility with Python3 and macOS 10.15+ (Catalina, Big Sur)
@@ -334,13 +334,13 @@ If you have another R installation, it may have a different library path that ca
 ```R
 .libPaths()
 ```
-You may see output like this:
+You should see output like this:
 ```R
 > .libPaths()
 [1] "/home/ps997/R_libs"                            
 [2] "/home/ps997/miniconda3/envs/purc/lib/R/library"
 ```
-showing that a previous R library is prioritized over the conda installed one. You can reorder the list by editing your `.Renviron` file located in your home (~) directory. **Backup the original file**, and change the `R_LIBS` variable to the purc install path.
+showing that a previous R library is prioritized over the miniconda one. You can reorder the list by editing your `.Renviron` file located in your home (~) directory. **Backup the original file**, and change the `R_LIBS` variable to the conda install path.
 ```bash
 R_LIBS=/home/ps997/miniconda3/envs/purc/lib/R/library
 ```
@@ -379,12 +379,10 @@ If PURC hangs at the lima stage, this can be due to incorrectly formatted CCS re
 If you get an error message like "ERROR: Cython is not installed", install/update [Cython](http://docs.cython.org/src/quickstart/install.html) and try again.
 
 ### To do ###
-* Clean up handling of temp files (move to tmp dir, remove when finished running)
 * Paired-end Illumina support for OTUs and ASVs
 * Dynamic threshold (i.e. by percentage) for dropping OTUs during clustering
-* Add output files for relative adundance of ASVs/OTUs within each sample
 * Add read length filtering before OTU processing
-* Simple command line input alternative for config file
+* Command line input alternative for config file
 * Kmer-based method for identifying likely errors?
 
 ### Known Bugs ###
