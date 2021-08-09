@@ -2413,7 +2413,21 @@ else:
 	#if not str(out).startswith("MUSCLE"):
 	#	sys.exit("Error: could not execute Muscle")
 
-	# Check if Vsearch can be executed (left Vsearch name rather than rename variables)
+	# Check if MAFFT can be executed
+	if not shutil.which(Mafft):
+		sys.exit("Error: could not execute MAFFT")
+	else:
+		mafftPath = shutil.which(Mafft)
+
+	if not os.access(mafftPath, os.X_OK):
+		if not shutil.which("mafft"):
+			sys.exit("Error: could not execute MAFFT")
+		elif os.access(shutil.which("mafft"), os.X_OK):
+			print("WARNING: MAFFT executable found at %s may be different than one specified in config file" % (shutil.which("mafft")))
+		else:
+			sys.exit("Error: could not execute MAFFT")
+
+	# Check if Vsearch can be executed
 	vsearch_cline = '%s --version' % (Vsearch)
 	#print(vsearch_cline)
 	process = subprocess.Popen(vsearch_cline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
