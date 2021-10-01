@@ -2341,7 +2341,7 @@ else:
                     parameterDict['Dual_barcode'] = Dual_barcode
                     parameterDict['Lima_barcode_type'] = Lima_barcode_type
                 elif setting_argument == '2':
-                    Dual_barcode = True
+                    Dual_barcode = False
                     Lima_barcode_type = "same"
                     parameterDict['Dual_barcode'] = Dual_barcode
                     parameterDict['Lima_barcode_type'] = Lima_barcode_type
