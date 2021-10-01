@@ -31,8 +31,8 @@ phylogenetics: rapid resolution of hybrid polyploid complexes using PacBio
 single-molecule sequencing. New Phytologist 213: 413-429.
 
 PURC v2
--Schafran, P., F-W. Li, and C.J. Rothfels. PURC v2 provides improved sequence 
-inference for polyploid phylogenetics and other manifestations of the 
+-Schafran, P., F-W. Li, and C.J. Rothfels. PURC v2 provides improved sequence
+inference for polyploid phylogenetics and other manifestations of the
 multiple-copy problem. Submitted.
 
 BLAST
@@ -2748,6 +2748,11 @@ if "seqAnnotating" in checkpoints_complete:
     with open("%s/tmp/LocusTaxonCountDict_unclustd.pkl" % Output_folder, "rb") as picklefile:
         LocusTaxonCountDict_unclustd = pickle.load(picklefile)
 else:
+    if "primerRemoval" in checkpoints_complete:
+        if Clustering_method == "OTU" or Clustering_method == "BOTH":
+            primer_trimmed_file = Output_prefix + '_2_pr_trimmed.fa'
+        elif Clustering_method == "ASV":
+            primer_trimmed_file = Output_prefix + '_1_bc_trimmed.fa'
     sys.stderr.write('Annotating seqs...\n')
     toAnnotate = primer_trimmed_file
     annoFileName = Output_prefix + '_3_annotated.fa'
