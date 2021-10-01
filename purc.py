@@ -483,9 +483,9 @@ def lima_output_rename(Output_folder, Output_prefix, fileExt, barcode_seq_file):
                                 if len(barcodes.split(",")) == 2:
                                     barcode2 = int(barcodes.split(",")[1])
                                     barcode2Name = barcodeList[barcode2]
-                        if len(barcodes.split(",")) == 1:
+                        if Lima_barcode_type == "single-side":
                             newReadName = ">%s|%s\n" %(barcode1Name, readName)
-                        elif len(barcodes.split(",")) == 2:
+                        else:
                             newReadName = ">%s^%s|%s\n" %(barcode1Name, barcode2Name, readName)
                         for char in [';', '=', '/']:
                             newReadName = newReadName.replace(char, "_")
