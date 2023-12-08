@@ -2681,7 +2681,7 @@ else:
                         elif writeOut == 1:
                             open_bc_trimmed_file.write(line)
         reorientedSequences = reorientSeqs("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "%s/%s" %(BLAST_DBs_folder,refseq_databasefile), num_threads) # Seqs need to have same orientation for OTU clustering (otherwise get 1 OTUs for each orientation of same sequence). DADA2 includes a reorientation step so not necessary here
-        mvCMD = "mv %s %s/%s_1_bc_trimmed.fa " %(reorientedSequences, Output_folder, Output_prefix)
+        mvCMD = "cp %s %s/%s_1_bc_trimmed.fa " %(reorientedSequences, Output_folder, Output_prefix)
         process = subprocess.Popen(mvCMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
         process.communicate()
     # BLAST-based demultiplexing
@@ -2950,14 +2950,16 @@ count_seq_annotated = count_seq_from_fasta(Output_folder + '/' + Output_prefix +
 count_seq_unclassifiable = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_3_unclassifiable.fa')
 
 count_output.write('Sequences with barcodes:\t' + str(count_seq_w_bc) + '\n')
-count_output.write('Sequences without barcodes:\t' + str(count_seq_wo_bc) + '\n')
-count_output.write('Sequences with too many barcodes:\t' + str(count_seq_w_toomany_bc) + '\n')
+if not platform.system() == 'Linux' and Lima_override == "0":
+	count_output.write('Sequences without barcodes:\t' + str(count_seq_wo_bc) + '\n')
+	count_output.write('Sequences with too many barcodes:\t' + str(count_seq_w_toomany_bc) + '\n')
 count_output.write('Sequences annotated:\t' + str(count_seq_annotated) + '\n')
 count_output.write('Sequences that cannot be classified:\t' + str(count_seq_unclassifiable) + '\n')
 
 log.write('Sequences with barcodes:\t' + str(count_seq_w_bc) + '\n')
-log.write('Sequences without barcodes:\t' + str(count_seq_wo_bc) + '\n')
-log.write('Sequences with too many barcodes:\t' + str(count_seq_w_toomany_bc) + '\n')
+if not platform.system() == 'Linux' and Lima_override == "0":
+	log.write('Sequences without barcodes:\t' + str(count_seq_wo_bc) + '\n')
+	log.write('Sequences with too many barcodes:\t' + str(count_seq_w_toomany_bc) + '\n')
 log.write('Sequences annotated:\t' + str(count_seq_annotated) + '\n')
 log.write('Sequences that cannot be classified:\t' + str(count_seq_unclassifiable) + '\n')
 
