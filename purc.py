@@ -1498,6 +1498,10 @@ print(Rprimer)
 
 nops <- file.path(path, "noprimers", basename(fns))
 prim <- removePrimers(fns, nops, primer.fwd=Fprimer, primer.rev=dada2:::rc(Rprimer), orient=TRUE)
+if (prim[2] == 0){
+print("WARNING: No primers found. Continuing with raw sequences.")
+nops <- fns
+}
 lens.fn <- lapply(nops, function(fn) nchar(getSequences(fn)))
 lens <- do.call(c, lens.fn)
 
@@ -1542,7 +1546,7 @@ axis(1, at=seq(lowerBound , upperBound, by=10))
 abline(v= c(minLen, maxLen), lty=c(2,2))
 dev.off()
 
-filts <- file.path(path, "noprimers", "filtered", basename(fns))
+filts <- file.path(path, "noprimers", "filtered", paste(basename(fns), ".gz", sep=""))
 track <- filterAndTrim(nops, filts, minQ=3, minLen=minLen, maxLen=maxLen, maxN=0, rm.phix=FALSE, maxEE=maxEE)
 print("Reads filtered:")
 print(track)
