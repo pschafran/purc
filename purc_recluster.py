@@ -713,9 +713,9 @@ num_threads = args.thread_number[0]
 specimen_to_cluster = args.specimen_to_cluster
 locus_to_cluster = args.locus_to_cluster
 
-if clusteringMethod == "OTU" and clustID not in globals() or clustID2 not in globals() or clustID3 not in globals() or clustID4 not in globals() or sizeThreshold not in globals() or sizeThreshold2 not in globals():
-	print("ERROR: OTU clustering requires all entries in --clustering_identities and --size_threshold to be set")
-	sys.exit(usage)
+#if clusteringMethod == "OTU" and clustID not in globals() or clustID2 not in globals() or clustID3 not in globals() or clustID4 not in globals() or sizeThreshold not in globals() or sizeThreshold2 not in globals():
+#	print("ERROR: OTU clustering requires all entries in --clustering_identities and --size_threshold to be set")
+#	sys.exit(usage)
 
 #purc_location = os.path.dirname(os.path.abspath( __file__ ))
 Vsearch = 'vsearch'
