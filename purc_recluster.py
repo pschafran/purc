@@ -599,7 +599,10 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
 
 		if not os.stat(locus_folder + ".fa").st_size == 0: # ie, the file is not empty
 			## Split sequences into separate taxon folders ##
-			taxonCounts = SplitBy(annotd_seqs_file = locus_folder + ".fa", split_by = "taxon", Multiplex_perBC_flag = Multiplex_per_barcode)
+			if specimen_to_cluster is not None: # specific target is given
+				taxonCounts = SplitBy(annotd_seqs_file = locus_folder + ".fa", split_by = "taxon", Clust_particular = True, specimen_to_clust = specimen_to_cluster)
+			else: # cluster all
+				taxonCounts = SplitBy(annotd_seqs_file = locus_folder + ".fa", split_by = "taxon", Clust_particular = False, specimen_to_clust = '')
 			all_folders_taxon = list(taxonCounts.keys())
 
 			for taxon_folder in all_folders_taxon:
