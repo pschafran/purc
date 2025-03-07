@@ -1498,6 +1498,10 @@ print(Rprimer)
 
 nops <- file.path(path, "noprimers", basename(fns))
 prim <- removePrimers(fns, nops, primer.fwd=Fprimer, primer.rev=dada2:::rc(Rprimer), orient=TRUE)
+if (prim[2] == 0){
+print("WARNING: No primers found. Continuing with raw sequences.")
+nops <- fns
+}
 lens.fn <- lapply(nops, function(fn) nchar(getSequences(fn)))
 lens <- do.call(c, lens.fn)
 
@@ -1542,7 +1546,7 @@ axis(1, at=seq(lowerBound , upperBound, by=10))
 abline(v= c(minLen, maxLen), lty=c(2,2))
 dev.off()
 
-filts <- file.path(path, "noprimers", "filtered", basename(fns))
+filts <- file.path(path, "noprimers", "filtered", paste(basename(fns), ".gz", sep=""))
 track <- filterAndTrim(nops, filts, minQ=3, minLen=minLen, maxLen=maxLen, maxN=0, rm.phix=FALSE, maxEE=maxEE)
 print("Reads filtered:")
 print(track)
@@ -3112,7 +3116,7 @@ asvLocusList = []
 sizeDict = {}
 if len(otuFastas) >= 1:
     for file in otuFastas:
-        locus = file.strip("%s_4_" % Output_prefix).strip("_OTUs.fa")
+        locus = file.removeprefix("%s_4_" % Output_prefix).removesuffix("_OTUs.fa")
         otuLocusList.append(locus)
         with open(file, "r") as infile:
             for line in infile:
@@ -3132,7 +3136,7 @@ if len(otuFastas) >= 1:
                                 sizeDict.update({sample : {"OTU" : {locus : [size]}}})
 if len(asvFastas) >= 1:
     for file in asvFastas:
-        locus = file.strip("%s_4_" % Output_prefix).strip("_ASVs.fa")
+        locus = file.removeprefix("%s_4_" % Output_prefix).removesuffix("_ASVs.fa")
         asvLocusList.append(locus)
         with open(file, "r") as infile:
             for line in infile:
@@ -3149,11 +3153,15 @@ if len(asvFastas) >= 1:
                                 sizeDict[sample].update({"ASV" : {locus : [size]}})
                             except:
                                 sizeDict.update({sample : {"ASV" : {locus : [size]}}})
+    for locus in asvLocusList:
+        for sample in sizeDict:
+            if locus not in sizeDict[sample]["ASV"].keys():
+                sizeDict[sample]["ASV"].update({locus : [0]})
 with open("%s_5_proportions.tsv" % Output_prefix, "w") as outfile:
     otuLocusString = ""
     if len(otuLocusList) >= 1:
         otuLocusCounter = 1
-        for otuLocus in otuLocusList:
+        for otuLocus in sorted(otuLocusList):
             if otuLocusCounter < len(otuLocusList):
                 otuLocusString = "%s%s-OTUs\t" %(otuLocusString, otuLocus)
             else:
@@ -3162,7 +3170,7 @@ with open("%s_5_proportions.tsv" % Output_prefix, "w") as outfile:
     asvLocusString = ""
     if len(asvLocusList) >= 1:
         asvLocusCounter = 1
-        for asvLocus in asvLocusList:
+        for asvLocus in sorted(asvLocusList):
             if asvLocusCounter < len(asvLocusList):
                 asvLocusString ="%s%s-ASVs\t" %(asvLocusString, asvLocus)
             else:
@@ -3179,7 +3187,7 @@ with open("%s_5_proportions.tsv" % Output_prefix, "w") as outfile:
     for sample in sorted(sizeDict.keys()):
         outfile.write("%s\t" % sample)
         try:
-            for locus in sizeDict[sample]['OTU']:
+            for locus in sorted(otuLocusList):
                 try:
                     counter = 1
                     for i in sizeDict[sample]['OTU'][locus]:
@@ -3194,7 +3202,7 @@ with open("%s_5_proportions.tsv" % Output_prefix, "w") as outfile:
             outfile.write("\t" * len(otuLocusList))
         try:
             locusCounter = 0
-            for locus in sizeDict[sample]["ASV"]:
+            for locus in sorted(asvLocusList):
                 locusCounter += 1
                 try:
                     counter = 1
@@ -3207,7 +3215,9 @@ with open("%s_5_proportions.tsv" % Output_prefix, "w") as outfile:
                         outfile.write("\t")
                 except:
                     if locusCounter < len(sizeDict[sample]["ASV"].keys()):
-                        outfile.write("\t")
+                        outfile.write("0\t")
+                    elif locusCounter == len(sizeDict[sample]["ASV"].keys()):
+                        outfile.write("0")
         except:
             outfile.write("\n")
         outfile.write("\n")
