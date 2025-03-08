@@ -83,6 +83,8 @@ import io
 import fileinput
 import platform
 import pickle
+from os import listdir
+from os.path import isfile, join
 
 try:
     from Bio import SeqIO
@@ -2206,11 +2208,9 @@ else:
             elif setting_name == 'Input_sequence_file':
                 raw_sequences = setting_argument
                 parameterDict['raw_sequences'] = setting_argument
-                if not os.path.isfile(raw_sequences):
-                    sys.exit("Error: could not find " + raw_sequences)
-                else:
-                    raw_sequences = os.path.abspath(raw_sequences)
-                    print("Input sequence file: %s" % raw_sequences)
+            elif setting_name == 'Input_sequence_dir':
+                demux_input_dir = setting_argument + "/"
+                parameterDict['demux_input_dir'] = demux_input_dir
             elif setting_name == "Align":
                 Align = int(setting_argument)
                 parameterDict['Align'] = setting_argument
@@ -2238,15 +2238,16 @@ else:
                 locus_list = setting_argument.upper().replace(' ', '').replace('\t', '').split(',') #needs the upper() now that LocusTaxonCountDict_unclustd has the loci in uppercase
                 parameterDict['locus_list'] = locus_list
             elif setting_name == 'Locus-barcode-taxon_map':
-                mapping_file_list_tmp = setting_argument.replace(' ', '').replace('\t', '').split(',')
-                mapping_file_list = []
-                for mapfile in mapping_file_list_tmp:
-                    mapfile = os.path.abspath(mapfile)
-                    if not os.path.isfile(mapfile):
-                        sys.exit("Error: could not find " + mapfile)
-                    else:
-                        mapping_file_list.append(mapfile)
+                mapping_file_list = setting_argument.replace(' ', '').replace('\t', '').split(',')
                 parameterDict['mapping_file_list'] = mapping_file_list
+				#mapping_file_list = []
+                #for mapfile in mapping_file_list_tmp:
+                #    mapfile = os.path.abspath(mapfile)
+                #    if not os.path.isfile(mapfile):
+                #        sys.exit("Error: could not find " + mapfile)
+                #    else:
+                #        mapping_file_list.append(mapfile)
+                #parameterDict['mapping_file_list'] = mapping_file_list
             elif setting_name == 'Vsearch':
                 if setting_argument.startswith('Dependencies/'):
                     Vsearch = ppp_location + '/' + setting_argument
@@ -2326,8 +2327,8 @@ else:
             elif setting_name == 'in_Barcode_seq_file':
                 barcode_seq_filename = os.path.abspath(setting_argument)
                 parameterDict['barcode_seq_filename'] = setting_argument
-                if not os.path.isfile(barcode_seq_filename):
-                    sys.exit("Error: could not find " + barcode_seq_filename)
+                #if not os.path.isfile(barcode_seq_filename):
+                #    sys.exit("Error: could not find " + barcode_seq_filename)
             elif setting_name == 'in_RefSeq_seq_file':
                 refseq_filename = os.path.abspath(setting_argument)
                 parameterDict['refseq_filename'] = setting_argument
@@ -2470,6 +2471,43 @@ else:
     if not str(err).replace(' ','').startswith("R"):
         sys.exit("Error: could not execute Rscript")
 
+    # Check for input files if using pre-demultiplexed files
+    if mode == 2:
+        print("Checking demultiplexed input files...")
+        try:
+            demux_input_files = [file for file in listdir(parameterDict['demux_input_dir']) if isfile(join(parameterDict['demux_input_dir'], file))]
+            if len(demux_input_files) == 0:
+                print("\tERROR: No files found in %s" % parameterDict['demux_input_dir'])
+                exit(1)
+            else:
+                parameterDict['demux_input_files'] = demux_input_files
+                print("\tFound files:")
+                for i in demux_input_files:
+                    print("\t%s" % i)
+        except:
+            print("\tERROR: Could not parse %s" % parameterDict['demux_input_dir'])
+            exit(1)
+
+	# Check for other input files
+    if mode != 2:
+		# Raw sequences
+        if not os.path.isfile(parameterDict['raw_sequences']):
+            sys.exit("Error: could not find sequence file " + parameterDict['raw_sequences'])
+        else:
+            raw_sequences = os.path.abspath(parameterDict['raw_sequences'])
+            print("Input sequence file: %s" % parameterDict['raw_sequences'])
+
+		# Map files
+        for file in parameterDict['mapping_file_list']:
+            mapfile = os.path.abspath(file)
+            if not os.path.isfile(mapfile):
+                sys.exit("Error: could not find map file " + mapfile)
+
+		# Barcode file
+        if not os.path.isfile(parameterDict['barcode_seq_filename']):
+            sys.exit("Error: could not find barcode file " + barcode_seq_filename)
+
+
     ## Make output folder or read in previously completed steps ##
     if os.path.exists(Output_folder): # overwrite existing folder
         try:
@@ -2560,23 +2598,24 @@ if fileExt == "gz":
         process.wait()
         raw_sequences = filePrefix
 
-fileType = raw_sequences.split(".")[-1]
-if fileType in ["fasta", "fas", "fa", "fna", "faa"]:
-    try:
-        fasta_sequences = rename_fasta(raw_sequences)
-    except:
-        sys.exit('ERROR: failed to rename ' + raw_sequences)
-elif fileType in ["fastq", "fq"]:
-    try:
-        fastq_sequences = rename_fastq(raw_sequences)
-    except:
-        sys.exit("ERROR: failed to rename %s" % raw_sequences)
-    try:
-        fasta_sequences = convert_fastq_to_fasta(fastq_sequences)
-    except:
-        sys.exit("ERROR: failed to convert %s" % raw_sequences)
-else:
-    sys.exit("ERROR: Sequence file type not recognized. Expects standard file extensions (.fasta, .fa, .fastq, .fq)")
+if mode != 2:
+	fileType = raw_sequences.split(".")[-1]
+	if fileType in ["fasta", "fas", "fa", "fna", "faa"]:
+	    try:
+	        fasta_sequences = rename_fasta(raw_sequences)
+	    except:
+	        sys.exit('ERROR: failed to rename ' + raw_sequences)
+	elif fileType in ["fastq", "fq"]:
+	    try:
+	        fastq_sequences = rename_fastq(raw_sequences)
+	    except:
+	        sys.exit("ERROR: failed to rename %s" % raw_sequences)
+	    try:
+	        fasta_sequences = convert_fastq_to_fasta(fastq_sequences)
+	    except:
+	        sys.exit("ERROR: failed to convert %s" % raw_sequences)
+	else:
+	    sys.exit("ERROR: Sequence file type not recognized. Expects standard file extensions (.fasta, .fa, .fastq, .fq)")
 
 
 if os.path.exists(BLAST_DBs_folder): # overwrite existing folder
@@ -2585,19 +2624,21 @@ os.makedirs(BLAST_DBs_folder)
 os.chdir(BLAST_DBs_folder)
 try:
     makeBlastDB(refseq_filename, refseq_databasefile) # and one of the reference sequences
-    makeBlastDB(barcode_seq_filename, barcode_databasefile) # one of the barcodes
+    if mode != 2:
+        makeBlastDB(barcode_seq_filename, barcode_databasefile) # one of the barcodes
 except:
     sys.exit('ERROR: failed to make blast database')
 os.chdir('..')
 
 ## Read sequences ##
-sys.stderr.write('Reading sequences...\n')
-try:
-    SeqDict = SeqIO.index(fasta_sequences, 'fasta') # Read in the raw sequences as dictionary, using biopython's function
-except:
-    sys.exit('ERROR: failed to index ' + fasta_sequences)
-count_total_input_sequences = len(SeqDict)
-sys.stderr.write('\t' + str(count_total_input_sequences) + ' sequences read\n')
+if mode != 2:
+    sys.stderr.write('Reading sequences...\n')
+    try:
+        SeqDict = SeqIO.index(fasta_sequences, 'fasta') # Read in the raw sequences as dictionary, using biopython's function
+    except:
+        sys.exit('ERROR: failed to index ' + fasta_sequences)
+    count_total_input_sequences = len(SeqDict)
+    sys.stderr.write('\t' + str(count_total_input_sequences) + ' sequences read\n')
 
 
 if mode == 0 and "concatemerCheck" not in checkpoints_complete: # QC mode.
@@ -2630,94 +2671,132 @@ elif mode == 0 and "concatemerCheck" in checkpoints_complete:
 
 
 ## Remove barcodes ##
-log.write('\n#Barcode Removal# %s \n' % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-if "barcodeRemoval" in checkpoints_complete:
-    log.write('Reusing previous barcode trimmed files...\n')
-    print('Reusing previous barcode trimmed files...\n')
-else:
-    if platform.system() == 'Linux' and Lima_override == "0":
-        print("Demultiplexing with Lima")
-        dupesFound, BCpairdict = checkDuplicateBC(barcode_seq_filename) # Can't have duplicate barcodes (including reverse complements) in lima
-        if dupesFound == 0:
-            limaOutputPrefix = "%s.demux.lima" % Output_prefix
-            if Lima_barcode_type == "same":
-                lima_symmetric(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
-            elif Lima_barcode_type == "different":
-                lima_dual(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
-            elif Lima_barcode_type == "single-side":
-                lima_singleend(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
-        elif dupesFound == 1: # work around if duplicated barcodes are found. Split duplicated and nonduplicated barcodes and check sequences separately.
-            lima_dual(raw_sequences, Lima_barcode_type, "%s/tmp/nonduplicated_BCs.fasta" % Output_folder, Output_folder, "nonduplicated_BCs")
-            lima_symmetric(raw_sequences, Lima_barcode_type, "%s/tmp/deduplicated_BCs.fasta" % Output_folder, Output_folder, "deduplicated_BCs")
-            nondupeseqs = SeqIO.parse("%s/nonduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
-            nondupeseqIDs = []
-            for seq in nondupeseqs:
-                nondupeseqIDs.append(seq.id.split("|")[1])
-            dedupeseqs = SeqIO.parse("%s/deduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
-            dedupeseqIDs = []
-            for seq in dedupeseqs:
-                dedupeseqIDs.append(seq.id.split("|")[1])
+if mode != 2:
+	log.write('\n#Barcode Removal# %s \n' % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+	if "barcodeRemoval" in checkpoints_complete:
+	    log.write('Reusing previous barcode trimmed files...\n')
+	    print('Reusing previous barcode trimmed files...\n')
+	else:
+	    if platform.system() == 'Linux' and Lima_override == "0":
+	        print("Demultiplexing with Lima")
+	        dupesFound, BCpairdict = checkDuplicateBC(barcode_seq_filename) # Can't have duplicate barcodes (including reverse complements) in lima
+	        if dupesFound == 0:
+	            limaOutputPrefix = "%s.demux.lima" % Output_prefix
+	            if Lima_barcode_type == "same":
+	                lima_symmetric(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
+	            elif Lima_barcode_type == "different":
+	                lima_dual(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
+	            elif Lima_barcode_type == "single-side":
+	                lima_singleend(raw_sequences, Lima_barcode_type, barcode_seq_filename, Output_folder, Output_prefix)
+	        elif dupesFound == 1: # work around if duplicated barcodes are found. Split duplicated and nonduplicated barcodes and check sequences separately.
+	            lima_dual(raw_sequences, Lima_barcode_type, "%s/tmp/nonduplicated_BCs.fasta" % Output_folder, Output_folder, "nonduplicated_BCs")
+	            lima_symmetric(raw_sequences, Lima_barcode_type, "%s/tmp/deduplicated_BCs.fasta" % Output_folder, Output_folder, "deduplicated_BCs")
+	            nondupeseqs = SeqIO.parse("%s/nonduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
+	            nondupeseqIDs = []
+	            for seq in nondupeseqs:
+	                nondupeseqIDs.append(seq.id.split("|")[1])
+	            dedupeseqs = SeqIO.parse("%s/deduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
+	            dedupeseqIDs = []
+	            for seq in dedupeseqs:
+	                dedupeseqIDs.append(seq.id.split("|")[1])
 
-            shared_seq_list = list(set(nondupeseqIDs) & set(dedupeseqIDs))
-            if len(shared_seq_list) > 0:
-                print("WARNING: %s sequences identified with both symmetric and asymmetric barcodes" % len(shared_seq_list))
+	            shared_seq_list = list(set(nondupeseqIDs) & set(dedupeseqIDs))
+	            if len(shared_seq_list) > 0:
+	                print("WARNING: %s sequences identified with both symmetric and asymmetric barcodes" % len(shared_seq_list))
 
-            # Retrieve sequences from asymmetric demultiplexing that weren't also found in symmetric demultiplexing
-            nondupeseqs = SeqIO.parse("%s/nonduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
-            write_nondupeseqs = [i for i in nondupeseqs if i.id not in nondupeseqIDs]
-            SeqIO.write(write_nondupeseqs, "%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "fasta")
-            # Retrieve sequences from symmetric demultiplexing that weren't also found in asymmetric demultiplexing. Rename second barcode in pair to original names so can be handled downstream.
-            with open("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "a") as open_bc_trimmed_file:
-                #dedupeseqs = SeqIO.parse("%s/deduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
-                with open("%s/deduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "r") as open_dedup_bcs:
-                    writeOut = 0
-                    for line in open_dedup_bcs:
-                        if line.startswith(">") and line.strip(">\n").split("|")[1] not in shared_seq_list:
-                            writeOut = 1
-                            barcodes = line.strip(">\n").split("|")[0]
-                            seqid = line.strip(">\n").split("|")[1]
-                            barcode1 = barcodes.split("^")[0]
-                            barcode2 = BCpairdict[barcode1]
-                            newReadName = ">%s^%s|%s\n" %(barcode1, barcode2, seqid)
-                            open_bc_trimmed_file.write(newReadName)
-                        elif line.startswith(">") and line.strip(">\n").split("|")[1] in shared_seq_list:
-                            writeOut = 0
-                        elif writeOut == 1:
-                            open_bc_trimmed_file.write(line)
-        reorientedSequences = reorientSeqs("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "%s/%s" %(BLAST_DBs_folder,refseq_databasefile), num_threads) # Seqs need to have same orientation for OTU clustering (otherwise get 1 OTUs for each orientation of same sequence). DADA2 includes a reorientation step so not necessary here
-        mvCMD = "cp %s %s/%s_1_bc_trimmed.fa " %(reorientedSequences, Output_folder, Output_prefix)
-        process = subprocess.Popen(mvCMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
-        process.communicate()
-    # BLAST-based demultiplexing
-    else:
-        print("Demultiplexing with BLAST")
-        if Dual_barcode:
-            sys.stderr.write('Removing dual barcodes...\n')
-            DeBarcoder_dual(fasta_sequences, BLAST_DBs_folder + '/' + barcode_databasefile, SeqDict)
-        else:
-            sys.stderr.write('Removing barcodes...\n')
-            if not Search_ends_only:
-                DeBarcoder(fasta_sequences, BLAST_DBs_folder + '/' + barcode_databasefile, SeqDict, Output_folder, Output_prefix)
-            else:
-                DeBarcoder_ends(SeqDict, BLAST_DBs_folder + '/' + barcode_databasefile, Output_folder, Output_prefix, search_range=25)
-    count_seq_w_bc = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_1_bc_trimmed.fa')
-    count_seq_wo_bc = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_1_trashBin_no_bc.fa')
-    count_seq_w_toomany_bc = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_1_trashBin_tooMany_bc.fa')
-    sys.stderr.write('\t' + str(count_seq_w_bc) + ' sequences have barcode\n')
-    sys.stderr.write('\t' + str(count_seq_wo_bc) + ' sequences have no barcode\n')
-    sys.stderr.write('\t' + str(count_seq_w_toomany_bc) + ' sequences have too many barcodes\n')
-    if count_seq_w_bc == str(0):
-        sys.exit('Error: barcode-removal returned no sequence')
-    else:
-        with open("%s/tmp/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
-            open_checkpoint_file.write("barcodeRemoval\n")
+	            # Retrieve sequences from asymmetric demultiplexing that weren't also found in symmetric demultiplexing
+	            nondupeseqs = SeqIO.parse("%s/nonduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
+	            write_nondupeseqs = [i for i in nondupeseqs if i.id not in nondupeseqIDs]
+	            SeqIO.write(write_nondupeseqs, "%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "fasta")
+	            # Retrieve sequences from symmetric demultiplexing that weren't also found in asymmetric demultiplexing. Rename second barcode in pair to original names so can be handled downstream.
+	            with open("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "a") as open_bc_trimmed_file:
+	                #dedupeseqs = SeqIO.parse("%s/deduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "fasta")
+	                with open("%s/deduplicated_BCs_1_bc_trimmed.fa" % Output_folder, "r") as open_dedup_bcs:
+	                    writeOut = 0
+	                    for line in open_dedup_bcs:
+	                        if line.startswith(">") and line.strip(">\n").split("|")[1] not in shared_seq_list:
+	                            writeOut = 1
+	                            barcodes = line.strip(">\n").split("|")[0]
+	                            seqid = line.strip(">\n").split("|")[1]
+	                            barcode1 = barcodes.split("^")[0]
+	                            barcode2 = BCpairdict[barcode1]
+	                            newReadName = ">%s^%s|%s\n" %(barcode1, barcode2, seqid)
+	                            open_bc_trimmed_file.write(newReadName)
+	                        elif line.startswith(">") and line.strip(">\n").split("|")[1] in shared_seq_list:
+	                            writeOut = 0
+	                        elif writeOut == 1:
+	                            open_bc_trimmed_file.write(line)
+	        reorientedSequences = reorientSeqs("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "%s/%s" %(BLAST_DBs_folder,refseq_databasefile), num_threads) # Seqs need to have same orientation for OTU clustering (otherwise get 1 OTUs for each orientation of same sequence). DADA2 includes a reorientation step so not necessary here
+	        mvCMD = "cp %s %s/%s_1_bc_trimmed.fa " %(reorientedSequences, Output_folder, Output_prefix)
+	        process = subprocess.Popen(mvCMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
+	        process.communicate()
+	    # BLAST-based demultiplexing
+	    else:
+	        print("Demultiplexing with BLAST")
+	        if Dual_barcode:
+	            sys.stderr.write('Removing dual barcodes...\n')
+	            DeBarcoder_dual(fasta_sequences, BLAST_DBs_folder + '/' + barcode_databasefile, SeqDict)
+	        else:
+	            sys.stderr.write('Removing barcodes...\n')
+	            if not Search_ends_only:
+	                DeBarcoder(fasta_sequences, BLAST_DBs_folder + '/' + barcode_databasefile, SeqDict, Output_folder, Output_prefix)
+	            else:
+	                DeBarcoder_ends(SeqDict, BLAST_DBs_folder + '/' + barcode_databasefile, Output_folder, Output_prefix, search_range=25)
+	    count_seq_w_bc = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_1_bc_trimmed.fa')
+	    count_seq_wo_bc = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_1_trashBin_no_bc.fa')
+	    count_seq_w_toomany_bc = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_1_trashBin_tooMany_bc.fa')
+	    sys.stderr.write('\t' + str(count_seq_w_bc) + ' sequences have barcode\n')
+	    sys.stderr.write('\t' + str(count_seq_wo_bc) + ' sequences have no barcode\n')
+	    sys.stderr.write('\t' + str(count_seq_w_toomany_bc) + ' sequences have too many barcodes\n')
+	    if count_seq_w_bc == str(0):
+	        sys.exit('Error: barcode-removal returned no sequence')
+	    else:
+	        with open("%s/tmp/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+	            open_checkpoint_file.write("barcodeRemoval\n")
 
-    if Recycle_bc:
-        sys.stderr.write('Looking for barcodes in the no-barcode sequences, using Smith-Waterman pairwise alignment...\n')
-        SeqDict_no_bc = SeqIO.index(Output_folder + '/' + Output_prefix + '_1_trashBin_no_bc.fa', 'fasta') # Read in the raw sequences as dictionary, using biopython's function
-        count_seq_recycled = DeBarcoder_SWalign(SeqDict_no_bc, barcode_seq_filename, Output_folder, Output_prefix, search_range=25)
-        sys.stderr.write('\t' + str(count_seq_recycled) + ' sequences recycled from ' + str(count_seq_wo_bc) + ' sequences\n')
-log.write('\t...done\n\n')
+	    if Recycle_bc:
+	        sys.stderr.write('Looking for barcodes in the no-barcode sequences, using Smith-Waterman pairwise alignment...\n')
+	        SeqDict_no_bc = SeqIO.index(Output_folder + '/' + Output_prefix + '_1_trashBin_no_bc.fa', 'fasta') # Read in the raw sequences as dictionary, using biopython's function
+	        count_seq_recycled = DeBarcoder_SWalign(SeqDict_no_bc, barcode_seq_filename, Output_folder, Output_prefix, search_range=25)
+	        sys.stderr.write('\t' + str(count_seq_recycled) + ' sequences recycled from ' + str(count_seq_wo_bc) + ' sequences\n')
+	log.write('\t...done\n\n')
+
+## Use pre-demultiplexed files
+if mode == 2:
+	log.write('#Reading Demultiplexed Files# %s \n' % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+	# Convert any files from FASTQ to FASTA
+	with open(Output_folder + '/' + Output_prefix + '_1_bc_trimmed.fa', "w") as outfile:
+		fastaFiles = []
+		demux_sample_map = {}
+		for file in parameterDict['demux_input_files']:
+			if not check_fasta(demux_input_dir + file):
+				convertedFile = convert_fastq_to_fasta(demux_input_dir + file)
+				fastaFiles.append(convertedFile)
+			else:
+				fastaFiles.append(demux_input_dir + file)
+		for path in fastaFiles:
+			with open(path, "r") as f:
+				file = path.split("/")[-1]
+				sample = ".".join(file.split(".")[:-1])
+				for line in f:
+					if line.startswith(">"):
+						newline = ">" + sample + "|" + line.split(">")[1]
+						outfile.write(newline)
+					else:
+						outfile.write(line)
+	reorientedSequences = reorientSeqs("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix), "%s/%s" %(BLAST_DBs_folder,refseq_databasefile), num_threads) # Seqs need to have same orientation for OTU clustering (otherwise get 1 OTUs for each orientation of same sequence). DADA2 includes a reorientation step so not necessary here
+	mvCMD = "cp %s %s/%s_1_bc_trimmed.fa " %(reorientedSequences, Output_folder, Output_prefix)
+	process = subprocess.Popen(mvCMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
+	process.communicate()
+	# remove characters from sequence ids that will break later steps
+	try:
+		fasta_sequences = rename_fasta("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix))
+	except:
+		sys.exit("ERROR: failed to rename %s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix))
+	mvCMD = "cp %s/tmp/%s_1_bc_trimmed_renamed.fasta %s/%s_1_bc_trimmed.fa " %(Output_folder, Output_prefix, Output_folder, Output_prefix)
+	process = subprocess.Popen(mvCMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
+	process.communicate()
+	count_total_input_sequences = count_seq_from_fasta("%s/%s_1_bc_trimmed.fa" %(Output_folder, Output_prefix))
 
 ## Remove primers ##
 log.write('#Primer Removal# %s \n' % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
@@ -2760,7 +2839,16 @@ else:
     sys.stderr.write('Annotating seqs...\n')
     toAnnotate = primer_trimmed_file
     annoFileName = Output_prefix + '_3_annotated.fa'
-    LocusTaxonCountDict_unclustd = annotateIt(filetoannotate = Output_folder + '/' + toAnnotate, outFile = Output_folder + '/' + annoFileName, Multiplex_perBC_flag = Multiplex_per_barcode, DualBC_flag = Dual_barcode, failsFile = Output_folder + '/' + Output_prefix + '_3_unclassifiable.fa')
+    if mode != 2:
+        LocusTaxonCountDict_unclustd = annotateIt(filetoannotate = Output_folder + '/' + toAnnotate, outFile = Output_folder + '/' + annoFileName, Multiplex_perBC_flag = Multiplex_per_barcode, DualBC_flag = Dual_barcode, failsFile = Output_folder + '/' + Output_prefix + '_3_unclassifiable.fa')
+    elif mode == 2:
+        with open("%s/%s_2_pr_trimmed.fa" %(Output_folder, Output_prefix), "r") as infile, open("%s/%s" %(Output_folder, annoFileName), "w") as outfile:
+            for line in infile:
+                if line.startswith(">"):
+                    newline = line.split("|")[0] + "|" + parameterDict['locus_list'][0] + "|" + line.split("|")[1]
+                    outfile.write(newline)
+                else:
+                    outfile.write(line)
     count_seq_annotated = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_3_annotated.fa')
     count_seq_unclassifiable = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_3_unclassifiable.fa')
     sys.stderr.write('\t' + str(count_seq_annotated) + ' sequences annotated\n')
@@ -2771,15 +2859,17 @@ else:
     else:
         with open("%s/tmp/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
             open_checkpoint_file.write("seqAnnotating\n")
-        with open("%s/tmp/LocusTaxonCountDict_unclustd.pkl" % Output_folder, "wb") as picklefile:
-            pickle.dump(LocusTaxonCountDict_unclustd, picklefile)
+        if mode != 2:
+            with open("%s/tmp/LocusTaxonCountDict_unclustd.pkl" % Output_folder, "wb") as picklefile:
+                pickle.dump(LocusTaxonCountDict_unclustd, picklefile)
 
-    if mode == 2:
-        log.write("PURC completed!\n")
-        log.write("%s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-        print("PURC completed!")
-        print("%s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-        sys.exit(0)
+	#Does this block do anything? Do not see where mode would be set to 2 before I added the new mode to skip demultiplexing 2025-03-07 PWS
+    #if mode == 2:
+    #    log.write("PURC completed!\n")
+    #    log.write("%s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+    #    print("PURC completed!")
+    #    print("%s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+    #    sys.exit(0)
 
 ## Iterative clustering and chimera-killing ##
 os.chdir(Output_folder) # move into the designated output folder
