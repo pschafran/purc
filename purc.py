@@ -1609,7 +1609,7 @@ print(format(Sys.time()))
 quit()
 ''' % (sample, sample, sample, sample))
 
-def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath, verbose_level = 1):
+def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, locus_list, minLen, maxLen, maxEE, RscriptPath, verbose_level = 1):
     log.write("DADA2\n")
     ## Split sequences into separate files/folders for each locus ##
     sys.stderr.write('Splitting sequences into a folder/file for each locus...\n')
@@ -1624,8 +1624,12 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
 
     ## Go through each locus ##
     locusCount = 0
-    for locus_folder in all_folders_loci: # locus_folder = locus name
-        os.chdir(locus_folder)
+    for locus_folder in locus_list: # locus_folder = locus name
+        try:
+            os.chdir(locus_folder)
+        except:
+            log.write("WARNING: %s directory not found" % locus_folder)
+            continue
         sys.stderr.write('\nWorking on: ' + locus_folder + '...\n')
         if verbose_level in [1,2]:
             log.write('\nWorking on ' + str(locus_folder) + ' ...\n')
@@ -2905,7 +2909,7 @@ elif Clustering_method == "ASV":
             LocusTaxonCountDict_chimera = pickle.load(picklefile)
     else:
         asvStartTime = time.time()
-        LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
+        LocusTaxonCountDict_clustd, LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, locus_list, minLen, maxLen, maxEE, RscriptPath)
         asvStopTime = time.time()
         asvRunTime = asvStopTime - asvStartTime
         print("ASV Runtime: %s" % convertTime(asvRunTime))
@@ -2928,7 +2932,7 @@ elif Clustering_method == "BOTH" and useOTUpriors == "FALSE":
             ASV_LocusTaxonCountDict_chimera = pickle.load(picklefile)
     else:
         asvStartTime = time.time()
-        ASV_LocusTaxonCountDict_clustd, ASV_LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
+        ASV_LocusTaxonCountDict_clustd, ASV_LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, locus_list, minLen, maxLen, maxEE, RscriptPath)
         asvStopTime = time.time()
         asvRunTime = asvStopTime - asvStartTime
         print("ASV Runtime: %s" % convertTime(asvRunTime))
@@ -3005,7 +3009,7 @@ elif Clustering_method == "BOTH" and useOTUpriors == "TRUE":
             ASV_LocusTaxonCountDict_chimera = pickle.load(picklefile)
     else:
         asvStartTime = time.time()
-        ASV_LocusTaxonCountDict_clustd, ASV_LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, minLen, maxLen, maxEE, RscriptPath)
+        ASV_LocusTaxonCountDict_clustd, ASV_LocusTaxonCountDict_chimera = dada(annoFileName, fastq_sequences, Forward_primer, Reverse_primer, locus_list, minLen, maxLen, maxEE, RscriptPath)
         asvStopTime = time.time()
         asvRunTime = asvStopTime - asvStartTime
         print("ASV Runtime: %s" % convertTime(asvRunTime))
