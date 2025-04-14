@@ -1642,6 +1642,8 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
             for taxon_folder in all_folders_taxon:
                 if verbose_level in [1,2]:
                     log.write("Working on " + taxon_folder + '\n')
+                    log.write("Forward primer: %s\n" % Forward_primer[locusCount])
+                    log.write("Reverse primer: %s\n" % Reverse_primer[locusCount])
                 os.chdir(taxon_folder)
                 subset_fasta_seqs_from_fastq("%s.fa" % taxon_folder, raw_fastq_sequences)
                 writeASV(taxon_folder, Forward_primer[locusCount], Reverse_primer[locusCount], minLen, maxLen, maxEE)
