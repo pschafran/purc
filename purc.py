@@ -1623,20 +1623,20 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
     LocusTaxonCountDict_chimera = {} # {('C_dia_5316', 'ApP'): [1,0,0,0,0]} for example, to store the chimerc seq count for each chimera-killing step
 
     ## Go through each locus ##
-    locusCount = 0
     for locus_folder in locus_list: # locus_folder = locus name
+        locusIndex = locus_list[locus_folder]
         try:
             os.chdir(locus_folder)
         except:
             log.write("WARNING: %s directory not found" % locus_folder)
             continue
         sys.stderr.write('\nWorking on: ' + locus_folder + '...\n')
-        sys.stderr.write("Forward primer: %s\n" % Forward_primer[locusCount])
-        sys.stderr.write("Reverse primer: %s\n" % Reverse_primer[locusCount])
+        sys.stderr.write("Forward primer: %s\n" % Forward_primer[locusIndex])
+        sys.stderr.write("Reverse primer: %s\n" % Reverse_primer[locusIndex])
         if verbose_level in [1,2]:
             log.write('\nWorking on ' + str(locus_folder) + ' ...\n')
-            log.write("Forward primer: %s\n" % Forward_primer[locusCount])
-            log.write("Reverse primer: %s\n" % Reverse_primer[locusCount])
+            log.write("Forward primer: %s\n" % Forward_primer[locusIndex])
+            log.write("Reverse primer: %s\n" % Reverse_primer[locusIndex])
         if not os.stat(locus_folder + ".fa").st_size == 0: # ie, the file is not empty
             ## Split sequences into separate taxon folders ##
             taxonCounts = SplitBy(annotd_seqs_file = locus_folder + ".fa", split_by = "taxon", Multiplex_perBC_flag = Multiplex_per_barcode)
@@ -1647,7 +1647,7 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
                     log.write("Working on " + taxon_folder + '\n')
                 os.chdir(taxon_folder)
                 subset_fasta_seqs_from_fastq("%s.fa" % taxon_folder, raw_fastq_sequences)
-                writeASV(taxon_folder, Forward_primer[locusCount], Reverse_primer[locusCount], minLen, maxLen, maxEE)
+                writeASV(taxon_folder, Forward_primer[locusIndex], Reverse_primer[locusIndex], minLen, maxLen, maxEE)
                 with open("%s_DADA2.log" % taxon_folder, "w") as logfile:
                     dadaCMD = "%s %s_DADA2.R" %(RscriptPath, taxon_folder)
                     process = subprocess.Popen(dadaCMD, stdout=logfile, stderr=logfile, shell=True, text=True)
