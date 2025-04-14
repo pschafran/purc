@@ -1624,7 +1624,7 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
 
     ## Go through each locus ##
     for locus_folder in locus_list: # locus_folder = locus name
-        locusIndex = locus_list[locus_folder]
+        locusIndex = locus_list.index(locus_folder)
         try:
             os.chdir(locus_folder)
         except:
