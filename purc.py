@@ -1677,7 +1677,6 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
                         log.write("No chimeras detected in %s\n" % taxon_folder)
                     LocusTaxonCountDict_chimera[taxon_folder, locus_folder] = 0
                 os.chdir("..")
-        locusCount += 1
         os.chdir("..")
     log.write('\t...done\n\n')
 
