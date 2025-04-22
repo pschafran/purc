@@ -2884,7 +2884,7 @@ if mode == 3:
     log.write("PURC stopped early after annotation")
     print("PURC completed!")
     print("Stop Time: %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-
+    exit(0)
 ## Iterative clustering and chimera-killing ##
 os.chdir(Output_folder) # move into the designated output folder
 if Clustering_method == "OTU":
