@@ -1648,7 +1648,7 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
                 os.chdir(taxon_folder)
                 subset_fasta_seqs_from_fastq("%s.fa" % taxon_folder, raw_fastq_sequences)
                 if mode == 3:
-                    continue
+                    break
                 writeASV(taxon_folder, Forward_primer[locusIndex], Reverse_primer[locusIndex], minLen, maxLen, maxEE)
                 with open("%s_DADA2.log" % taxon_folder, "w") as logfile:
                     dadaCMD = "%s %s_DADA2.R" %(RscriptPath, taxon_folder)
@@ -1683,7 +1683,7 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
     log.write('\t...done\n\n')
 
     if mode == 3:
-        sys.stderr.write("PURC stopped after annotation")
+        sys.stderr.write("PURC stopped after annotation\n")
         exit(0)
     ## Put all the sequences together ##
     sys.stderr.write('\n\nPutting all the sequences together...\n\n')
