@@ -1647,24 +1647,23 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
                     log.write("Working on " + taxon_folder + '\n')
                 os.chdir(taxon_folder)
                 subset_fasta_seqs_from_fastq("%s.fa" % taxon_folder, raw_fastq_sequences)
-                if mode == 3:
-                    break
-                writeASV(taxon_folder, Forward_primer[locusIndex], Reverse_primer[locusIndex], minLen, maxLen, maxEE)
-                with open("%s_DADA2.log" % taxon_folder, "w") as logfile:
-                    dadaCMD = "%s %s_DADA2.R" %(RscriptPath, taxon_folder)
-                    process = subprocess.Popen(dadaCMD, stdout=logfile, stderr=logfile, shell=True, text=True)
-                    process.communicate()
-                ## Count ASVs and store in LocusTaxonCountDict_clustd as {('C_dia_5316', 'ApP'): 28} for example ##
-                try:
-                    clustered_seq_file = parse_fasta(taxon_folder + '_ASVs.fa')
-                    for each_seq in clustered_seq_file:
-                        try:
-                            LocusTaxonCountDict_clustd[taxon_folder, locus_folder] += 1  # {('C_dia_5316', 'ApP'): 28} for example
-                        except:
-                            LocusTaxonCountDict_clustd[taxon_folder, locus_folder] = 1
-                except:
-                    print("WARNING: No ASVs found for %s" % taxon_folder)
-                    log.write("WARNING: No ASVs found for %s" % taxon_folder)
+                if mode != 3:
+                    writeASV(taxon_folder, Forward_primer[locusIndex], Reverse_primer[locusIndex], minLen, maxLen, maxEE)
+                    with open("%s_DADA2.log" % taxon_folder, "w") as logfile:
+                        dadaCMD = "%s %s_DADA2.R" %(RscriptPath, taxon_folder)
+                        process = subprocess.Popen(dadaCMD, stdout=logfile, stderr=logfile, shell=True, text=True)
+                        process.communicate()
+                    ## Count ASVs and store in LocusTaxonCountDict_clustd as {('C_dia_5316', 'ApP'): 28} for example ##
+                    try:
+                        clustered_seq_file = parse_fasta(taxon_folder + '_ASVs.fa')
+                        for each_seq in clustered_seq_file:
+                            try:
+                                LocusTaxonCountDict_clustd[taxon_folder, locus_folder] += 1  # {('C_dia_5316', 'ApP'): 28} for example
+                            except:
+                                LocusTaxonCountDict_clustd[taxon_folder, locus_folder] = 1
+                    except:
+                        print("WARNING: No ASVs found for %s" % taxon_folder)
+                        log.write("WARNING: No ASVs found for %s" % taxon_folder)
 
                 ## Count chimeras
                 try:
