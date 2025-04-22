@@ -1614,11 +1614,7 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
     ## Split sequences into separate files/folders for each locus ##
     sys.stderr.write('Splitting sequences into a folder/file for each locus...\n')
     locusCounts = SplitBy(annotd_seqs_file = annoFileName, split_by = "locus", Multiplex_perBC_flag = Multiplex_per_barcode)
-    if mode == 3:
-        log.write("PURC stopped early after annotation")
-        print("PURC completed!")
-        print("Stop Time: %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-        exit(0)
+
     sys.stderr.write('Sorting sequences into ASVs...\n')
     log.write('#Sorting sequences into ASVs#\n')
     all_folders_loci = list(locusCounts.keys()) # SplitBy makes a dictionary where the keys are the subcategories (and thus also the
@@ -1635,8 +1631,8 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
             log.write("WARNING: %s directory not found" % locus_folder)
             continue
         sys.stderr.write('\nWorking on: ' + locus_folder + '...\n')
-        sys.stderr.write("Forward primer: %s\n" % Forward_primer[locusIndex])
-        sys.stderr.write("Reverse primer: %s\n" % Reverse_primer[locusIndex])
+        #sys.stderr.write("Forward primer: %s\n" % Forward_primer[locusIndex])
+        #sys.stderr.write("Reverse primer: %s\n" % Reverse_primer[locusIndex])
         if verbose_level in [1,2]:
             log.write('\nWorking on ' + str(locus_folder) + ' ...\n')
             log.write("Forward primer: %s\n" % Forward_primer[locusIndex])
@@ -1651,6 +1647,8 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
                     log.write("Working on " + taxon_folder + '\n')
                 os.chdir(taxon_folder)
                 subset_fasta_seqs_from_fastq("%s.fa" % taxon_folder, raw_fastq_sequences)
+                if mode == 3:
+                    continue
                 writeASV(taxon_folder, Forward_primer[locusIndex], Reverse_primer[locusIndex], minLen, maxLen, maxEE)
                 with open("%s_DADA2.log" % taxon_folder, "w") as logfile:
                     dadaCMD = "%s %s_DADA2.R" %(RscriptPath, taxon_folder)
@@ -1684,6 +1682,9 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
         os.chdir("..")
     log.write('\t...done\n\n')
 
+    if mode == 3:
+        sys.stderr.write("PURC stopped after annotation")
+        exit(0)
     ## Put all the sequences together ##
     sys.stderr.write('\n\nPutting all the sequences together...\n\n')
     for locus_folder in all_folders_loci: # Looping through each of the locus folders
