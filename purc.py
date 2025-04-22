@@ -1616,7 +1616,10 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
     sys.stderr.write('Splitting sequences into a folder/file for each locus...\n')
     locusCounts = SplitBy(annotd_seqs_file = annoFileName, split_by = "locus", Multiplex_perBC_flag = Multiplex_per_barcode)
     if mode == 3:
-        continue
+        log.write("PURC stopped early after annotation")
+        print("PURC completed!")
+        print("Stop Time: %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+        exit(0)
     sys.stderr.write('Sorting sequences into ASVs...\n')
     log.write('#Sorting sequences into ASVs#\n')
     all_folders_loci = list(locusCounts.keys()) # SplitBy makes a dictionary where the keys are the subcategories (and thus also the
