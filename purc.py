@@ -2810,23 +2810,27 @@ if "primerRemoval" in checkpoints_complete:
     log.write('Reusing previous primer trimmed files...\n')
     print('Reusing previous primer trimmed files...\n')
 else:
-    if Clustering_method == "OTU" or Clustering_method == "BOTH":
-        sys.stderr.write('Removing primers...\n')
-        primer_trimmed_file = Output_prefix + '_2_pr_trimmed.fa'
-        doCutAdapt(Fprims = Forward_primer, Rprims = Reverse_primer, InFile = Output_folder + '/' + Output_prefix + '_1_bc_trimmed.fa', OutFile = Output_folder + '/' + primer_trimmed_file)
-        count_seq_pr_trimmed = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_2_pr_trimmed.fa')
-        sys.stderr.write('\t' + str(count_seq_pr_trimmed) + ' sequences survived after primer-trimming\n')
-        log.write('\t...done\n\n')
-        if count_seq_pr_trimmed == str(0):
-            sys.exit('Error: primer-removal returned no sequence')
-        else:
+    if mode != 3:
+        if Clustering_method == "OTU" or Clustering_method == "BOTH":
+            sys.stderr.write('Removing primers...\n')
+            primer_trimmed_file = Output_prefix + '_2_pr_trimmed.fa'
+            doCutAdapt(Fprims = Forward_primer, Rprims = Reverse_primer, InFile = Output_folder + '/' + Output_prefix + '_1_bc_trimmed.fa', OutFile = Output_folder + '/' + primer_trimmed_file)
+            count_seq_pr_trimmed = count_seq_from_fasta(Output_folder + '/' + Output_prefix + '_2_pr_trimmed.fa')
+            sys.stderr.write('\t' + str(count_seq_pr_trimmed) + ' sequences survived after primer-trimming\n')
+            log.write('\t...done\n\n')
+            if count_seq_pr_trimmed == str(0):
+                sys.exit('Error: primer-removal returned no sequence')
+            else:
+                with open("%s/tmp/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
+                    open_checkpoint_file.write("primerRemoval\n")
+        elif Clustering_method == "ASV":
+            primer_trimmed_file = Output_prefix + '_1_bc_trimmed.fa'
             with open("%s/tmp/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
                 open_checkpoint_file.write("primerRemoval\n")
-    elif Clustering_method == "ASV":
+    else:
         primer_trimmed_file = Output_prefix + '_1_bc_trimmed.fa'
         with open("%s/tmp/checkpoint.txt" % Output_folder, "a") as open_checkpoint_file:
             open_checkpoint_file.write("primerRemoval\n")
-
 
 ## Annotate the sequences with the taxon and locus names, based on the reference sequences ##
 log.write('#Sequence Annotation# %s \n' % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
@@ -2876,6 +2880,10 @@ else:
     #    print("PURC completed!")
     #    print("%s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
     #    sys.exit(0)
+if mode == 3:
+    log.write("PURC stopped early after annotation")
+    print("PURC completed!")
+    print("Stop Time: %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
 ## Iterative clustering and chimera-killing ##
 os.chdir(Output_folder) # move into the designated output folder
