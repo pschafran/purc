@@ -2423,6 +2423,9 @@ else:
         print("Error: Clustering_method = 2 must be set to use OTU priors for ASV inference.")
         sys.exit(1)
 
+    if mode == 3:
+        sys.stderr.write("Running annotation-only mode...\n")
+
     # Check if dependencies are in place
     sys.stderr.write('Checking dependencies...\n')
     # Check if muscle can be executed
