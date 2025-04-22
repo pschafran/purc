@@ -1228,7 +1228,8 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
             ## Split sequences into separate taxon folders ##
             taxonCounts = SplitBy(annotd_seqs_file = locus_folder + ".fa", split_by = "taxon", Multiplex_perBC_flag = Multiplex_per_barcode)
             all_folders_taxon = list(taxonCounts.keys())
-
+            if mode == 3:
+                continue
             for taxon_folder in all_folders_taxon:
                 if verbose_level in [1,2]:
                     log.write("Working on " + taxon_folder + '\n')
@@ -1614,7 +1615,8 @@ def dada(annotd_seqs_file, raw_fastq_sequences, Forward_primer, Reverse_primer, 
     ## Split sequences into separate files/folders for each locus ##
     sys.stderr.write('Splitting sequences into a folder/file for each locus...\n')
     locusCounts = SplitBy(annotd_seqs_file = annoFileName, split_by = "locus", Multiplex_perBC_flag = Multiplex_per_barcode)
-
+    if mode == 3:
+        continue
     sys.stderr.write('Sorting sequences into ASVs...\n')
     log.write('#Sorting sequences into ASVs#\n')
     all_folders_loci = list(locusCounts.keys()) # SplitBy makes a dictionary where the keys are the subcategories (and thus also the
@@ -2880,11 +2882,7 @@ else:
     #    print("PURC completed!")
     #    print("%s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
     #    sys.exit(0)
-if mode == 3:
-    log.write("PURC stopped early after annotation")
-    print("PURC completed!")
-    print("Stop Time: %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-    exit(0)
+
 ## Iterative clustering and chimera-killing ##
 os.chdir(Output_folder) # move into the designated output folder
 if Clustering_method == "OTU":
@@ -3040,7 +3038,11 @@ elif Clustering_method == "BOTH" and useOTUpriors == "TRUE":
             LocusTaxonCountDict_clustd[locus_taxon].update({"ASV" : ASV_LocusTaxonCountDict_clustd[locus_taxon]})
         except:
             LocusTaxonCountDict_clustd[locus_taxon] = {"ASV" : ASV_LocusTaxonCountDict_clustd[locus_taxon]}
-
+if mode == 3:
+    log.write("PURC stopped early after annotation")
+    print("PURC completed!")
+    print("Stop Time: %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+    exit(0)
 ## Producing a summary ##
 log.write('#Run Summary# %s \n\n' % datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 count_output = open(Output_prefix + '_5_counts.xls', 'w')
