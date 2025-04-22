@@ -1228,8 +1228,7 @@ def IterativeClusterDechimera(annotd_seqs_file, clustID, clustID2, clustID3, siz
             ## Split sequences into separate taxon folders ##
             taxonCounts = SplitBy(annotd_seqs_file = locus_folder + ".fa", split_by = "taxon", Multiplex_perBC_flag = Multiplex_per_barcode)
             all_folders_taxon = list(taxonCounts.keys())
-            if mode == 3:
-                continue
+
             for taxon_folder in all_folders_taxon:
                 if verbose_level in [1,2]:
                     log.write("Working on " + taxon_folder + '\n')
@@ -2888,6 +2887,11 @@ else:
 
 ## Iterative clustering and chimera-killing ##
 os.chdir(Output_folder) # move into the designated output folder
+
+# force split annotating to FASTQ files if exiting early
+if mode == 3:
+	Clustering_method = "ASV"
+
 if Clustering_method == "OTU":
     if "otuClustering" in checkpoints_complete:
         log.write('Reusing previous OTU clustering results...\n')
